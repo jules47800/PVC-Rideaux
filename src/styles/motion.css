@@ -33,26 +33,6 @@
     transition-delay: 0ms;
   }
 
-  .logos__track {
-    animation: none;
-  }
-
-  .logos__viewport {
-    mask-image: none;
-  }
-
-  .logos__track,
-  .logos__list {
-    flex-wrap: wrap;
-    justify-content: center;
-    width: auto;
-    padding-right: 0;
-  }
-
-  .logos__list[aria-hidden='true'] {
-    display: none;
-  }
-
   .space-card,
   .product-card,
   .product-card__media img,

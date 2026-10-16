@@ -8,7 +8,11 @@ Le site s'organise désormais autour de **deux espaces distincts**, accessibles 
 - **Espace particuliers** : garage, atelier, cuisine d'été, écurie, abri de jardin.
 
 Projet statique construit avec [Vite](https://vite.dev), sans framework, pensé pour un **hébergement mutualisé
-classique déployé par FTP** (Apache / LiteSpeed + PHP pour les formulaires).
+classique déployé par FTP** (Apache / LiteSpeed + PHP pour les formulaires, le blog et son espace d'édition).
+
+Il comprend aussi un **blog** que la cliente alimente elle-même depuis un **espace d'édition** simple
+(`/admin/`), avec une **vérification SEO** qui note chaque article et liste les actions à mener.
+La stratégie de référencement est détaillée dans [`docs/recommandations-seo.md`](docs/recommandations-seo.md).
 
 ---
 
@@ -23,28 +27,34 @@ classique déployé par FTP** (Apache / LiteSpeed + PHP pour les formulaires).
 7. [Configurateur de devis](#configurateur-de-devis)
 8. [Conversion](#conversion)
 9. [Formulaires (contact & devis)](#formulaires-contact--devis)
-10. [Déploiement par FTP](#déploiement-par-ftp)
-11. [Redirections depuis l'ancien site](#redirections-depuis-lancien-site)
-12. [SEO, performance, accessibilité](#seo-performance-accessibilité)
-13. [Design system & animations](#design-system--animations)
-14. [Points à valider avec la cliente](#points-à-valider-avec-la-cliente)
+10. [Blog](#blog)
+11. [Espace d'édition](#espace-dédition)
+12. [Déploiement par FTP](#déploiement-par-ftp)
+13. [Redirections depuis l'ancien site](#redirections-depuis-lancien-site)
+14. [SEO, performance, accessibilité](#seo-performance-accessibilité)
+15. [Design system & animations](#design-system--animations)
+16. [Points à valider avec la cliente](#points-à-valider-avec-la-cliente)
 
 ---
 
 ## Démarrage rapide
 
-**Prérequis** : Node.js 20.19+ (ou 22.12+) et npm. PHP 8.1+ uniquement pour tester les formulaires en local.
+**Prérequis** : Node.js 20.19+ (ou 22.12+) et npm. PHP 8.1+ (extensions `mbstring` et `gd`) pour tester en
+local le blog, l'espace d'édition et les formulaires.
 
 ```bash
 npm install        # installe Vite, Prettier et les polices
 npm run dev        # serveur de développement : http://localhost:5173
 npm run build      # génère le site final dans dist/
-npm run preview    # sert dist/ en local pour vérification
+npm run preview    # sert dist/ en local pour vérification (sans PHP)
+npm run serve:php  # sert dist/ avec PHP : blog, espace d'édition, formulaires → http://localhost:8000
+npm run seo        # audit SEO des pages générées (après un build)
 npm run format     # formate JS / CSS / JSON / Markdown (Prettier)
 ```
 
-En développement, les formulaires **simulent** l'envoi (aucun serveur PHP n'est lancé par Vite) : les données
-envoyées s'affichent dans la console du navigateur et l'on est redirigé vers la page « Merci ».
+En développement, les formulaires **simulent** l'envoi : les données envoyées s'affichent dans la console du
+navigateur et l'on est redirigé vers la page « Merci ». Les adresses gérées par PHP (`/blog/`, `/admin/`,
+`/api/`, `/uploads/`) sont transmises par Vite à `npm run serve:php` s'il tourne (après un `npm run build`).
 
 ---
 
@@ -53,21 +63,23 @@ envoyées s'affichent dans la console du navigateur et l'on est redirigé vers l
 **Le site n'est pas une application JavaScript.** Chaque page est un vrai fichier HTML, généré au build et
 lisible tel quel par Google comme par un navigateur sans JavaScript. Vite n'est qu'un **outil de construction** :
 il assemble les fragments communs (en-tête, pied de page…), optimise les images et les styles, puis produit un
-dossier `dist/` de fichiers statiques à envoyer par FTP. Rien ne tourne côté serveur, hormis le petit script
-PHP des formulaires.
+dossier `dist/` de fichiers statiques à envoyer par FTP. Côté serveur, seuls tournent de petits scripts PHP :
+les formulaires, le blog et son espace d'édition.
 
-| Décision                                         | Pourquoi                                                                                                                                                                                                              |
-| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Site statique multi-pages (plutôt que WordPress) | Hébergement FTP simple et bon marché, pages très rapides, aucune base de données ni extension à mettre à jour, surface d'attaque minimale.                                                                            |
-| Pas de framework (React, Vue…)                   | Un site vitrine a peu d'interactions : un framework ajouterait 40 à 100 Ko de JS et imposerait un rendu serveur pour le référencement. Ici, le HTML porte le contenu, et le JS ne fait qu'**améliorer** l'expérience. |
-| JavaScript « vanilla », en petits modules        | ~3,5 Ko compressés sur les pages courantes (menus, apparitions, carrousel, validation des formulaires). Le configurateur (~6 Ko) n'est chargé que sur `/devis/`.                                                      |
-| Amélioration progressive                         | Sans JS, tout reste lisible et les formulaires fonctionnent (envoi classique, redirection PHP). Avec JS, on ajoute le confort : envoi sans rechargement, parcours pas à pas, aperçu en direct.                        |
-| Vite                                             | Serveur de développement avec rechargement instantané, gabarits (partials), minification, noms de fichiers versionnés pour le cache, sitemap automatique.                                                             |
-| PHP pour les formulaires                         | Disponible sur tous les hébergements mutualisés ; pas besoin de serveur Node ni de service tiers payant.                                                                                                              |
+| Décision                                         | Pourquoi                                                                                                                                                                                                                             |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Site statique multi-pages (plutôt que WordPress) | Hébergement FTP simple et bon marché, pages très rapides, aucune base de données ni extension à mettre à jour, surface d'attaque minimale.                                                                                           |
+| Pas de framework (React, Vue…)                   | Un site vitrine a peu d'interactions : un framework ajouterait 40 à 100 Ko de JS et imposerait un rendu serveur pour le référencement. Ici, le HTML porte le contenu, et le JS ne fait qu'**améliorer** l'expérience.                |
+| JavaScript « vanilla », en petits modules        | ~3,5 Ko compressés sur les pages courantes (menus, apparitions, carrousel, validation des formulaires). Le configurateur (~6 Ko) n'est chargé que sur `/devis/`.                                                                     |
+| Amélioration progressive                         | Sans JS, tout reste lisible et les formulaires fonctionnent (envoi classique, redirection PHP). Avec JS, on ajoute le confort : envoi sans rechargement, parcours pas à pas, aperçu en direct.                                       |
+| Vite                                             | Serveur de développement avec rechargement instantané, gabarits (partials), minification, noms de fichiers versionnés pour le cache, sitemap automatique.                                                                            |
+| PHP pour les formulaires                         | Disponible sur tous les hébergements mutualisés ; pas besoin de serveur Node ni de service tiers payant.                                                                                                                             |
+| Blog en PHP, articles en fichiers JSON           | La cliente publie seule, sans rebuild ni FTP. Pas de base de données : un article = un fichier, facile à sauvegarder et à restaurer. Le blog reprend le gabarit généré par Vite (en-tête, styles) : une seule source pour le design. |
+| Espace d'édition sur mesure (plutôt qu'un CMS)   | Exactement les champs utiles (et la vérification SEO), rien à mettre à jour, aucune extension vulnérable, même hébergement.                                                                                                          |
 
-**Contrepartie** : il n'y a pas d'interface d'administration ; modifier un texte se fait dans le HTML puis
-`npm run build`. Si la cliente doit un jour éditer elle-même ses contenus (actualités, par exemple), on pourra
-brancher un CMS « headless » sur ce même socle, sans tout refaire.
+**Contrepartie** : les pages vitrines (accueil, produits…) restent modifiées dans le HTML puis `npm run build` ;
+seul le blog est éditable en ligne. C'est volontaire : ces pages changent rarement et leur mise en page est
+travaillée finement.
 
 ---
 
@@ -86,6 +98,8 @@ brancher un CMS « headless » sur ce même socle, sans tout refaire.
 | `/devis/`                                       | Configurateur pas à pas, une question par écran           | —            |
 | `/guide-installation/`                          | Guide de pose avec les 12 schémas d'accrochage            | —            |
 | `/a-propos/`, `/contact/`, `/mentions-legales/` | Pages institutionnelles                                   | —            |
+| `/blog/`, `/blog/<article>/`                    | Blog (rendu par PHP), filtres par catégorie, flux RSS     | —            |
+| `/admin/`                                       | Espace d'édition du blog (protégé, non indexé)            | —            |
 | `/merci/`, `/404.html`                          | Pages techniques (non indexées)                           | —            |
 
 **Orientation des visiteurs** : une barre « Professionnels | Particuliers » est présente en haut de **toutes**
@@ -108,14 +122,29 @@ alors les questions déjà connues.
 ├── vite-plugins/
 │   ├── html-templates.js     # Partials, variables {{ }}, aria-current, typographie FR, Open Graph
 │   ├── pages.js              # Découverte automatique des pages
-│   └── sitemap.js            # Génère sitemap.xml et robots.txt au build
+│   └── sitemap.js            # Génère sitemap.xml (index), sitemap-pages.xml et robots.txt
+├── tools/
+│   ├── php-router.php        # Règles .htaccess pour le serveur PHP local (npm run serve:php)
+│   └── seo-audit.mjs         # Audit SEO des pages générées (npm run seo)
+├── docs/
+│   └── recommandations-seo.md  # ★ Audit, plan d'action SEO, check-list des articles
 ├── public/                   # Copié tel quel à la racine de dist/
-│   ├── .htaccess             # ★ HTTPS, redirections 301, cache, sécurité
+│   ├── .htaccess             # ★ HTTPS, redirections 301, adresses du blog, cache, sécurité
 │   ├── assets/.htaccess      # Cache long pour les fichiers versionnés par Vite
 │   ├── api/
 │   │   ├── send.php          # ★ Réception des formulaires et envoi d'e-mail
 │   │   ├── config.php        # ★ Destinataire, expéditeur, anti-spam
 │   │   └── .htaccess         # Interdit l'accès direct à config.php
+│   ├── blog/                 # Pages publiques du blog : liste, article, RSS, sitemap, derniers articles (JSON)
+│   │   └── images/           # Couvertures des articles repris de l'ancien site
+│   ├── admin/                # Espace d'édition : tableau de bord, éditeur, connexion, API JSON
+│   │   ├── assets/           # Styles et scripts (vérification SEO : seo-checker.js)
+│   │   └── config.example.php  # Modèle du fichier des comptes (config.php, créé sur le serveur)
+│   ├── lib/                  # Code PHP partagé (jamais servi) : articles, Markdown, gabarit, sécurité, images
+│   │   ├── ideas.php         # ★ Idées d'articles proposées dans le tableau de bord
+│   │   ├── views/            # Gabarits PHP du blog et de l'espace d'édition
+│   │   └── vendor/           # Parsedown (Markdown, licence MIT)
+│   ├── content-initial/      # Articles livrés avec le site, copiés dans content/ au premier lancement
 │   ├── icons.svg             # Sprite d'icônes (trait 24×24)
 │   ├── favicon.ico, icon-*.png, apple-touch-icon.png, site.webmanifest
 │   ├── og-image.jpg          # Aperçu lors d'un partage (réseaux sociaux, messageries)
@@ -125,6 +154,7 @@ alors les questions déjà connues.
     ├── professionnels/…/index.html
     ├── particuliers/index.html
     ├── devis/index.html …
+    ├── blog/_layout.html     # Gabarit des pages du blog (complété par PHP)
     ├── partials/             # Fragments partagés (en-tête, pied de page, avis…)
     ├── assets/               # Images (WebP optimisés) et logo
     ├── styles/
@@ -132,16 +162,20 @@ alors les questions déjà connues.
     │   ├── tokens.css        # ★ Couleurs, typographie, espacements, courbes d'animation
     │   ├── base.css, layout.css, motion.css, fonts.css
     │   └── components/       # buttons, header, footer, hero, cards, sections, faq, forms,
-    │                         # funnel (configurateur), conversion (estimation, barre mobile)
+    │                         # funnel (configurateur), conversion (estimation, barre mobile), blog
     └── scripts/
         ├── main.js           # Chargé sur toutes les pages
         ├── modules/          # header, dropdown, mobile-menu, mobile-cta, reveal, carousel,
-        │                     # forms, quote-links, curtain-preview (aperçu SVG du rideau)
+        │                     # forms, quote-links, curtain-preview (aperçu SVG du rideau),
+        │                     # latest-posts (derniers articles du blog)
         ├── pages/devis.js    # Configurateur pas à pas (chargé uniquement sur /devis/)
         └── data/catalogue.js # ★ Formats, matières et produits
 ```
 
 Les fichiers marqués ★ sont ceux que l'on modifie le plus souvent.
+
+Créés **sur le serveur** par l'espace d'édition (jamais dans le dépôt, jamais écrasés) : `content/` (articles
+et corbeille), `uploads/blog/` (images envoyées) et `admin/config.php` (comptes).
 
 ---
 
@@ -165,8 +199,8 @@ Il se charge aussi, sans intervention :
 Une variable inconnue fait **échouer le build** : impossible de publier un `{{ … }}` oublié.
 
 **Partials disponibles** : `head`, `header`, `footer`, `reassurance`, `steps`, `reviews`, `logos`,
-`cta-devis`, `cta-particulier`, `cta-note`, `quick-quote`, `mobile-cta`, et pour le configurateur
-`header-focus`, `footer-minimal`, `funnel-nav`.
+`latest-posts`, `cta-devis`, `cta-particulier`, `cta-note`, `quick-quote`, `mobile-cta`, et pour le
+configurateur `header-focus`, `footer-minimal`, `funnel-nav`.
 
 ### Ajouter une page
 
@@ -182,15 +216,17 @@ C'est tout : la page est détectée automatiquement par Vite, ajoutée au `sitem
 
 ## Modifier le contenu courant
 
-| Je veux changer…                        | Où                                                                     |
-| --------------------------------------- | ---------------------------------------------------------------------- |
-| Téléphone, e-mail, horaires, adresse    | `site.config.js` (mis à jour sur tout le site au prochain build)       |
-| Domaine définitif du site               | `site.config.js` → `url`                                               |
-| Destinataire des formulaires            | `public/api/config.php` → `recipient` (modifiable directement par FTP) |
-| Couleurs, typographie, arrondis         | `src/styles/tokens.css`                                                |
-| Avis clients                            | `src/partials/reviews.html`                                            |
-| Références clients (défilement de noms) | `src/partials/logos.html`                                              |
-| Gamme (formats / matières disponibles)  | voir ci-dessous                                                        |
+| Je veux changer…                       | Où                                                                     |
+| -------------------------------------- | ---------------------------------------------------------------------- |
+| Téléphone, e-mail, horaires, adresse   | `site.config.js` (mis à jour sur tout le site au prochain build)       |
+| Domaine définitif du site              | `site.config.js` → `url`                                               |
+| Destinataire des formulaires           | `public/api/config.php` → `recipient` (modifiable directement par FTP) |
+| Couleurs, typographie, arrondis        | `src/styles/tokens.css`                                                |
+| Avis clients                           | `src/partials/reviews.html`                                            |
+| Logos « Ils nous font confiance »      | `src/partials/logos.html` (images dans `src/assets/partners/`)         |
+| Articles du blog                       | espace d'édition `/admin/` (voir [Espace d'édition](#espace-dédition)) |
+| Idées d'articles proposées             | `public/lib/ideas.php`                                                 |
+| Gamme (formats / matières disponibles) | voir ci-dessous                                                        |
 
 ### Gamme de produits
 
@@ -292,6 +328,93 @@ finir en spam. En cas de souci persistant, `send.php` peut être adapté pour pa
 
 ---
 
+## Blog
+
+Les pages du blog sont rendues **à la volée par PHP**, dans le même habillage que le reste du site :
+
+```
+src/blog/_layout.html ──(npm run build)──▶ blog/_layout.html (en-tête, styles, scripts, pied de page)
+                                                  │
+content/articles/*.json ──▶ blog/index.php, blog/article.php ──▶ page HTML complète
+```
+
+- **Adresses** (règles dans `.htaccess`) : `/blog/` (liste, `?categorie=…`, `?page=2`), `/blog/<article>/`,
+  `/blog/feed.xml` (RSS), `/sitemap-blog.xml` (référencé par `/sitemap.xml`).
+- **Articles** : un fichier JSON par article dans `content/articles/` (titre, expression clé, titre et
+  description pour Google, catégorie, couverture, contenu en **Markdown**, état, dates). Au tout premier
+  lancement, les 6 articles de l'ancien site (`content-initial/`) y sont copiés.
+- **Programmation** : un article « Publié » avec une date future n'apparaît qu'à cette date.
+- **Changement d'adresse** : l'ancienne adresse d'un article renommé redirige en 301 vers la nouvelle.
+- **Brouillons** : 404 pour le public ; aperçu (non indexé) pour l'équipe connectée.
+- **SEO** : titre et description dédiés, canonical, Open Graph (`og:type=article`, image de couverture),
+  données structurées `BlogPosting` et `BreadcrumbList`, sommaire automatique (à partir de 3 intertitres),
+  articles liés, catégories filtrées en `noindex,follow`.
+- **Conversion** : encart devis en fin d'article (avec estimation largeur × hauteur), et encart au fil du texte
+  avec le raccourci `[[devis]]`.
+- **Derniers articles sur le site** : le bloc « Nos derniers conseils » (`src/partials/latest-posts.html`,
+  accueil et espaces) charge `/blog/latest.php`, en privilégiant les articles de l'espace de la page.
+- **Sécurité** : Markdown en mode sécurisé (HTML saisi échappé), dossiers `lib/`, `content/` et
+  `content-initial/` inaccessibles depuis le web, aucun script exécutable dans `uploads/`.
+
+---
+
+## Espace d'édition
+
+Adresse : **`/admin/`**. Pensé pour une utilisation sans connaissance technique.
+
+### Créer le premier compte
+
+1. Ouvrir `https://<domaine>/admin/` : tant qu'aucun compte n'existe, une page **« Mise en service »**
+   demande un identifiant et un mot de passe (12 caractères minimum) et affiche le contenu du fichier à créer.
+2. Créer `admin/config.php` sur le serveur avec ce contenu (par FTP), puis recharger la page.
+   Modèle : [`public/admin/config.example.php`](public/admin/config.example.php). En ligne de commande,
+   l'empreinte d'un mot de passe s'obtient aussi avec :
+   ```bash
+   php -r "echo password_hash('le mot de passe', PASSWORD_DEFAULT), PHP_EOL;"
+   ```
+3. Plusieurs comptes : une ligne `'identifiant' => 'empreinte',` par personne.
+
+Le mot de passe n'est jamais stocké, seulement son empreinte (bcrypt). `config.php` est ignoré par Git.
+
+### Fonctionnalités
+
+- **Tableau de bord** : articles en ligne / programmés / brouillons, note SEO de chaque article et note
+  moyenne, **actions prioritaires** sur les articles en ligne, **12 idées d'articles** (expression clé et plan
+  prêts à remplir), rappel des bons réflexes.
+- **Éditeur** : barre d'outils Markdown (intertitres, gras, listes, citation, lien, image, encart devis),
+  raccourcis `Ctrl B / I / K`, `Ctrl S` pour enregistrer, onglet **Aperçu** (rendu identique au site), adresse
+  générée d'après le titre, **aperçu du résultat Google** avec compteurs de caractères, choix de la catégorie,
+  date de publication (programmation), image de couverture.
+- **Vérification SEO en direct** (`public/admin/assets/seo-checker.js`) : une note sur 100 et, pour chaque
+  point, l'action concrète à mener (expression clé dans le titre, longueur, intertitres, liens internes avec
+  **pages suggérées à lier en un clic**, encart devis, images décrites, doublons d'expression entre articles,
+  fraîcheur…). Le détail des contrôles est dans [`docs/recommandations-seo.md`](docs/recommandations-seo.md#5-la-vérification-seo-de-lespace-dédition).
+- **Images** : envoyées depuis l'éditeur, redressées, réduites à 1 600 px et converties en WebP
+  (`uploads/blog/AAAA/MM/`), 8 Mo maximum.
+- **Suppression** : l'article part dans `content/corbeille/` ; pour le restaurer, le replacer par FTP dans
+  `content/articles/`.
+
+### Sécurité
+
+Session dédiée (cookie `HttpOnly`, `SameSite=Strict`, `Secure` en HTTPS, expiration après 2 h d'inactivité),
+jeton CSRF sur toute action, 5 essais de connexion par adresse IP puis blocage 15 minutes, pages
+`noindex`, `config.php` inaccessible depuis le web, conflit détecté si un article a été modifié entre-temps
+dans un autre onglet. L'interface respecte la même CSP stricte que le site (aucun script ni style en ligne).
+
+### Tester en local
+
+```bash
+npm run build
+npm run serve:php                       # http://localhost:8000/admin/
+```
+
+`tools/php-router.php` reproduit les règles de `.htaccess` (adresses du blog, redirections, dossiers
+interdits, CSP). Créer le compte de test dans **`dist/admin/config.php`** (et non dans `public/admin/`, pour
+ne jamais l'envoyer sur le serveur). Les articles et images de test sont créés dans `dist/` et effacés au
+prochain build.
+
+---
+
 ## Déploiement par FTP
 
 1. **Construire** le site :
@@ -304,16 +427,21 @@ finir en spam. En cas de souci persistant, `send.php` peut être adapté pour pa
    - Activer l'affichage des fichiers cachés (FileZilla : _Serveur → Forcer l'affichage des fichiers cachés_)
      pour que `.htaccess`, `assets/.htaccess` et `api/.htaccess` soient bien envoyés.
    - Lors de la mise en ligne de la refonte, supprimer d'abord l'ancien WordPress (après sauvegarde !).
-4. **Vérifier sur l'hébergement** : PHP 8.1 ou plus, certificat SSL actif, puis envoyer un message de test
-   depuis `/contact/` et une demande depuis `/devis/`.
+   - **Ne jamais supprimer ni écraser sur le serveur** : `content/` (articles), `uploads/` (images du blog)
+     et `admin/config.php` (comptes). Ils n'existent que sur le serveur ; toujours lancer `npm run build`
+     juste avant l'envoi (il vide `dist/` de tout fichier de test local).
+   - **Sauvegarde** : télécharger régulièrement `content/` et `uploads/` (quelques Mo).
+4. **Vérifier sur l'hébergement** : PHP 8.1 ou plus (extensions `mbstring` et `gd`), certificat SSL actif,
+   puis envoyer un message de test depuis `/contact/` et une demande depuis `/devis/`, et créer le compte de
+   l'espace d'édition (voir plus haut).
 5. **Mises à jour suivantes** : relancer `npm run build` puis renvoyer `dist/`. Les fichiers de `dist/assets/`
    portent une empreinte : on peut supprimer les anciens sur le serveur sans risque.
 
 > `public/api/config.php` est une simple configuration : pour changer le destinataire des e-mails, on peut le
 > modifier directement sur le serveur, sans rebuild.
 
-**Après la mise en ligne** : déclarer `https://<domaine>/sitemap.xml` dans Google Search Console, et mettre à
-jour l'adresse du site sur la fiche Google Business Profile.
+**Après la mise en ligne** : suivre la liste « P0 » de [`docs/recommandations-seo.md`](docs/recommandations-seo.md)
+(Search Console, outil de changement d'adresse, fiche Google, vérification des redirections).
 
 ---
 
@@ -322,18 +450,19 @@ jour l'adresse du site sur la fiche Google Business Profile.
 `public/.htaccess` redirige (301) les anciennes adresses WordPress vers les nouvelles, pour conserver le
 référencement et les liens existants :
 
-| Ancienne URL                     | Nouvelle URL                                  |
-| -------------------------------- | --------------------------------------------- |
-| `/pvc-rideaux/`                  | `/a-propos/`                                  |
-| `/rideau-laniere-pvc/`           | `/professionnels/kit-rideau-lanieres/`        |
-| `/laniere-pvc/`                  | `/professionnels/lanieres-pvc/`               |
-| `/rouleau-pvc-transparent/`      | `/professionnels/rouleaux-rails-accessoires/` |
-| `/rideaux-de-soudure/`           | `/professionnels/rideaux-soudure/`            |
-| `/rideau-chambre-froide/`        | `/professionnels/chambre-froide/`             |
-| `/guide-dinstallation/`          | `/guide-installation/`                        |
-| `/legal/`                        | `/mentions-legales/`                          |
-| `/actualites/` et les 6 articles | page la plus proche (voir `.htaccess`)        |
-| `/product/…`, panier, boutique   | rouleaux / devis                              |
+| Ancienne URL                   | Nouvelle URL                                  |
+| ------------------------------ | --------------------------------------------- |
+| `/pvc-rideaux/`                | `/a-propos/`                                  |
+| `/rideau-laniere-pvc/`         | `/professionnels/kit-rideau-lanieres/`        |
+| `/laniere-pvc/`                | `/professionnels/lanieres-pvc/`               |
+| `/rouleau-pvc-transparent/`    | `/professionnels/rouleaux-rails-accessoires/` |
+| `/rideaux-de-soudure/`         | `/professionnels/rideaux-soudure/`            |
+| `/rideau-chambre-froide/`      | `/professionnels/chambre-froide/`             |
+| `/guide-dinstallation/`        | `/guide-installation/`                        |
+| `/legal/`                      | `/mentions-legales/`                          |
+| `/actualites/`, `/feed/`       | `/blog/`, `/blog/feed.xml`                    |
+| les 6 anciens articles         | `/blog/<article>/` (articles repris)          |
+| `/product/…`, panier, boutique | rouleaux / devis                              |
 
 Si le nom de domaine change (`pvcrideaux.fr` → `isorideaux.fr`), décommenter le bloc « Ancien domaine →
 nouveau domaine » du `.htaccess` une fois les deux domaines pointés vers le même hébergement, puis mettre à
@@ -343,9 +472,12 @@ jour `url` dans `site.config.js`.
 
 ## SEO, performance, accessibilité
 
-- **SEO** : une balise `<title>` et une meta description par page, URL canonique automatique, `sitemap.xml`
-  et `robots.txt` générés au build, fil d'Ariane balisé schema.org, données structurées `LocalBusiness` sur
-  l'accueil, balises Open Graph pour les partages.
+- **SEO** : une balise `<title>` et une meta description par page (expressions historiques de pvcrideaux.fr
+  conservées), URL canonique automatique, `sitemap.xml` (index des pages statiques et des articles) et
+  `robots.txt` générés au build, fil d'Ariane balisé schema.org, données structurées `LocalBusiness` (avec
+  l'ancien nom « PVC Rideaux ») et `WebSite` sur l'accueil, balises Open Graph pour les partages.
+  `npm run seo` contrôle titres, descriptions, H1, canonical, textes alternatifs, JSON-LD et liens internes de
+  toutes les pages générées. Plan d'action complet : [`docs/recommandations-seo.md`](docs/recommandations-seo.md).
 - **Performance** : HTML statique, ~3,5 Ko de JS compressé sur les pages courantes (~6 Ko de plus sur le
   configurateur), images WebP avec `srcset`
   et chargement différé, polices auto-hébergées limitées au sous-ensemble latin, cache long sur les fichiers
@@ -398,7 +530,10 @@ Contenus repris du site actuel ou à confirmer avant la mise en ligne :
 - [ ] **Photos pour l'espace particuliers** (garage, atelier, cuisine d'été…) : seules des photos
       professionnelles et celle de l'écurie sont disponibles pour l'instant.
 - [ ] **Logo vectoriel (SVG)** : le logo fourni est une image ; une version SVG serait plus nette.
-- [ ] **Articles d'actualité** : les 6 articles de l'ancien site sont redirigés ; les migrer si souhaité.
+- [ ] **Articles du blog** : les 6 articles de l'ancien site sont repris (métadonnées SEO réécrites) ; à
+      relire, et à enrichir selon les actions du tableau de bord (liens, encart devis).
+- [ ] **Idées d'articles** : vérifier le volume de recherche des expressions proposées (`public/lib/ideas.php`).
+- [ ] **Comptes de l'espace d'édition** : qui publie ? (un compte par personne).
 - [ ] **CGV** : lien vers le document Google existant, à remplacer idéalement par une page dédiée.
 - [ ] **Devis instantané / paiement en ligne** : l'ancien site calculait un prix et encaissait via PayPal.
       Le nouveau configurateur envoie une demande de devis ; un prix indicatif pourra s'afficher dans l'aperçu

@@ -17,3 +17,6 @@ Thumbs.db
 # Logs
 npm-debug.log*
 *.log
+
+# Comptes de l’espace d’édition (créés sur le serveur, jamais versionnés)
+public/admin/config.php

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <!--
+      Gabarit des pages du blog : il n'est jamais affiché tel quel.
+      Les scripts PHP (blog/*.php) y remplacent le titre, la description,
+      et les marqueurs BLOG:HEAD et BLOG:MAIN ; le bandeau devis (BLOG:CTA)
+      peut être retiré (voir public/lib/layout.php).
+    -->
+    <!-- @include head.html -->
+    <title>%%TITLE%%</title>
+    <meta name="description" content="%%DESCRIPTION%%" />
+    <!--BLOG:HEAD-->
+  </head>
+  <body>
+    <!-- @include header.html -->
+
+    <main id="contenu">
+      <!--BLOG:MAIN-->
+
+      <!--BLOG:CTA-->
+      <!-- @include cta-devis.html -->
+      <!--/BLOG:CTA-->
+    </main>
+
+    <!-- @include footer.html -->
+  </body>
+</html>

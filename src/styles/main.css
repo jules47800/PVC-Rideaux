@@ -18,5 +18,6 @@
 @import './components/forms.css';
 @import './components/funnel.css';
 @import './components/conversion.css';
+@import './components/blog.css';
 
 @import './motion.css';

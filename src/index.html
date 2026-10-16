@@ -2,16 +2,18 @@
 <html lang="fr">
   <head>
     <!-- @include head.html -->
-    <title>IsoRideaux — Rideaux à lanières PVC sur mesure, pros &amp; particuliers</title>
+    <title>Rideau PVC à lanières sur mesure | IsoRideaux</title>
     <meta
       name="description"
-      content="Fabricant de rideaux à lanières PVC sur mesure : kits complets, chambre froide, soudure, lanières de remplacement. Livraison gratuite en France, garantie 2 ans, devis sous 24 h."
+      content="Fabricant de rideaux PVC à lanières sur mesure : kits complets, chambre froide, soudure, lanières. Livraison gratuite, garantie 2 ans, devis sous 24 h."
     />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
+        "@id": "{{ site.url }}/#entreprise",
         "name": "{{ site.name }}",
+        "alternateName": "PVC Rideaux",
         "description": "{{ site.tagline }}",
         "url": "{{ site.url }}/",
         "logo": "{{ site.url }}/logo-isorideaux.png",
@@ -35,6 +37,17 @@
           }
         ],
         "areaServed": "FR"
+      }
+    </script>
+    <!-- Nom du site dans les résultats Google ; l'ancien nom aide à la transition de marque. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "{{ site.name }}",
+        "alternateName": ["PVC Rideaux", "pvcrideaux.fr"],
+        "url": "{{ site.url }}/",
+        "publisher": { "@id": "{{ site.url }}/#entreprise" }
       }
     </script>
   </head>
@@ -111,6 +124,8 @@
           </ul>
         </div>
       </section>
+
+      <!-- @include logos.html -->
 
       <!-- Pourquoi un rideau à lanières -->
       <section class="section" aria-labelledby="avantages-titre">
@@ -254,7 +269,7 @@
 
       <!-- @include reviews.html -->
 
-      <!-- @include logos.html -->
+      <!-- @include latest-posts.html -->
 
       <!-- @include cta-devis.html -->
     </main>

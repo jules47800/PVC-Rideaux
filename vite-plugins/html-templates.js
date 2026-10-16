@@ -87,7 +87,8 @@ export function htmlTemplates({ root, partialsDir, site }) {
   // afin de ne pas avoir à les écrire deux fois dans chaque page.
   const addOpenGraphText = (html) => {
     const title = html.match(/<title>([^<]*)<\/title>/)?.[1];
-    const description = html.match(/<meta name="description" content="([^"]*)"/)?.[1];
+    // Attributs éventuellement répartis sur plusieurs lignes (mise en forme du HTML source).
+    const description = html.match(/<meta\s+name="description"\s+content="([^"]*)"/)?.[1];
     const tags = [
       title &&
         !html.includes('property="og:title"') &&

@@ -27,6 +27,18 @@ AddType font/woff2 .woff2
   # pointe vers ce même hébergement que pvcrideaux.fr.
   # RewriteCond %{HTTP_HOST} ^(www\.)?pvcrideaux\.fr$ [NC]
   # RewriteRule ^ https://www.isorideaux.fr%{REQUEST_URI} [L,R=301]
+
+  # Dossiers de code et de données de l'espace d'édition : jamais servis.
+  # (Chacun a aussi son propre .htaccess « Require all denied ».)
+  RewriteRule ^(lib|content|content-initial)(/|$) - [F,L]
+  RewriteRule ^blog/_layout\.html$ - [F,L]
+  RewriteRule ^uploads/.*\.(php\d?|phtml|phar|cgi|pl|py|sh)$ - [F,L]
+
+  # Blog : pages rendues par PHP (blog/*.php)
+  RewriteRule ^blog/feed\.xml$ blog/feed.php [L]
+  RewriteRule ^sitemap-blog\.xml$ blog/sitemap.php [L]
+  RewriteRule ^blog/([a-z0-9]+(?:-[a-z0-9]+)*)$ /blog/$1/ [R=301,L]
+  RewriteRule ^blog/([a-z0-9]+(?:-[a-z0-9]+)*)/$ blog/article.php?slug=$1 [QSA,L]
 </IfModule>
 
 # --------------------------------------------------------------------------
@@ -45,14 +57,15 @@ AddType font/woff2 .woff2
   RedirectMatch 301 ^/guide-dinstallation/?$ /guide-installation/
   RedirectMatch 301 ^/legal/?$ /mentions-legales/
 
-  # Articles d'actualité (en attendant leur éventuelle migration)
-  RedirectMatch 301 ^/actualites(/.*)?$ /
-  RedirectMatch 301 ^/pourquoi-installer-des-rideaux-en-pvc-lete-[^/]*/?$ /particuliers/
-  RedirectMatch 301 ^/kit-rideau-complet-en-pvc/?$ /professionnels/kit-rideau-lanieres/
-  RedirectMatch 301 ^/les-portes-a-lanieres-pvc-decrochables-et-remplacables/?$ /professionnels/lanieres-pvc/
-  RedirectMatch 301 ^/portes-a-lanieres-en-pvc-souple/?$ /professionnels/kit-rideau-lanieres/
-  RedirectMatch 301 ^/barre-daccrochage-rideaux-pvc-guide-complet/?$ /professionnels/rouleaux-rails-accessoires/
-  RedirectMatch 301 ^/securiser-un-atelier-de-soudure-avec-des-rideaux-pvc/?$ /professionnels/rideaux-soudure/
+  # Articles et flux de l'ancien blog WordPress → nouveau blog
+  RedirectMatch 301 ^/actualites(/.*)?$ /blog/
+  RedirectMatch 301 ^/feed/?$ /blog/feed.xml
+  RedirectMatch 301 ^/pourquoi-installer-des-rideaux-en-pvc-lete-[^/]*/?$ /blog/rideaux-pvc-ete-chaleur-insectes/
+  RedirectMatch 301 ^/kit-rideau-complet-en-pvc/?$ /blog/kit-rideau-complet-en-pvc/
+  RedirectMatch 301 ^/les-portes-a-lanieres-pvc-decrochables-et-remplacables/?$ /blog/les-portes-a-lanieres-pvc-decrochables-et-remplacables/
+  RedirectMatch 301 ^/portes-a-lanieres-en-pvc-souple/?$ /blog/portes-a-lanieres-en-pvc-souple/
+  RedirectMatch 301 ^/barre-daccrochage-rideaux-pvc-guide-complet/?$ /blog/barre-daccrochage-rideaux-pvc-guide-complet/
+  RedirectMatch 301 ^/securiser-un-atelier-de-soudure-avec-des-rideaux-pvc/?$ /blog/securiser-un-atelier-de-soudure-avec-des-rideaux-pvc/
 
   # Boutique WooCommerce
   RedirectMatch 301 ^/product/.*$ /professionnels/rouleaux-rails-accessoires/

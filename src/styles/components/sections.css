@@ -214,57 +214,72 @@
   color: var(--color-muted);
 }
 
-/* — Logos / références (défilement continu linéaire) — */
-.logos {
-  padding-block: var(--space-7);
-  border-top: 1px solid var(--line);
+/* — Logos de références, juste sous le hero — */
+.trust-logos {
+  padding-block: var(--space-6);
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
 }
 
-.logos__title {
-  margin-bottom: var(--space-5);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  text-align: center;
-  color: var(--color-muted);
+.trust-logos__inner {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: center;
 }
 
-.logos__viewport {
-  overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-}
-
-.logos__track {
-  display: flex;
-  width: max-content;
-  animation: marquee 38s linear infinite;
-}
-
-.logos__list {
-  display: flex;
-  gap: clamp(2.5rem, 2rem + 3vw, 4.5rem);
-  padding-right: clamp(2.5rem, 2rem + 3vw, 4.5rem);
-  list-style: none;
-}
-
-.logos__list li {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  /* Contraste ≥ 3:1, suffisant pour ce texte en grand corps gras */
-  color: #7d8aa0;
-}
-
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
+@media (min-width: 64rem) {
+  .trust-logos__inner {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: var(--space-7);
   }
 }
 
+.trust-logos__title {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.trust-logos__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5) clamp(1.5rem, 1rem + 2.5vw, 3rem);
+  width: 100%;
+}
+
+@media (min-width: 64rem) {
+  .trust-logos__list {
+    justify-content: space-between;
+  }
+}
+
+/* Logos en niveaux de gris : ils signent sans voler la vedette */
+.trust-logos__list img {
+  width: auto;
+  height: 2.25rem;
+  max-width: 7rem;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.6;
+  transition:
+    filter var(--duration-base) ease,
+    opacity var(--duration-base) ease;
+}
+
+.trust-logos__list img.trust-logos__wide {
+  height: 1.75rem;
+}
+
 @media (hover: hover) and (pointer: fine) {
-  .logos__viewport:hover .logos__track {
-    animation-play-state: paused;
+  .trust-logos__list img:hover {
+    filter: none;
+    opacity: 1;
   }
 }
 
