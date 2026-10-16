@@ -39,15 +39,15 @@ Ce qui freinait le référencement :
   transparent… », « Rideaux de soudure PVC… », « Rideau chambre froide… »).
 - **Un seul H1 par page**, fil d’Ariane balisé (BreadcrumbList), balise canonical, balises de
   partage (Open Graph) générées automatiquement.
-- **Redirections 301** de toutes les anciennes adresses (`public/.htaccess`) : pages, boutique,
-  et les 6 articles, désormais repris dans le blog (`/blog/…`) au lieu d’être perdus.
+- **Redirections permanentes** de toutes les anciennes adresses (`vercel.json`) : pages,
+  boutique, et les 6 articles, désormais repris dans le blog (`/blog/…`) au lieu d’être perdus.
 - **Données structurées** : LocalBusiness (avec l’ancien nom « PVC Rideaux » en
   `alternateName`, pour que Google relie les deux marques), WebSite, BlogPosting et
   BreadcrumbList sur chaque article.
-- **Plan du site** en deux parties : pages statiques (générées au build) et articles (générés
-  à la volée par PHP, toujours à jour) — `sitemap.xml` les référence tous les deux.
-- **Performance** : HTML statique, polices hébergées sur le site et allégées, images WebP,
-  aucun script tiers, cache et compression configurés. C’est un critère de classement
+- **Plan du site** généré à chaque déploiement : pages et articles (avec leur date de
+  modification), sans les pages `noindex`.
+- **Performance** : HTML statique servi par le CDN de Vercel (articles compris), polices
+  hébergées avec le site et allégées, images WebP, aucun script tiers, cache configuré. C’est un critère de classement
   (Core Web Vitals) et surtout de conversion sur mobile.
 - **Blog administrable** avec vérification SEO intégrée : chaque article reçoit une note sur
   100 et une liste d’actions concrètes (voir § 5).
@@ -59,8 +59,8 @@ Ce qui freinait le référencement :
 
 ### P0 — Jour de la mise en ligne (indispensable)
 
-1. **Domaine** : faire pointer isorideaux.fr vers l’hébergement, activer le certificat SSL,
-   puis décommenter dans `.htaccess` la redirection pvcrideaux.fr → isorideaux.fr.
+1. **Domaine** : ajouter isorideaux.fr au projet Vercel (certificat SSL automatique), puis
+   pvcrideaux.fr en redirection 308 vers www.isorideaux.fr (voir le README).
    **Conserver le domaine pvcrideaux.fr** (renouvellement automatique) : il porte des années
    de liens entrants et l’adresse e-mail actuelle.
 2. **Google Search Console** :
@@ -130,9 +130,9 @@ avec Google Keyword Planner.
 
 ### P5 — Technique (à faire une fois, puis surveiller)
 
-- Activer **HSTS** dans `.htaccess` une fois le HTTPS validé sur tous les sous-domaines.
+- HTTPS et HSTS sont gérés par Vercel : rien à configurer.
 - Suivre les **Core Web Vitals** et les **pages non indexées** dans Search Console chaque mois.
-- Après toute modification des pages : `npm run build && npm run seo` avant l’envoi FTP.
+- Après toute modification des pages : `npm run build && npm run seo` avant de pousser le code.
 - Pas de balisage FAQ : Google ne l’affiche plus que pour les sites officiels et de santé.
   Les questions-réponses restent utiles pour les lecteurs et « Autres questions posées ».
 
@@ -144,7 +144,8 @@ avec Google Keyword Planner.
   cette page.
 - Outil de statistiques optionnel : **Matomo** ou **Plausible** (sans cookie, conformes RGPD
   sans bandeau). Leur domaine devra être ajouté à la `Content-Security-Policy` de
-  `.htaccess` (`script-src` et `connect-src`).
+  `vercel.json` (`script-src` et `connect-src`). Vercel Web Analytics (sans cookie) est une
+  alternative intégrée.
 - Indicateurs mensuels : clics organiques, devis reçus, part des devis venant de Google,
   note SEO moyenne du blog (tableau de bord).
 
@@ -166,7 +167,7 @@ Reprise des contrôles de l’espace d’édition :
 
 ## 5. La vérification SEO de l’espace d’édition
 
-Fichier `public/admin/assets/seo-checker.js` (seuils regroupés en tête de fichier).
+Fichier `lib/blog/seo-checker.js` (seuils regroupés en tête de fichier), aussi utilisé par `npm run seo`.
 
 | Contrôle                           | Vert                       | Orange / rouge                                | Poids |
 | ---------------------------------- | -------------------------- | --------------------------------------------- | ----- |

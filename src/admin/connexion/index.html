@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <!-- @include admin/head.html -->
+    <title>Connexion · Espace d’édition IsoRideaux</title>
+    <script type="module" src="/admin/scripts/login.js"></script>
+  </head>
+  <body class="admin">
+    <!-- @include admin/header.html -->
+
+    <main class="admin-main" id="contenu">
+      <!-- Connexion -->
+      <div class="auth-card" data-login hidden>
+        <h1>Connexion</h1>
+        <p class="text-muted">Espace réservé à l’équipe IsoRideaux pour rédiger et publier les articles du blog.</p>
+        <p class="notice notice--success" role="status" data-logged-out hidden>Vous êtes déconnecté.</p>
+        <p class="notice notice--error" role="alert" data-login-error hidden></p>
+        <form class="stack" data-login-form>
+          <div class="field">
+            <label for="username">Identifiant</label>
+            <input class="input" id="username" name="username" type="text" autocomplete="username" required />
+          </div>
+          <div class="field">
+            <label for="password">Mot de passe</label>
+            <input class="input" id="password" name="password" type="password" autocomplete="current-password" required />
+          </div>
+          <button class="btn btn--primary btn--block" type="submit">Se connecter</button>
+        </form>
+      </div>
+
+      <!-- Mise en service : affichée tant que ADMIN_USERS / ADMIN_SECRET ne sont pas configurés -->
+      <div class="auth-card auth-card--wide" data-setup hidden>
+        <h1>Mise en service de l’espace d’édition</h1>
+        <p class="text-muted">
+          Aucun compte n’est encore configuré. Choisissez un identifiant et un mot de passe : cette page
+          calcule, <strong>dans votre navigateur</strong>, l’empreinte du mot de passe et une clé de session,
+          à enregistrer dans les variables d’environnement du projet Vercel. Le mot de passe n’est envoyé nulle part.
+        </p>
+        <form class="stack" data-setup-form>
+          <div class="field">
+            <label for="setup-username">Identifiant</label>
+            <input class="input" id="setup-username" name="username" type="text" autocomplete="username" pattern="[a-z0-9-]+" required />
+            <p class="field-hint">Lettres minuscules, chiffres et tirets (ex. sandrine).</p>
+          </div>
+          <div class="field">
+            <label for="setup-password">Mot de passe <span class="text-muted">(12 caractères minimum)</span></label>
+            <input class="input" id="setup-password" name="password" type="password" autocomplete="new-password" minlength="12" required />
+          </div>
+          <button class="btn btn--primary" type="submit" data-setup-submit>Générer la configuration</button>
+        </form>
+        <ol class="setup-steps" data-setup-result hidden>
+          <li>
+            Dans Vercel, ouvrez le projet → <strong>Settings → Environment Variables</strong> et ajoutez ces deux
+            variables (environnement « Production », et « Preview » si besoin) :
+            <textarea class="input code-block" rows="4" readonly aria-label="Variables d’environnement à ajouter" data-setup-output></textarea>
+            <span class="field-hint">En local, ajoutez les mêmes lignes au fichier <code>.env.local</code>.</span>
+          </li>
+          <li>Ajoutez aussi <code>GITHUB_CONTENT_TOKEN</code> (voir le README) pour que les articles puissent être enregistrés.</li>
+          <li>Redéployez le site (<strong>Deployments → Redeploy</strong>), puis rechargez cette page.</li>
+          <li>Pour ajouter une personne plus tard : générez sa ligne et ajoutez-la à <code>ADMIN_USERS</code>, séparée par une virgule.</li>
+        </ol>
+      </div>
+    </main>
+  </body>
+</html>

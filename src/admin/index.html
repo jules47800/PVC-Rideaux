@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <!-- @include admin/head.html -->
+    <title>Articles · Espace d’édition IsoRideaux</title>
+    <script type="module" src="/admin/scripts/dashboard.js"></script>
+  </head>
+  <body class="admin">
+    <!-- @include admin/header.html -->
+
+    <main class="admin-main" id="contenu">
+      <p class="notice" role="status" data-flash hidden></p>
+
+      <div class="page-head">
+        <div>
+          <h1>Articles du blog</h1>
+          <p class="text-muted">Rédigez, publiez et améliorez vos articles. Chaque article reçoit une note SEO et une liste d’actions concrètes.</p>
+        </div>
+        <a class="btn btn--primary" href="/admin/article/">
+          <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-plus"></use></svg>
+          Nouvel article
+        </a>
+      </div>
+
+      <ul class="stats" role="list">
+        <li class="stat"><span class="stat__value" data-count="published">–</span> <span class="stat__label">en ligne</span></li>
+        <li class="stat"><span class="stat__value" data-count="scheduled">–</span> <span class="stat__label">programmé(s)</span></li>
+        <li class="stat"><span class="stat__value" data-count="draft">–</span> <span class="stat__label">brouillon(s)</span></li>
+        <li class="stat"><span class="stat__value" data-average-score>–</span> <span class="stat__label">note SEO moyenne</span></li>
+      </ul>
+
+      <section class="panel" aria-labelledby="actions-titre" data-priority-actions hidden>
+        <h2 id="actions-titre">Actions prioritaires</h2>
+        <p class="text-muted">Les corrections qui feront le plus progresser vos articles en ligne, par ordre d’importance.</p>
+        <ol class="priority-list" role="list" data-priority-list></ol>
+      </section>
+
+      <section class="panel" aria-labelledby="liste-titre">
+        <h2 id="liste-titre">Tous les articles</h2>
+        <p class="text-muted" data-articles-loading>Chargement des articles…</p>
+        <p class="empty" data-articles-empty hidden>Aucun article pour l’instant. <a href="/admin/article/">Rédigez le premier</a> ou partez d’une idée ci-dessous.</p>
+        <div class="table-scroll" data-articles-table hidden>
+          <table class="articles-table">
+            <thead>
+              <tr>
+                <th scope="col">Article</th>
+                <th scope="col">État</th>
+                <th scope="col">Date</th>
+                <th scope="col">Note SEO</th>
+                <th scope="col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody data-articles-body></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="idees-titre" data-ideas hidden>
+        <h2 id="idees-titre">Idées d’articles</h2>
+        <p class="text-muted">
+          Des sujets recherchés par vos clients, avec leur expression clé et un plan prêt à remplir. Pensez à vérifier le
+          volume de recherche de l’expression (Search Console, Keyword Planner) avant de rédiger.
+        </p>
+        <ul class="ideas" role="list" data-ideas-list></ul>
+      </section>
+
+      <details class="panel tips">
+        <summary><h2>Les bons réflexes pour un article bien référencé</h2></summary>
+        <ol>
+          <li><strong>Une expression clé par article</strong>, celle que tape votre client dans Google (« rideau lanière chambre froide »), et jamais la même que celle d’un autre article.</li>
+          <li><strong>Titre et description</strong> : l’expression clé au début, un bénéfice concret, une longueur adaptée (l’aperçu Google vous guide).</li>
+          <li><strong>Au moins 700 mots</strong> découpés en intertitres (H2) clairs, dont une ou deux questions que se posent vos clients.</li>
+          <li><strong>Des liens</strong> vers 2 ou 3 pages du site (produits, guide de pose) et vers le devis : c’est ce qui transforme un lecteur en client.</li>
+          <li><strong>Des images</strong> avec une description (texte alternatif) : l’éditeur les compresse automatiquement.</li>
+          <li><strong>Mettez à jour</strong> vos meilleurs articles chaque année : Google privilégie les contenus récents.</li>
+        </ol>
+      </details>
+    </main>
+  </body>
+</html>

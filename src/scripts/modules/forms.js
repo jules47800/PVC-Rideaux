@@ -2,11 +2,12 @@
  * Formulaires envoyés en arrière-plan (contact & devis).
  *
  * Amélioration progressive : sans JavaScript, le formulaire est posté
- * normalement vers api/send.php, qui redirige vers la page « Merci ».
- * Avec JavaScript :
+ * normalement vers la fonction /api/send (api/send.js), qui redirige vers la
+ * page « Merci ». Avec JavaScript :
  *   - validation en français, message sous chaque champ (accessible) ;
- *   - envoi via fetch, bouton en état de chargement ;
- *   - en développement (`npm run dev`), l'envoi est simulé (pas de PHP).
+ *   - envoi via fetch, bouton en état de chargement.
+ * En développement, la fonction tourne dans `npm run dev` ; sans SMTP
+ * configuré, l'e-mail s'affiche dans le terminal.
  *
  * Attributs utilisés :
  *   form[data-async-form]           active le module
@@ -202,24 +203,16 @@ async function submitForm(form) {
   setBusy(submitButton, true);
 
   try {
-    const data = new FormData(form);
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { Accept: 'application/json' },
+    });
+    const result = await response.json().catch(() => ({}));
 
-    if (import.meta.env.DEV) {
-      // Pas de serveur PHP avec `vite` : on simule l'envoi.
-      console.info('[dev] Envoi simulé du formulaire :', Object.fromEntries(data));
-      await new Promise((resolve) => setTimeout(resolve, 700));
-    } else {
-      const response = await fetch(form.action, {
-        method: 'POST',
-        body: data,
-        headers: { Accept: 'application/json' },
-      });
-      const result = await response.json().catch(() => ({}));
-
-      if (!response.ok || !result.ok) {
-        showServerErrors(form, result.errors);
-        throw new Error(result.message || '');
-      }
+    if (!response.ok || !result.ok) {
+      showServerErrors(form, result.errors);
+      throw new Error(result.message || '');
     }
 
     form.dispatchEvent(new CustomEvent('form:success'));

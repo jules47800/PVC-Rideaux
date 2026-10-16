@@ -2,17 +2,17 @@
 
 Refonte du site **pvcrideaux.fr**, qui devient **IsoRideaux** : rideaux à lanières PVC sur mesure.
 
-Le site s'organise désormais autour de **deux espaces distincts**, accessibles dès l'arrivée :
+Le site s'organise autour de **deux espaces distincts**, accessibles dès l'arrivée :
 
 - **Espace professionnels** : entrepôts, industrie, chambres froides, soudure, commerces ;
 - **Espace particuliers** : garage, atelier, cuisine d'été, écurie, abri de jardin.
 
-Projet statique construit avec [Vite](https://vite.dev), sans framework, pensé pour un **hébergement mutualisé
-classique déployé par FTP** (Apache / LiteSpeed + PHP pour les formulaires, le blog et son espace d'édition).
+Site statique construit avec [Vite](https://vite.dev), sans framework, **hébergé sur Vercel** : pages HTML
+générées au build, et quelques fonctions serveur (formulaires, espace d'édition).
 
-Il comprend aussi un **blog** que la cliente alimente elle-même depuis un **espace d'édition** simple
-(`/admin/`), avec une **vérification SEO** qui note chaque article et liste les actions à mener.
-La stratégie de référencement est détaillée dans [`docs/recommandations-seo.md`](docs/recommandations-seo.md).
+Il comprend un **blog** que la cliente alimente elle-même depuis un **espace d'édition** simple (`/admin/`),
+avec une **vérification SEO** qui note chaque article et liste les actions à mener. La stratégie de
+référencement est détaillée dans [`docs/recommandations-seo.md`](docs/recommandations-seo.md).
 
 ---
 
@@ -29,7 +29,7 @@ La stratégie de référencement est détaillée dans [`docs/recommandations-seo
 9. [Formulaires (contact & devis)](#formulaires-contact--devis)
 10. [Blog](#blog)
 11. [Espace d'édition](#espace-dédition)
-12. [Déploiement par FTP](#déploiement-par-ftp)
+12. [Hébergement sur Vercel](#hébergement-sur-vercel)
 13. [Redirections depuis l'ancien site](#redirections-depuis-lancien-site)
 14. [SEO, performance, accessibilité](#seo-performance-accessibilité)
 15. [Design system & animations](#design-system--animations)
@@ -39,22 +39,24 @@ La stratégie de référencement est détaillée dans [`docs/recommandations-seo
 
 ## Démarrage rapide
 
-**Prérequis** : Node.js 20.19+ (ou 22.12+) et npm. PHP 8.1+ (extensions `mbstring` et `gd`) pour tester en
-local le blog, l'espace d'édition et les formulaires.
+**Prérequis** : Node.js 20.19+ (ou 22.12+) et npm.
 
 ```bash
-npm install        # installe Vite, Prettier et les polices
-npm run dev        # serveur de développement : http://localhost:5173
-npm run build      # génère le site final dans dist/
-npm run preview    # sert dist/ en local pour vérification (sans PHP)
-npm run serve:php  # sert dist/ avec PHP : blog, espace d'édition, formulaires → http://localhost:8000
-npm run seo        # audit SEO des pages générées (après un build)
-npm run format     # formate JS / CSS / JSON / Markdown (Prettier)
+npm install                 # dépendances
+cp .env.example .env.local  # variables locales (facultatif, voir plus bas)
+npm run dev                 # site + fonctions + espace d'édition : http://localhost:5173
+npm run build               # génère le site final dans dist/
+npm run preview             # sert dist/ (avec les fonctions) pour vérification
+npm run seo                 # audit SEO des pages générées et notes des articles (après un build)
+npm run admin:password -- sandrine   # empreinte d'un mot de passe pour l'espace d'édition
+npm run format              # formate JS / CSS / JSON / Markdown (Prettier)
 ```
 
-En développement, les formulaires **simulent** l'envoi : les données envoyées s'affichent dans la console du
-navigateur et l'on est redirigé vers la page « Merci ». Les adresses gérées par PHP (`/blog/`, `/admin/`,
-`/api/`, `/uploads/`) sont transmises par Vite à `npm run serve:php` s'il tourne (après un `npm run build`).
+`npm run dev` exécute aussi les fonctions de `api/` (plugin `vite-plugins/dev-api.js`), comme sur Vercel :
+
+- **formulaires** : sans SMTP configuré, l'e-mail « envoyé » s'affiche dans le terminal ;
+- **espace d'édition** : avec `ADMIN_USERS` et `ADMIN_SECRET` dans `.env.local`, il fonctionne en local, et
+  enregistre les articles directement dans `content/` (les pages du blog se regénèrent aussitôt).
 
 ---
 
@@ -62,24 +64,23 @@ navigateur et l'on est redirigé vers la page « Merci ». Les adresses gérées
 
 **Le site n'est pas une application JavaScript.** Chaque page est un vrai fichier HTML, généré au build et
 lisible tel quel par Google comme par un navigateur sans JavaScript. Vite n'est qu'un **outil de construction** :
-il assemble les fragments communs (en-tête, pied de page…), optimise les images et les styles, puis produit un
-dossier `dist/` de fichiers statiques à envoyer par FTP. Côté serveur, seuls tournent de petits scripts PHP :
-les formulaires, le blog et son espace d'édition.
+il assemble les fragments communs (en-tête, pied de page…), génère les pages du blog, optimise images et styles,
+puis produit un dossier `dist/` de fichiers statiques que Vercel sert depuis son réseau mondial. Côté serveur, seules
+quelques **fonctions Vercel** tournent à la demande : formulaires et espace d'édition.
 
-| Décision                                         | Pourquoi                                                                                                                                                                                                                             |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Site statique multi-pages (plutôt que WordPress) | Hébergement FTP simple et bon marché, pages très rapides, aucune base de données ni extension à mettre à jour, surface d'attaque minimale.                                                                                           |
-| Pas de framework (React, Vue…)                   | Un site vitrine a peu d'interactions : un framework ajouterait 40 à 100 Ko de JS et imposerait un rendu serveur pour le référencement. Ici, le HTML porte le contenu, et le JS ne fait qu'**améliorer** l'expérience.                |
-| JavaScript « vanilla », en petits modules        | ~3,5 Ko compressés sur les pages courantes (menus, apparitions, carrousel, validation des formulaires). Le configurateur (~6 Ko) n'est chargé que sur `/devis/`.                                                                     |
-| Amélioration progressive                         | Sans JS, tout reste lisible et les formulaires fonctionnent (envoi classique, redirection PHP). Avec JS, on ajoute le confort : envoi sans rechargement, parcours pas à pas, aperçu en direct.                                       |
-| Vite                                             | Serveur de développement avec rechargement instantané, gabarits (partials), minification, noms de fichiers versionnés pour le cache, sitemap automatique.                                                                            |
-| PHP pour les formulaires                         | Disponible sur tous les hébergements mutualisés ; pas besoin de serveur Node ni de service tiers payant.                                                                                                                             |
-| Blog en PHP, articles en fichiers JSON           | La cliente publie seule, sans rebuild ni FTP. Pas de base de données : un article = un fichier, facile à sauvegarder et à restaurer. Le blog reprend le gabarit généré par Vite (en-tête, styles) : une seule source pour le design. |
-| Espace d'édition sur mesure (plutôt qu'un CMS)   | Exactement les champs utiles (et la vérification SEO), rien à mettre à jour, aucune extension vulnérable, même hébergement.                                                                                                          |
+| Décision                                         | Pourquoi                                                                                                                                                                                                                               |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Site statique multi-pages (plutôt que WordPress) | Pages très rapides, aucune base de données ni extension à mettre à jour, surface d'attaque minimale, hébergement Vercel sans serveur à administrer.                                                                                    |
+| Pas de framework (React, Vue…)                   | Un site vitrine a peu d'interactions : un framework ajouterait 40 à 100 Ko de JS et imposerait un rendu serveur pour le référencement. Ici, le HTML porte le contenu, et le JS ne fait qu'**améliorer** l'expérience.                  |
+| JavaScript « vanilla », en petits modules        | ~3,5 Ko compressés sur les pages courantes (menus, apparitions, carrousel, validation des formulaires). Le configurateur (~6 Ko) n'est chargé que sur `/devis/`.                                                                       |
+| Amélioration progressive                         | Sans JS, tout reste lisible et les formulaires fonctionnent (envoi classique, redirection). Avec JS, on ajoute le confort : envoi sans rechargement, parcours pas à pas, aperçu en direct.                                             |
+| Fonctions Vercel (API web standard)              | Formulaires et espace d'édition sans serveur à maintenir ; `Request` / `Response` standard, exécutables aussi en local par Vite. Exécutées à Paris (`cdg1`).                                                                           |
+| Articles dans le dépôt Git, blog généré au build | Pas de base de données ni de service supplémentaire : un article = un fichier JSON versionné (historique, retour arrière, sauvegarde gratuite). Le blog est fait de vraies pages statiques, les plus rapides et les mieux référencées. |
+| Espace d'édition sur mesure (plutôt qu'un CMS)   | Exactement les champs utiles et la vérification SEO, rien à mettre à jour, aucun service tiers. Il enregistre les articles via l'API GitHub ; Vercel redéploie le site en une minute environ.                                          |
 
-**Contrepartie** : les pages vitrines (accueil, produits…) restent modifiées dans le HTML puis `npm run build` ;
-seul le blog est éditable en ligne. C'est volontaire : ces pages changent rarement et leur mise en page est
-travaillée finement.
+**Contreparties** : une publication est visible après le redéploiement (environ une minute, suivi dans l'espace
+d'édition) ; les pages vitrines (accueil, produits…) restent modifiées dans le code puis déployées, car elles
+changent rarement et leur mise en page est travaillée finement.
 
 ---
 
@@ -98,7 +99,7 @@ travaillée finement.
 | `/devis/`                                       | Configurateur pas à pas, une question par écran           | —            |
 | `/guide-installation/`                          | Guide de pose avec les 12 schémas d'accrochage            | —            |
 | `/a-propos/`, `/contact/`, `/mentions-legales/` | Pages institutionnelles                                   | —            |
-| `/blog/`, `/blog/<article>/`                    | Blog (rendu par PHP), filtres par catégorie, flux RSS     | —            |
+| `/blog/`, `/blog/<article>/`                    | Blog (généré au build), catégories, flux RSS              | —            |
 | `/admin/`                                       | Espace d'édition du blog (protégé, non indexé)            | —            |
 | `/merci/`, `/404.html`                          | Pages techniques (non indexées)                           | —            |
 
@@ -118,64 +119,53 @@ alors les questions déjà connues.
 ```
 .
 ├── site.config.js            # ★ Coordonnées, horaires, URL du site, infos légales
-├── vite.config.js            # Configuration Vite (multi-pages, plugins)
+├── vite.config.js            # Configuration Vite (multi-pages, génération du blog, plugins)
+├── vercel.json               # ★ Redirections 301, en-têtes de sécurité, cache, tâche planifiée
+├── .env.example              # Variables d'environnement (formulaires, espace d'édition)
+├── content/
+│   └── articles/*.json       # ★ Articles du blog (un fichier par article, nom = adresse)
+├── api/                      # Fonctions Vercel (une URL par fichier)
+│   ├── send.js               # Formulaires → e-mail (SMTP)
+│   ├── admin/                # Espace d'édition : session, login, logout, articles, upload
+│   └── cron/publish.js       # Mise en ligne quotidienne des articles programmés
+├── lib/                      # Code partagé (fonctions, build, navigateur)
+│   ├── blog/                 # Modèle d'article, Markdown, gabarits et génération du blog,
+│   │                         # vérification SEO (seo-checker.js), idées d'articles (ideas.js)
+│   ├── admin/                # Authentification, stockage (GitHub ou fichiers locaux), articles
+│   ├── forms.js, mailer.js   # Validation des formulaires, envoi SMTP
+│   └── http.js               # Réponses JSON, limitation de fréquence
 ├── vite-plugins/
-│   ├── html-templates.js     # Partials, variables {{ }}, aria-current, typographie FR, Open Graph
+│   ├── html-templates.js     # Partials, variables { }, aria-current, typographie FR, Open Graph
 │   ├── pages.js              # Découverte automatique des pages
-│   └── sitemap.js            # Génère sitemap.xml (index), sitemap-pages.xml et robots.txt
+│   ├── blog.js               # Flux RSS, build-info.json, regénération du blog en dev
+│   ├── dev-api.js            # Exécute les fonctions de api/ dans `npm run dev` / `preview`
+│   └── sitemap.js            # Génère sitemap.xml et robots.txt
 ├── tools/
-│   ├── php-router.php        # Règles .htaccess pour le serveur PHP local (npm run serve:php)
-│   └── seo-audit.mjs         # Audit SEO des pages générées (npm run seo)
+│   ├── seo-audit.mjs         # Audit SEO (npm run seo)
+│   ├── admin-password.mjs    # Empreinte d'un mot de passe (npm run admin:password)
+│   └── vercel-ignore-build.mjs  # Saute les déploiements inutiles (brouillons, images)
 ├── docs/
 │   └── recommandations-seo.md  # ★ Audit, plan d'action SEO, check-list des articles
-├── public/                   # Copié tel quel à la racine de dist/
-│   ├── .htaccess             # ★ HTTPS, redirections 301, adresses du blog, cache, sécurité
-│   ├── assets/.htaccess      # Cache long pour les fichiers versionnés par Vite
-│   ├── api/
-│   │   ├── send.php          # ★ Réception des formulaires et envoi d'e-mail
-│   │   ├── config.php        # ★ Destinataire, expéditeur, anti-spam
-│   │   └── .htaccess         # Interdit l'accès direct à config.php
-│   ├── blog/                 # Pages publiques du blog : liste, article, RSS, sitemap, derniers articles (JSON)
-│   │   └── images/           # Couvertures des articles repris de l'ancien site
-│   ├── admin/                # Espace d'édition : tableau de bord, éditeur, connexion, API JSON
-│   │   ├── assets/           # Styles et scripts (vérification SEO : seo-checker.js)
-│   │   └── config.example.php  # Modèle du fichier des comptes (config.php, créé sur le serveur)
-│   ├── lib/                  # Code PHP partagé (jamais servi) : articles, Markdown, gabarit, sécurité, images
-│   │   ├── ideas.php         # ★ Idées d'articles proposées dans le tableau de bord
-│   │   ├── views/            # Gabarits PHP du blog et de l'espace d'édition
-│   │   └── vendor/           # Parsedown (Markdown, licence MIT)
-│   ├── content-initial/      # Articles livrés avec le site, copiés dans content/ au premier lancement
-│   ├── icons.svg             # Sprite d'icônes (trait 24×24)
-│   ├── favicon.ico, icon-*.png, apple-touch-icon.png, site.webmanifest
-│   ├── og-image.jpg          # Aperçu lors d'un partage (réseaux sociaux, messageries)
-│   └── logo-isorideaux.png   # Logo à URL fixe (données structurées)
+├── public/                   # Copié tel quel à la racine du site
+│   ├── blog/images/          # Couvertures des articles repris de l'ancien site
+│   ├── uploads/blog/         # Images envoyées depuis l'espace d'édition (créé à l'usage)
+│   ├── icons.svg, favicons, og-image.jpg, logo-isorideaux.png, site.webmanifest
 └── src/                      # Racine Vite : 1 fichier .html = 1 page
-    ├── index.html
-    ├── professionnels/…/index.html
-    ├── particuliers/index.html
-    ├── devis/index.html …
-    ├── blog/_layout.html     # Gabarit des pages du blog (complété par PHP)
-    ├── partials/             # Fragments partagés (en-tête, pied de page, avis…)
-    ├── assets/               # Images (WebP optimisés) et logo
-    ├── styles/
-    │   ├── main.css          # Point d'entrée (ordre des imports)
-    │   ├── tokens.css        # ★ Couleurs, typographie, espacements, courbes d'animation
-    │   ├── base.css, layout.css, motion.css, fonts.css
-    │   └── components/       # buttons, header, footer, hero, cards, sections, faq, forms,
-    │                         # funnel (configurateur), conversion (estimation, barre mobile), blog
+    ├── index.html, professionnels/…, particuliers/, devis/, contact/ …
+    ├── admin/                # Espace d'édition : pages, styles et scripts
+    ├── blog/                 # GÉNÉRÉ depuis content/ (non versionné)
+    ├── partials/             # Fragments partagés (blog/ : généré, non versionné)
+    ├── assets/               # Images (WebP optimisés), logos partenaires
+    ├── styles/               # tokens.css ★, base, layout, motion, components/ (… blog)
     └── scripts/
         ├── main.js           # Chargé sur toutes les pages
         ├── modules/          # header, dropdown, mobile-menu, mobile-cta, reveal, carousel,
-        │                     # forms, quote-links, curtain-preview (aperçu SVG du rideau),
-        │                     # latest-posts (derniers articles du blog)
+        │                     # forms, quote-links, curtain-preview (aperçu SVG du rideau)
         ├── pages/devis.js    # Configurateur pas à pas (chargé uniquement sur /devis/)
         └── data/catalogue.js # ★ Formats, matières et produits
 ```
 
 Les fichiers marqués ★ sont ceux que l'on modifie le plus souvent.
-
-Créés **sur le serveur** par l'espace d'édition (jamais dans le dépôt, jamais écrasés) : `content/` (articles
-et corbeille), `uploads/blog/` (images envoyées) et `admin/config.php` (comptes).
 
 ---
 
@@ -183,11 +173,12 @@ et corbeille), `uploads/blog/` (images envoyées) et `admin/config.php` (comptes
 
 Le plugin `vite-plugins/html-templates.js` ajoute un mini système de gabarits, actif en dev comme au build :
 
-| Syntaxe                         | Effet                                                               |
-| ------------------------------- | ------------------------------------------------------------------- |
-| `<!-- @include header.html -->` | Insère `src/partials/header.html` (inclusions imbriquées possibles) |
-| `{{ site.phone }}`              | Valeur issue de `site.config.js` (échappée en HTML)                 |
-| `{{ page.url }}`                | URL canonique absolue de la page (`page.path` : chemin relatif)     |
+| Syntaxe                                | Effet                                                                            |
+| -------------------------------------- | -------------------------------------------------------------------------------- |
+| `<!-- @include header.html -->`        | Insère `src/partials/header.html` (inclusions imbriquées possibles)              |
+| `{{ site.phone }}`                     | Valeur issue de `site.config.js` (échappée en HTML)                              |
+| `{{ page.url }}`                       | URL canonique absolue de la page (`page.path` : chemin relatif)                  |
+| `<!-- @page {"ogType": "article"} -->` | Variables propres à la page (type et image de partage), utilisé par les articles |
 
 Il se charge aussi, sans intervention :
 
@@ -199,8 +190,9 @@ Il se charge aussi, sans intervention :
 Une variable inconnue fait **échouer le build** : impossible de publier un `{{ … }}` oublié.
 
 **Partials disponibles** : `head`, `header`, `footer`, `reassurance`, `steps`, `reviews`, `logos`,
-`latest-posts`, `cta-devis`, `cta-particulier`, `cta-note`, `quick-quote`, `mobile-cta`, et pour le
-configurateur `header-focus`, `footer-minimal`, `funnel-nav`.
+`cta-devis`, `cta-particulier`, `cta-note`, `quick-quote`, `mobile-cta`, pour le configurateur
+`header-focus`, `footer-minimal`, `funnel-nav`, et pour l'espace d'édition `admin/head`, `admin/header`.
+Les partials `blog/latest-posts*.html` (« Nos derniers conseils ») sont **générés** à partir des articles.
 
 ### Ajouter une page
 
@@ -216,17 +208,17 @@ C'est tout : la page est détectée automatiquement par Vite, ajoutée au `sitem
 
 ## Modifier le contenu courant
 
-| Je veux changer…                       | Où                                                                     |
-| -------------------------------------- | ---------------------------------------------------------------------- |
-| Téléphone, e-mail, horaires, adresse   | `site.config.js` (mis à jour sur tout le site au prochain build)       |
-| Domaine définitif du site              | `site.config.js` → `url`                                               |
-| Destinataire des formulaires           | `public/api/config.php` → `recipient` (modifiable directement par FTP) |
-| Couleurs, typographie, arrondis        | `src/styles/tokens.css`                                                |
-| Avis clients                           | `src/partials/reviews.html`                                            |
-| Logos « Ils nous font confiance »      | `src/partials/logos.html` (images dans `src/assets/partners/`)         |
-| Articles du blog                       | espace d'édition `/admin/` (voir [Espace d'édition](#espace-dédition)) |
-| Idées d'articles proposées             | `public/lib/ideas.php`                                                 |
-| Gamme (formats / matières disponibles) | voir ci-dessous                                                        |
+| Je veux changer…                       | Où                                                                          |
+| -------------------------------------- | --------------------------------------------------------------------------- |
+| Téléphone, e-mail, horaires, adresse   | `site.config.js` (mis à jour sur tout le site au prochain build)            |
+| Domaine définitif du site              | `site.config.js` → `url`                                                    |
+| Destinataire des formulaires           | variable `MAIL_TO` sur Vercel (voir [Hébergement](#hébergement-sur-vercel)) |
+| Couleurs, typographie, arrondis        | `src/styles/tokens.css`                                                     |
+| Avis clients                           | `src/partials/reviews.html`                                                 |
+| Logos « Ils nous font confiance »      | `src/partials/logos.html` (images dans `src/assets/partners/`)              |
+| Articles du blog                       | espace d'édition `/admin/` (voir [Espace d'édition](#espace-dédition))      |
+| Idées d'articles proposées             | `lib/blog/ideas.js`                                                         |
+| Gamme (formats / matières disponibles) | voir ci-dessous                                                             |
 
 ### Gamme de produits
 
@@ -234,7 +226,7 @@ La disponibilité des formats par matière est définie à trois endroits, à ga
 
 1. `src/scripts/data/catalogue.js` — utilisé par le configurateur ;
 2. le tableau de `src/professionnels/kit-rideau-lanieres/index.html` (et les pastilles des cartes PVC) ;
-3. les libellés de `public/api/send.php` (`OPTION_LABELS`), qui valident les valeurs reçues.
+3. les libellés de `lib/forms.js` (`OPTION_LABELS`), qui valident les valeurs reçues.
 
 ### Images
 
@@ -298,63 +290,52 @@ Sans JavaScript, toutes les étapes s'affichent l'une sous l'autre et la demande
 ## Formulaires (contact & devis)
 
 ```
-navigateur ──(fetch, JSON)──▶ /api/send.php ──mail()──▶ contact@…
+navigateur ──(fetch)──▶ /api/send (api/send.js) ──SMTP──▶ boîte de réception (MAIL_TO)
             ◀── { ok: true } ── redirection JS vers /merci/
 ```
 
-- **Amélioration progressive** : sans JavaScript, le formulaire est posté normalement et le PHP redirige vers
-  `/merci/` (ou affiche une page d'erreur listant les champs à corriger).
-- **Validation** côté navigateur (messages en français, accessibles) **et** côté serveur (liste blanche des
-  champs et des valeurs, bornes numériques, e-mail, code postal).
-- **Anti-spam sans captcha** : champ piège invisible, délai minimal de remplissage (3 s), limitation à un
-  envoi toutes les 30 s par adresse IP.
-- **Sécurité** : en-têtes d'e-mail non injectables, `config.php` inaccessible depuis le web.
+- **Amélioration progressive** : sans JavaScript, le formulaire est posté normalement et la fonction redirige
+  vers `/merci/` (ou affiche une page d'erreur listant les champs à corriger).
+- **Validation** côté navigateur (messages en français, accessibles) **et** côté serveur (`lib/forms.js` : liste
+  blanche des champs et des valeurs, bornes numériques, e-mail, code postal).
+- **Anti-spam sans captcha** : champ piège invisible, délai minimal de remplissage (3 s), un envoi toutes les
+  30 s par adresse IP (par instance de fonction ; le pare-feu Vercel peut compléter).
 - Le configurateur n'envoie que les champs utiles au produit choisi (le serveur refait ce tri).
 
-### Tester les formulaires en local
+**Envoi des e-mails** (`lib/mailer.js`, nodemailer) : n'importe quelle boîte SMTP convient — celle du nom de
+domaine (OVH, Gandi, Hostinger…), Google Workspace, Microsoft 365, ou un service d'envoi (Brevo, Resend…).
+Variables `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_TO`, `MAIL_FROM` (voir `.env.example`).
+`MAIL_FROM` doit appartenir au domaine de la boîte SMTP, avec un enregistrement SPF/DKIM valide, sinon les
+messages risquent de finir en spam.
 
-```bash
-npm run build
-php -d sendmail_path="tee -a /tmp/mails.log > /dev/null" -S 127.0.0.1:8080 -t dist
-# → http://127.0.0.1:8080/devis/ ; les e-mails « envoyés » s'ajoutent dans /tmp/mails.log
-```
-
-### Délivrabilité
-
-L'adresse `sender` de `config.php` doit appartenir au **domaine qui héberge le site** (par exemple
-`no-reply@isorideaux.fr`) et ce domaine doit avoir un enregistrement SPF valide, sinon les e-mails risquent de
-finir en spam. En cas de souci persistant, `send.php` peut être adapté pour passer par un SMTP authentifié
-(PHPMailer) : seule la fonction `sendMail()` est à remplacer.
+En local, sans `SMTP_HOST`, l'e-mail s'affiche dans le terminal de `npm run dev`.
 
 ---
 
 ## Blog
 
-Les pages du blog sont rendues **à la volée par PHP**, dans le même habillage que le reste du site :
+Les pages du blog sont **générées au build** à partir de `content/articles/*.json` (`lib/blog/generate.js`),
+puis traitées comme toutes les autres pages (partials, typographie, Open Graph, sitemap) :
 
-```
-src/blog/_layout.html ──(npm run build)──▶ blog/_layout.html (en-tête, styles, scripts, pied de page)
-                                                  │
-content/articles/*.json ──▶ blog/index.php, blog/article.php ──▶ page HTML complète
-```
+| Adresse                        | Contenu                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------- |
+| `/blog/`, `/blog/page/2/`      | Liste des articles (9 par page)                                           |
+| `/blog/categorie/<catégorie>/` | Articles d'une catégorie (`noindex,follow` : ne concurrence pas la liste) |
+| `/blog/<article>/`             | Article : sommaire (dès 3 intertitres), articles liés, encart devis       |
+| `/blog/<ancienne-adresse>/`    | Redirection vers la nouvelle adresse d'un article renommé                 |
+| `/blog/feed.xml`               | Flux RSS                                                                  |
 
-- **Adresses** (règles dans `.htaccess`) : `/blog/` (liste, `?categorie=…`, `?page=2`), `/blog/<article>/`,
-  `/blog/feed.xml` (RSS), `/sitemap-blog.xml` (référencé par `/sitemap.xml`).
-- **Articles** : un fichier JSON par article dans `content/articles/` (titre, expression clé, titre et
-  description pour Google, catégorie, couverture, contenu en **Markdown**, état, dates). Au tout premier
-  lancement, les 6 articles de l'ancien site (`content-initial/`) y sont copiés.
-- **Programmation** : un article « Publié » avec une date future n'apparaît qu'à cette date.
-- **Changement d'adresse** : l'ancienne adresse d'un article renommé redirige en 301 vers la nouvelle.
-- **Brouillons** : 404 pour le public ; aperçu (non indexé) pour l'équipe connectée.
-- **SEO** : titre et description dédiés, canonical, Open Graph (`og:type=article`, image de couverture),
-  données structurées `BlogPosting` et `BreadcrumbList`, sommaire automatique (à partir de 3 intertitres),
-  articles liés, catégories filtrées en `noindex,follow`.
-- **Conversion** : encart devis en fin d'article (avec estimation largeur × hauteur), et encart au fil du texte
-  avec le raccourci `[[devis]]`.
-- **Derniers articles sur le site** : le bloc « Nos derniers conseils » (`src/partials/latest-posts.html`,
-  accueil et espaces) charge `/blog/latest.php`, en privilégiant les articles de l'espace de la page.
-- **Sécurité** : Markdown en mode sécurisé (HTML saisi échappé), dossiers `lib/`, `content/` et
-  `content-initial/` inaccessibles depuis le web, aucun script exécutable dans `uploads/`.
+- **Article** : un fichier JSON (titre, expression clé, titre et description pour Google, catégorie,
+  couverture, contenu en **Markdown**, état, dates). Le nom du fichier donne l'adresse.
+- **Brouillons** : jamais publiés. **Articles programmés** (« Publié » avec une date future) : mis en ligne par
+  la tâche planifiée quotidienne (`api/cron/publish.js`, voir [Hébergement](#hébergement-sur-vercel)).
+- **SEO** : titre et description dédiés, canonical, Open Graph (`og:type=article`, image de couverture et ses
+  dimensions), données structurées `BlogPosting` et `BreadcrumbList`, date de modification dans le sitemap.
+- **Conversion** : encart devis en fin d'article (estimation largeur × hauteur), et encart au fil du texte avec
+  le raccourci `[[devis]]`. Le bloc « Nos derniers conseils » (accueil et espaces) est généré au build, en
+  privilégiant les articles de l'espace de la page.
+- **Sécurité** : Markdown sans HTML (échappé) ni liens `javascript:` (`lib/blog/markdown.js`) ; les `{ }`
+  saisis dans un article ne sont jamais interprétés comme des variables.
 
 ---
 
@@ -362,92 +343,96 @@ content/articles/*.json ──▶ blog/index.php, blog/article.php ──▶ pag
 
 Adresse : **`/admin/`**. Pensé pour une utilisation sans connaissance technique.
 
-### Créer le premier compte
-
-1. Ouvrir `https://<domaine>/admin/` : tant qu'aucun compte n'existe, une page **« Mise en service »**
-   demande un identifiant et un mot de passe (12 caractères minimum) et affiche le contenu du fichier à créer.
-2. Créer `admin/config.php` sur le serveur avec ce contenu (par FTP), puis recharger la page.
-   Modèle : [`public/admin/config.example.php`](public/admin/config.example.php). En ligne de commande,
-   l'empreinte d'un mot de passe s'obtient aussi avec :
-   ```bash
-   php -r "echo password_hash('le mot de passe', PASSWORD_DEFAULT), PHP_EOL;"
-   ```
-3. Plusieurs comptes : une ligne `'identifiant' => 'empreinte',` par personne.
-
-Le mot de passe n'est jamais stocké, seulement son empreinte (bcrypt). `config.php` est ignoré par Git.
-
 ### Fonctionnalités
 
 - **Tableau de bord** : articles en ligne / programmés / brouillons, note SEO de chaque article et note
   moyenne, **actions prioritaires** sur les articles en ligne, **12 idées d'articles** (expression clé et plan
   prêts à remplir), rappel des bons réflexes.
 - **Éditeur** : barre d'outils Markdown (intertitres, gras, listes, citation, lien, image, encart devis),
-  raccourcis `Ctrl B / I / K`, `Ctrl S` pour enregistrer, onglet **Aperçu** (rendu identique au site), adresse
-  générée d'après le titre, **aperçu du résultat Google** avec compteurs de caractères, choix de la catégorie,
-  date de publication (programmation), image de couverture.
-- **Vérification SEO en direct** (`public/admin/assets/seo-checker.js`) : une note sur 100 et, pour chaque
-  point, l'action concrète à mener (expression clé dans le titre, longueur, intertitres, liens internes avec
-  **pages suggérées à lier en un clic**, encart devis, images décrites, doublons d'expression entre articles,
-  fraîcheur…). Le détail des contrôles est dans [`docs/recommandations-seo.md`](docs/recommandations-seo.md#5-la-vérification-seo-de-lespace-dédition).
-- **Images** : envoyées depuis l'éditeur, redressées, réduites à 1 600 px et converties en WebP
-  (`uploads/blog/AAAA/MM/`), 8 Mo maximum.
-- **Suppression** : l'article part dans `content/corbeille/` ; pour le restaurer, le replacer par FTP dans
-  `content/articles/`.
+  raccourcis `Ctrl B / I / K`, `Ctrl S` pour enregistrer, onglet **Aperçu** (même rendu que le site), adresse
+  générée d'après le titre, **aperçu du résultat Google** avec compteurs de caractères, catégorie, date de
+  publication (programmation), image de couverture.
+- **Vérification SEO en direct** (`lib/blog/seo-checker.js`) : une note sur 100 et, pour chaque point, l'action
+  concrète à mener (expression clé dans le titre, longueur, intertitres, liens internes avec **pages suggérées
+  à lier en un clic**, encart devis, images décrites, doublons d'expression entre articles, fraîcheur…).
+  Détail : [`docs/recommandations-seo.md`](docs/recommandations-seo.md#5-la-vérification-seo-de-lespace-dédition).
+- **Images** : redressées, redimensionnées et converties en WebP **dans le navigateur** (couverture recadrée
+  en 1200 × 630, illustrations 1600 px max.), puis enregistrées dans `public/uploads/blog/AAAA/MM/`.
+- **Publication** : chaque enregistrement est un commit sur GitHub ; l'éditeur suit le redéploiement et
+  indique « C'est en ligne » (via `/build-info.json`). Les brouillons et les images seules ne déclenchent
+  aucun déploiement (`tools/vercel-ignore-build.mjs`).
+- **Suppression** : l'article part dans `content/corbeille/` ; pour le restaurer, le replacer dans
+  `content/articles/` (ou annuler le commit sur GitHub).
+- **Conflits** : si l'article a été modifié entre-temps (autre onglet, autre personne), l'enregistrement est
+  refusé au lieu d'écraser le travail de l'autre.
+
+### Créer les comptes
+
+1. Ouvrir `https://<domaine>/admin/` : tant qu'aucun compte n'existe, la page **« Mise en service »** calcule,
+   dans le navigateur, l'empreinte du mot de passe et une clé de session. (Ou :
+   `npm run admin:password -- identifiant`.)
+2. Ajouter dans Vercel (**Settings → Environment Variables**) :
+   - `ADMIN_USERS` = `identifiant:empreinte` (plusieurs comptes séparés par des virgules) ;
+   - `ADMIN_SECRET` = la clé de session (32 caractères ou plus).
+3. Redéployer. Le mot de passe n'est stocké nulle part, seulement son empreinte (PBKDF2-SHA256).
+
+### Brancher GitHub (enregistrement des articles)
+
+1. Sur GitHub : **Settings → Developer settings → Fine-grained tokens → Generate new token**, accès limité au
+   dépôt du site, permission **Contents : Read and write**, expiration la plus longue possible (noter la date
+   de renouvellement).
+2. Dans Vercel : variable `GITHUB_CONTENT_TOKEN`. Le dépôt et la branche sont déduits du déploiement
+   (`GITHUB_CONTENT_REPO`, `GITHUB_CONTENT_BRANCH` pour les forcer).
+
+Les commits portent le nom de la personne connectée (« sandrine (espace d'édition) »). Pensez à faire
+`git pull` avant de travailler sur le code : la cliente a pu publier entre-temps.
 
 ### Sécurité
 
-Session dédiée (cookie `HttpOnly`, `SameSite=Strict`, `Secure` en HTTPS, expiration après 2 h d'inactivité),
-jeton CSRF sur toute action, 5 essais de connexion par adresse IP puis blocage 15 minutes, pages
-`noindex`, `config.php` inaccessible depuis le web, conflit détecté si un article a été modifié entre-temps
-dans un autre onglet. L'interface respecte la même CSP stricte que le site (aucun script ni style en ligne).
-
-### Tester en local
-
-```bash
-npm run build
-npm run serve:php                       # http://localhost:8000/admin/
-```
-
-`tools/php-router.php` reproduit les règles de `.htaccess` (adresses du blog, redirections, dossiers
-interdits, CSP). Créer le compte de test dans **`dist/admin/config.php`** (et non dans `public/admin/`, pour
-ne jamais l'envoyer sur le serveur). Les articles et images de test sont créés dans `dist/` et effacés au
-prochain build.
+Cookie de session signé, `HttpOnly`, `SameSite=Strict`, `Secure`, limité à `/api/admin`, expirant après 2 h
+d'inactivité (12 h au plus) ; requêtes refusées si elles viennent d'un autre site ; 5 essais de connexion par
+adresse IP puis blocage 15 minutes ; pages `noindex` ; même CSP stricte que le site (aucun script ni style en
+ligne). Le jeton GitHub ne quitte jamais les fonctions serveur.
 
 ---
 
-## Déploiement par FTP
+## Hébergement sur Vercel
 
-1. **Construire** le site :
-   ```bash
-   npm run build
-   ```
-2. **Vérifier** si besoin avec `npm run preview`.
-3. **Envoyer le contenu** du dossier `dist/` (et non le dossier lui-même) à la racine web de l'hébergement
-   (souvent `public_html/` ou `www/`), avec FileZilla ou équivalent.
-   - Activer l'affichage des fichiers cachés (FileZilla : _Serveur → Forcer l'affichage des fichiers cachés_)
-     pour que `.htaccess`, `assets/.htaccess` et `api/.htaccess` soient bien envoyés.
-   - Lors de la mise en ligne de la refonte, supprimer d'abord l'ancien WordPress (après sauvegarde !).
-   - **Ne jamais supprimer ni écraser sur le serveur** : `content/` (articles), `uploads/` (images du blog)
-     et `admin/config.php` (comptes). Ils n'existent que sur le serveur ; toujours lancer `npm run build`
-     juste avant l'envoi (il vide `dist/` de tout fichier de test local).
-   - **Sauvegarde** : télécharger régulièrement `content/` et `uploads/` (quelques Mo).
-4. **Vérifier sur l'hébergement** : PHP 8.1 ou plus (extensions `mbstring` et `gd`), certificat SSL actif,
-   puis envoyer un message de test depuis `/contact/` et une demande depuis `/devis/`, et créer le compte de
-   l'espace d'édition (voir plus haut).
-5. **Mises à jour suivantes** : relancer `npm run build` puis renvoyer `dist/`. Les fichiers de `dist/assets/`
-   portent une empreinte : on peut supprimer les anciens sur le serveur sans risque.
+### Mise en place (une fois)
 
-> `public/api/config.php` est une simple configuration : pour changer le destinataire des e-mails, on peut le
-> modifier directement sur le serveur, sans rebuild.
+1. **Importer le dépôt** dans Vercel (Add New → Project). La configuration est lue dans `vercel.json` :
+   framework Vite, `npm run build`, dossier `dist/`, fonctions de `api/` exécutées à Paris.
+2. **Variables d'environnement** (Settings → Environment Variables), décrites dans `.env.example` :
 
-**Après la mise en ligne** : suivre la liste « P0 » de [`docs/recommandations-seo.md`](docs/recommandations-seo.md)
-(Search Console, outil de changement d'adresse, fiche Google, vérification des redirections).
+   | Variable                                           | Rôle                                                  |
+   | -------------------------------------------------- | ----------------------------------------------------- |
+   | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` | Boîte d'envoi des formulaires                         |
+   | `MAIL_TO`, `MAIL_FROM`                             | Destinataire des demandes, expéditeur                 |
+   | `ADMIN_USERS`, `ADMIN_SECRET`                      | Comptes de l'espace d'édition                         |
+   | `GITHUB_CONTENT_TOKEN`                             | Enregistrement des articles dans le dépôt             |
+   | `DEPLOY_HOOK_URL`                                  | Settings → Git → Deploy Hooks (branche de production) |
+   | `CRON_SECRET`                                      | Protège la tâche planifiée (valeur aléatoire)         |
+
+3. **Domaines** (Settings → Domains) : ajouter `www.isorideaux.fr` (domaine principal) et `isorideaux.fr`,
+   puis `pvcrideaux.fr` et `www.pvcrideaux.fr` en **redirection 308 vers `www.isorideaux.fr`** : les anciennes
+   adresses (voir plus bas) arrivent ainsi sur les bonnes pages. Conserver le nom de domaine pvcrideaux.fr.
+4. **Tâche planifiée** : déclarée dans `vercel.json` (chaque jour à 5 h UTC) ; elle redéploie le site quand un
+   article programmé arrive à sa date.
+
+### Au quotidien
+
+- **Code** : chaque `git push` sur la branche de production déploie le site ; chaque branche ou pull request
+  obtient une adresse d'aperçu (l'espace d'édition y enregistre sur cette branche).
+- **Articles** : publiés par la cliente depuis `/admin/`, sans intervention.
+- **Sauvegarde** : tout le contenu est dans Git (articles, images) ; rien d'autre à sauvegarder.
+- **Offre** : l'offre Hobby (gratuite) est réservée à un usage non commercial ; un site d'entreprise relève de
+  l'offre Pro (qui permet aussi des tâches planifiées plus fréquentes et des règles de pare-feu).
 
 ---
 
 ## Redirections depuis l'ancien site
 
-`public/.htaccess` redirige (301) les anciennes adresses WordPress vers les nouvelles, pour conserver le
+`vercel.json` redirige (308, permanent) les anciennes adresses WordPress vers les nouvelles, pour conserver le
 référencement et les liens existants :
 
 | Ancienne URL                   | Nouvelle URL                                  |
@@ -464,30 +449,28 @@ référencement et les liens existants :
 | les 6 anciens articles         | `/blog/<article>/` (articles repris)          |
 | `/product/…`, panier, boutique | rouleaux / devis                              |
 
-Si le nom de domaine change (`pvcrideaux.fr` → `isorideaux.fr`), décommenter le bloc « Ancien domaine →
-nouveau domaine » du `.htaccess` une fois les deux domaines pointés vers le même hébergement, puis mettre à
-jour `url` dans `site.config.js`.
+Les changements d'adresse d'articles faits dans l'espace d'édition sont gérés par le blog lui-même.
 
 ---
 
 ## SEO, performance, accessibilité
 
 - **SEO** : une balise `<title>` et une meta description par page (expressions historiques de pvcrideaux.fr
-  conservées), URL canonique automatique, `sitemap.xml` (index des pages statiques et des articles) et
+  conservées), URL canonique automatique, `sitemap.xml` (pages et articles, sans les pages `noindex`) et
   `robots.txt` générés au build, fil d'Ariane balisé schema.org, données structurées `LocalBusiness` (avec
   l'ancien nom « PVC Rideaux ») et `WebSite` sur l'accueil, balises Open Graph pour les partages.
   `npm run seo` contrôle titres, descriptions, H1, canonical, textes alternatifs, JSON-LD et liens internes de
-  toutes les pages générées. Plan d'action complet : [`docs/recommandations-seo.md`](docs/recommandations-seo.md).
-- **Performance** : HTML statique, ~3,5 Ko de JS compressé sur les pages courantes (~6 Ko de plus sur le
-  configurateur), images WebP avec `srcset`
-  et chargement différé, polices auto-hébergées limitées au sous-ensemble latin, cache long sur les fichiers
-  versionnés, compression gzip.
-- **RGPD** : aucun cookie, aucun service tiers chargé (pas de Google Fonts ni de carte intégrée) : aucun
-  bandeau de consentement n'est nécessaire.
+  toutes les pages générées, et affiche la note de chaque article. Plan d'action complet :
+  [`docs/recommandations-seo.md`](docs/recommandations-seo.md).
+- **Performance** : HTML statique servi par le CDN de Vercel, ~3,5 Ko de JS compressé sur les pages courantes,
+  images WebP avec `srcset` et chargement différé, polices auto-hébergées limitées au sous-ensemble latin, cache
+  long sur les fichiers versionnés.
+- **RGPD** : aucun cookie (hors session de l'espace d'édition), aucun service tiers chargé (pas de Google Fonts
+  ni de carte intégrée) : aucun bandeau de consentement n'est nécessaire. Fonctions exécutées à Paris.
 - **Accessibilité** : navigation complète au clavier, lien d'évitement, menu mobile en `<dialog>` natif
   (piège à focus, touche Échap), FAQ en `<details>` natifs, contrastes AA, messages d'erreur reliés aux
   champs, préférences « mouvement réduit » respectées.
-- **En-têtes de sécurité** (`.htaccess`) : CSP stricte (`'self'` uniquement), `X-Content-Type-Options`,
+- **En-têtes de sécurité** (`vercel.json`) : CSP stricte (`'self'` uniquement), `X-Content-Type-Options`,
   `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`. Si un outil tiers est ajouté plus tard
   (statistiques, chat…), son domaine devra être autorisé dans la `Content-Security-Policy`.
 
@@ -518,10 +501,11 @@ Les animations suivent des règles strictes (philosophie « design engineering �
 
 Contenus repris du site actuel ou à confirmer avant la mise en ligne :
 
-- [ ] **Nom de domaine définitif** (`isorideaux.fr` ?) → `site.config.js` (`url`) et `config.php` (`sender`).
+- [ ] **Nom de domaine définitif** (`isorideaux.fr` ?) → `site.config.js` (`url`) et variable `MAIL_FROM`.
 - [ ] **Adresse e-mail** de contact (actuellement `contact@pvcrideaux.fr`).
 - [ ] **Mentions légales** : forme juridique, immatriculation (RCS / RM), n° de TVA intracommunautaire,
-      directrice de la publication, hébergeur définitif (commentaire `TODO` dans la page).
+      directrice de la publication (commentaire `TODO` dans la page). Hébergeur : Vercel Inc., adresse à
+      confirmer sur [vercel.com/legal](https://vercel.com/legal) (`site.config.js` → `legal`).
 - [ ] **Ancienneté** : l'ancien site indiquait à la fois « plus de 15 ans » et « plus de 20 ans » ; le nouveau
       site retient « plus de 15 ans ».
 - [ ] **Références clients** (Coca-Cola, Aldi, Amazon, DHL…) : confirmer qu'elles peuvent être citées.
@@ -532,14 +516,22 @@ Contenus repris du site actuel ou à confirmer avant la mise en ligne :
 - [ ] **Logo vectoriel (SVG)** : le logo fourni est une image ; une version SVG serait plus nette.
 - [ ] **Articles du blog** : les 6 articles de l'ancien site sont repris (métadonnées SEO réécrites) ; à
       relire, et à enrichir selon les actions du tableau de bord (liens, encart devis).
-- [ ] **Idées d'articles** : vérifier le volume de recherche des expressions proposées (`public/lib/ideas.php`).
+- [ ] **Idées d'articles** : vérifier le volume de recherche des expressions proposées (`lib/blog/ideas.js`).
 - [ ] **Comptes de l'espace d'édition** : qui publie ? (un compte par personne).
+- [ ] **Boîte e-mail d'envoi** (SMTP) pour les formulaires : celle du nom de domaine, ou un service d'envoi.
+- [ ] **Offre Vercel** : l'offre gratuite (Hobby) est réservée aux projets non commerciaux ; un site
+      d'entreprise relève de l'offre Pro.
 - [ ] **CGV** : lien vers le document Google existant, à remplacer idéalement par une page dédiée.
 - [ ] **Devis instantané / paiement en ligne** : l'ancien site calculait un prix et encaissait via PayPal.
       Le nouveau configurateur envoie une demande de devis ; un prix indicatif pourra s'afficher dans l'aperçu
       dès qu'une grille tarifaire sera fournie.
 - [ ] **Exemples de dimensions** du configurateur (porte 900 × 2100, garage 2400 × 2000, quai 3000 × 3000) :
       à ajuster selon les demandes les plus fréquentes.
+
+---
+
+_Photos produits reprises du site pvcrideaux.fr (propriété de la cliente). Polices Inter et Montserrat sous
+licence SIL Open Font License._
 
 ---
 

@@ -1,4 +1,0 @@
-# Le gabarit des pages du blog n'est lu que par PHP (lib/layout.php).
-<Files "_layout.html">
-  Require all denied
-</Files>

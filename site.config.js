@@ -33,8 +33,9 @@ export default {
   legal: {
     owner: 'Emmanuelle Parker',
     siret: '978 419 745 00028',
-    host: 'UAB Hostinger',
-    hostAddress: 'Švitrigailos str. 34, 03230 Vilnius, Lituanie',
+    // Hébergeur du site (mentions légales) : adresse à confirmer sur vercel.com/legal.
+    host: 'Vercel Inc.',
+    hostAddress: '440 N Barranca Ave #4133, Covina, CA 91723, États-Unis',
     cgvUrl: 'https://docs.google.com/document/d/1gSpX-6DKtoyRBaYcj4TylSd78EujONXP/edit?usp=sharing',
   },
 

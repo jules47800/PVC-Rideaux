@@ -18,5 +18,9 @@ Thumbs.db
 npm-debug.log*
 *.log
 
-# Comptes de l’espace d’édition (créés sur le serveur, jamais versionnés)
-public/admin/config.php
+# Pages du blog générées au build depuis content/articles/ (lib/blog/generate.js)
+src/blog/
+src/partials/blog/
+
+# Vercel CLI
+.vercel/

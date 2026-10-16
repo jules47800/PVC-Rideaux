@@ -5,7 +5,7 @@
  * pensez à mettre à jour :
  *   - ce fichier ;
  *   - le tableau de disponibilité (src/professionnels/kit-rideau-lanieres/index.html) ;
- *   - les libellés côté serveur (public/api/send.php → OPTION_LABELS).
+ *   - les libellés côté serveur (lib/forms.js → OPTION_LABELS).
  */
 
 /** Types de PVC, dans l'ordre d'affichage (identifiants = valeurs du formulaire). */
