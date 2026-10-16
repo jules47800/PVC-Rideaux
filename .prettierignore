@@ -1,0 +1,9 @@
+dist/
+node_modules/
+package-lock.json
+public/api/
+*.svg
+
+# Gabarits HTML formatés à la main : Prettier casse les éléments en ligne
+# (icônes SVG dans des <span>) d'une façon peu lisible.
+*.html

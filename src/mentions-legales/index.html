@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <!-- @include head.html -->
+    <title>Mentions légales &amp; données personnelles | IsoRideaux</title>
+    <meta name="description" content="Mentions légales du site IsoRideaux, politique de protection des données personnelles et conditions générales de vente." />
+  </head>
+  <body>
+    <!-- @include header.html -->
+
+    <main id="contenu">
+      <section class="page-hero" aria-labelledby="titre-principal">
+        <div class="container page-hero__inner">
+          <div class="page-hero__content">
+            <nav class="breadcrumb" aria-label="Fil d’Ariane">
+              <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                  <a itemprop="item" href="/"><span itemprop="name">Accueil</span></a>
+                  <meta itemprop="position" content="1" />
+                </li>
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                  <span itemprop="name" aria-current="page">Mentions légales</span>
+                  <meta itemprop="position" content="2" />
+                </li>
+              </ol>
+            </nav>
+            <h1 id="titre-principal">Mentions légales</h1>
+            <p class="lead">Informations légales, protection de vos données et conditions de vente.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--flush-top">
+        <div class="container container--narrow prose">
+          <h2>Éditeur du site</h2>
+          <p>
+            Le site {{ site.url }} est édité par <strong>{{ site.name }}</strong> (anciennement PVC Rideaux),
+            entreprise dirigée par {{ site.legal.owner }}.
+          </p>
+          <ul>
+            <li>SIRET : {{ site.legal.siret }}</li>
+            <!-- TODO (cliente) : forme juridique, immatriculation (RCS / RM), n° de TVA intracommunautaire. -->
+            <li>Adresse : {{ site.address.street }}, {{ site.address.postalCode }} {{ site.address.city }}</li>
+            <li>Téléphone : <a href="tel:{{ site.phoneHref }}">{{ site.phone }}</a></li>
+            <li>E-mail : <a href="mailto:{{ site.email }}">{{ site.email }}</a></li>
+            <li>Directrice de la publication : {{ site.legal.owner }}</li>
+          </ul>
+
+          <h2>Hébergement</h2>
+          <p>{{ site.legal.host }} — {{ site.legal.hostAddress }}.</p>
+
+          <h2>Propriété intellectuelle</h2>
+          <p>
+            L’ensemble des contenus de ce site (textes, photographies, logo, illustrations) est la propriété de
+            {{ site.name }} ou fait l’objet d’une autorisation d’utilisation. Toute reproduction, totale ou partielle,
+            sans autorisation écrite préalable est interdite.
+          </p>
+
+          <h2 id="donnees-personnelles">Données personnelles</h2>
+          <p>
+            Les informations transmises via nos formulaires de contact et de devis (nom, société, e-mail, téléphone,
+            code postal, description du besoin) sont utilisées uniquement pour répondre à votre demande et, le cas
+            échéant, établir un devis puis assurer le suivi de votre commande.
+          </p>
+          <ul>
+            <li><strong>Responsable du traitement :</strong> {{ site.name }}, {{ site.legal.owner }}.</li>
+            <li><strong>Base légale :</strong> votre consentement et les mesures précontractuelles prises à votre demande.</li>
+            <li><strong>Destinataires :</strong> exclusivement {{ site.name }}. Vos données ne sont jamais vendues ni transmises à des tiers à des fins commerciales.</li>
+            <li><strong>Durée de conservation :</strong> 3 ans à compter du dernier échange, puis suppression.</li>
+          </ul>
+          <p>
+            Conformément au RGPD et à la loi Informatique et Libertés, vous disposez d’un droit d’accès, de
+            rectification, d’effacement, de limitation, d’opposition et de portabilité de vos données. Pour l’exercer,
+            écrivez à <a href="mailto:{{ site.email }}">{{ site.email }}</a>. Vous pouvez également introduire une
+            réclamation auprès de la <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.
+          </p>
+
+          <h2>Cookies</h2>
+          <p>
+            Ce site n’utilise aucun cookie publicitaire ni de mesure d’audience, et ne charge aucun service tiers : les
+            polices de caractères sont hébergées sur nos propres serveurs. Aucun consentement n’est donc requis.
+          </p>
+
+          <h2 id="cgv">Conditions générales de vente</h2>
+          <p>
+            Nos conditions générales de vente et d’utilisation sont consultables
+            <a href="{{ site.legal.cgvUrl }}" target="_blank" rel="noopener">dans ce document</a>. Elles vous sont
+            également transmises avec chaque devis.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- @include footer.html -->
+  </body>
+</html>

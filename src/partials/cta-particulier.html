@@ -1,0 +1,22 @@
+      <!-- Appel à l'action : devis (espace particuliers) -->
+      <section class="section section--tight" aria-labelledby="cta-particulier-titre">
+        <div class="container">
+          <div class="cta-band cta-band--particulier">
+            <div class="curtain" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div>
+              <h2 id="cta-particulier-titre">Prêt à équiper votre garage ou votre atelier ?</h2>
+              <p>Donnez-nous les dimensions de votre ouverture : nous vous conseillons le bon rideau et vous envoyons un devis gratuit sous {{ site.responseTime }}.</p>
+            </div>
+            <div class="cluster">
+              <a class="btn btn--primary btn--lg" href="/devis/?profil=particulier">
+                Estimer mon rideau
+                <svg class="icon icon-arrow" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+              </a>
+              <a class="btn btn--secondary btn--lg" href="tel:{{ site.phoneHref }}">
+                <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
+                {{ site.phone }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>

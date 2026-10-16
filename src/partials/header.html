@@ -1,0 +1,178 @@
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+    <!-- Barre des espaces : toujours visible pour s'orienter -->
+    <div class="topbar">
+      <div class="container topbar__inner">
+        <nav class="space-switch" aria-label="Choisir votre espace">
+          <a class="space-switch__link space-switch__link--pro" href="/professionnels/">
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-building"></use></svg>
+            <span>Professionnels</span>
+          </a>
+          <a class="space-switch__link space-switch__link--particulier" href="/particuliers/">
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-home"></use></svg>
+            <span>Particuliers</span>
+          </a>
+        </nav>
+        <ul class="topbar__info" role="list">
+          <li>
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-truck"></use></svg>
+            Livraison gratuite partout en France
+          </li>
+          <li>
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-clock"></use></svg>
+            {{ site.hours }}
+          </li>
+          <li>
+            <a href="tel:{{ site.phoneHref }}">
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
+              {{ site.phone }}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <header class="site-header" data-header>
+      <div class="container site-header__inner">
+        <a class="site-header__logo" href="/">
+          <img
+            src="/assets/brand/logo-isorideaux.webp"
+            width="600"
+            height="204"
+            alt="IsoRideaux — Rideaux PVC, retour à l’accueil"
+          />
+        </a>
+
+        <nav class="main-nav" aria-label="Navigation principale">
+          <ul class="main-nav__list" role="list">
+            <li class="main-nav__item" data-dropdown>
+              <button class="main-nav__link main-nav__trigger" type="button" aria-expanded="false" aria-controls="menu-produits">
+                Nos produits
+                <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-chevron-down"></use></svg>
+              </button>
+              <div class="dropdown" id="menu-produits">
+                <ul class="dropdown__list" role="list">
+                  <li>
+                    <a class="dropdown__link" href="/professionnels/kit-rideau-lanieres/">
+                      <span class="dropdown__icon"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-package"></use></svg></span>
+                      <span><strong>Kits rideaux à lanières</strong><small>Sur mesure, livrés prêts à poser</small></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown__link" href="/professionnels/chambre-froide/">
+                      <span class="dropdown__icon"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-snowflake"></use></svg></span>
+                      <span><strong>Chambre froide &amp; stores réfrigérés</strong><small>PVC polaire, matériaux alimentaires</small></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown__link" href="/professionnels/rideaux-soudure/">
+                      <span class="dropdown__icon"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-flame"></use></svg></span>
+                      <span><strong>Rideaux de soudure</strong><small>Conformes EN ISO 25980</small></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown__link" href="/professionnels/lanieres-pvc/">
+                      <span class="dropdown__icon"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-scissors"></use></svg></span>
+                      <span><strong>Lanières de remplacement</strong><small>À l’unité ou au mètre</small></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown__link" href="/professionnels/rouleaux-rails-accessoires/">
+                      <span class="dropdown__icon"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-rail"></use></svg></span>
+                      <span><strong>Rouleaux, rails &amp; accessoires</strong><small>Rouleaux 25 / 50 m, rail inox</small></span>
+                    </a>
+                  </li>
+                </ul>
+                <div class="dropdown__footer">
+                  <a class="link-arrow" href="/professionnels/">
+                    Espace professionnels
+                    <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+                  </a>
+                  <a class="link-arrow" href="/particuliers/">
+                    Espace particuliers
+                    <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+                  </a>
+                </div>
+              </div>
+            </li>
+            <li class="main-nav__item"><a class="main-nav__link" href="/guide-installation/">Guide de pose</a></li>
+            <li class="main-nav__item"><a class="main-nav__link" href="/a-propos/">À propos</a></li>
+            <li class="main-nav__item"><a class="main-nav__link" href="/contact/">Contact</a></li>
+          </ul>
+        </nav>
+
+        <div class="site-header__actions">
+          <a class="icon-btn site-header__phone" href="tel:{{ site.phoneHref }}">
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
+            <span class="visually-hidden">Appeler le {{ site.phone }}</span>
+          </a>
+          <a class="btn btn--primary site-header__cta" href="/devis/">Devis gratuit</a>
+          <button class="icon-btn site-header__burger" type="button" aria-haspopup="dialog" aria-controls="menu-mobile" data-menu-open>
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-menu"></use></svg>
+            <span class="visually-hidden">Ouvrir le menu</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <dialog class="mobile-menu" id="menu-mobile" aria-label="Menu">
+      <div class="mobile-menu__header">
+        <img src="/assets/brand/logo-isorideaux.webp" width="600" height="204" alt="IsoRideaux" />
+        <button class="icon-btn" type="button" data-menu-close>
+          <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-close"></use></svg>
+          <span class="visually-hidden">Fermer le menu</span>
+        </button>
+      </div>
+
+      <div class="mobile-menu__body">
+        <div>
+          <p class="mobile-menu__title">Votre espace</p>
+          <div class="mobile-menu__spaces">
+            <a class="mobile-space" href="/professionnels/">
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-building"></use></svg>
+              <strong>Professionnels</strong>
+              <span>Industrie, froid, logistique</span>
+            </a>
+            <a class="mobile-space mobile-space--particulier" href="/particuliers/">
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-home"></use></svg>
+              <strong>Particuliers</strong>
+              <span>Garage, atelier, maison</span>
+            </a>
+          </div>
+        </div>
+
+        <nav class="mobile-menu__nav" aria-label="Navigation mobile">
+          <div>
+            <p class="mobile-menu__title">Nos produits</p>
+            <div class="mobile-menu__links">
+            <a href="/professionnels/kit-rideau-lanieres/">Kits rideaux à lanières <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg></a>
+            <a href="/professionnels/chambre-froide/">Chambre froide &amp; stores réfrigérés <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg></a>
+            <a href="/professionnels/rideaux-soudure/">Rideaux de soudure <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg></a>
+            <a href="/professionnels/lanieres-pvc/">Lanières de remplacement <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg></a>
+            <a href="/professionnels/rouleaux-rails-accessoires/">Rouleaux, rails &amp; accessoires <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg></a>
+            </div>
+          </div>
+          <div>
+            <p class="mobile-menu__title">Infos utiles</p>
+            <div class="mobile-menu__links">
+            <a href="/devis/">Demander un devis <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg></a>
+            <a href="/guide-installation/">Guide de pose <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg></a>
+            <a href="/a-propos/">À propos <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg></a>
+            <a href="/contact/">Contact <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg></a>
+            </div>
+          </div>
+        </nav>
+
+        <div class="mobile-menu__contact">
+          <p>
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
+            <a href="tel:{{ site.phoneHref }}"><strong>{{ site.phone }}</strong></a>
+          </p>
+          <p>
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-clock"></use></svg>
+            {{ site.hoursLong }}
+          </p>
+          <a class="btn btn--primary btn--block" href="/devis/">Demander un devis gratuit</a>
+        </div>
+      </div>
+    </dialog>

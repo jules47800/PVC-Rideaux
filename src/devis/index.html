@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <!-- @include head.html -->
+    <title>Devis gratuit rideau à lanières PVC sur mesure | IsoRideaux</title>
+    <meta
+      name="description"
+      content="Configurez votre rideau à lanières PVC (dimensions, matière, options) et recevez un devis détaillé et gratuit sous 24 h. Professionnels et particuliers."
+    />
+    <script type="module" src="/scripts/pages/devis.js"></script>
+  </head>
+  <body>
+    <!-- @include header.html -->
+
+    <main id="contenu">
+      <section class="page-hero" aria-labelledby="titre-principal">
+        <div class="container page-hero__inner">
+          <div class="page-hero__content">
+            <nav class="breadcrumb" aria-label="Fil d’Ariane">
+              <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                  <a itemprop="item" href="/"><span itemprop="name">Accueil</span></a>
+                  <meta itemprop="position" content="1" />
+                </li>
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                  <span itemprop="name" aria-current="page">Demande de devis</span>
+                  <meta itemprop="position" content="2" />
+                </li>
+              </ol>
+            </nav>
+            <p class="eyebrow">Devis gratuit &amp; sans engagement</p>
+            <h1 id="titre-principal">Configurez votre rideau</h1>
+            <p class="lead">
+              Quelques informations suffisent : nous vous envoyons un devis détaillé sous {{ site.responseTime }}
+              (jours ouvrés). Une question ? Appelez le <a href="tel:{{ site.phoneHref }}">{{ site.phone }}</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tight section--flush-top" aria-label="Configurateur de devis">
+        <div class="container">
+          <form
+            class="quote-layout"
+            id="quote-form"
+            action="/api/send.php"
+            method="post"
+            data-async-form
+            data-quote-form
+            data-success-url="/merci/?demande=devis"
+          >
+            <input type="hidden" name="form_type" value="devis" />
+            <input type="hidden" name="started_at" value="" />
+            <div class="field--trap" aria-hidden="true">
+              <label>Ne pas remplir ce champ <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+            </div>
+
+            <!-- Étape 1 : profil -->
+            <section class="quote-step" aria-labelledby="etape-profil">
+              <div class="quote-step__head">
+                <span class="quote-step__num" aria-hidden="true">1</span>
+                <h2 id="etape-profil">Vous êtes…</h2>
+              </div>
+              <fieldset class="fieldset">
+                <legend class="visually-hidden">Votre profil</legend>
+                <div class="choices choices--2">
+                  <label class="choice">
+                    <input type="radio" name="profile" value="pro" required />
+                    <span class="choice__box">
+                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-building"></use></svg>
+                      <span class="choice__text"><strong>Un professionnel</strong><small>Entreprise, commerce, collectivité</small></span>
+                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                    </span>
+                  </label>
+                  <label class="choice">
+                    <input type="radio" name="profile" value="particulier" required />
+                    <span class="choice__box">
+                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-home"></use></svg>
+                      <span class="choice__text"><strong>Un particulier</strong><small>Garage, atelier, dépendance</small></span>
+                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+            </section>
+
+            <!-- Étape 2 : produit -->
+            <section class="quote-step" aria-labelledby="etape-produit">
+              <div class="quote-step__head">
+                <span class="quote-step__num" aria-hidden="true">2</span>
+                <h2 id="etape-produit">Votre besoin</h2>
+              </div>
+              <fieldset class="fieldset">
+                <legend class="visually-hidden">Produit souhaité</legend>
+                <div class="choices choices--3">
+                  <label class="choice">
+                    <input type="radio" name="product" value="kit" required checked />
+                    <span class="choice__box">
+                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-package"></use></svg>
+                      <span class="choice__text"><strong>Kit rideau à lanières</strong><small>Complet, sur mesure</small></span>
+                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                    </span>
+                  </label>
+                  <label class="choice">
+                    <input type="radio" name="product" value="chambre-froide" required />
+                    <span class="choice__box">
+                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-snowflake"></use></svg>
+                      <span class="choice__text"><strong>Chambre froide / meuble réfrigéré</strong><small>PVC polaire</small></span>
+                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                    </span>
+                  </label>
+                  <label class="choice">
+                    <input type="radio" name="product" value="soudure" required />
+                    <span class="choice__box">
+                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-flame"></use></svg>
+                      <span class="choice__text"><strong>Rideau de soudure</strong><small>EN ISO 25980</small></span>
+                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                    </span>
+                  </label>
+                  <label class="choice">
+                    <input type="radio" name="product" value="lanieres" required />
+                    <span class="choice__box">
+                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-scissors"></use></svg>
+                      <span class="choice__text"><strong>Lanières de remplacement</strong><small>À l’unité, à la longueur</small></span>
+                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                    </span>
+                  </label>
+                  <label class="choice">
+                    <input type="radio" name="product" value="rouleaux" required />
+                    <span class="choice__box">
+                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-layers"></use></svg>
+                      <span class="choice__text"><strong>Rouleaux PVC</strong><small>25 m ou 50 m</small></span>
+                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                    </span>
+                  </label>
+                  <label class="choice">
+                    <input type="radio" name="product" value="rail" required />
+                    <span class="choice__box">
+                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-rail"></use></svg>
+                      <span class="choice__text"><strong>Rail &amp; accessoires</strong><small>Sections de 984 mm</small></span>
+                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+            </section>
+
+            <!-- Étape 3 : configuration (blocs affichés selon le produit) -->
+            <section class="quote-step" aria-labelledby="etape-config">
+              <div class="quote-step__head">
+                <span class="quote-step__num" aria-hidden="true">3</span>
+                <h2 id="etape-config">Votre configuration</h2>
+              </div>
+
+              <fieldset class="fieldset" data-quote-group="dimensions">
+                <legend class="fieldset__legend">Dimensions de l’ouverture</legend>
+                <div class="form-grid form-grid--3">
+                  <div class="field">
+                    <label class="field__label" for="width">Largeur</label>
+                    <div class="input-unit">
+                      <input class="input" id="width" name="width" type="number" inputmode="numeric" min="300" max="20000" step="1" placeholder="ex. 1200" data-unit="mm" required />
+                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="height">Hauteur</label>
+                    <div class="input-unit">
+                      <input class="input" id="height" name="height" type="number" inputmode="numeric" min="300" max="8000" step="1" placeholder="ex. 2400" data-unit="mm" required />
+                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="quantity">Nombre de rideaux</label>
+                    <input class="input" id="quantity" name="quantity" type="number" inputmode="numeric" min="1" max="99" step="1" value="1" required />
+                  </div>
+                </div>
+                <div aria-live="polite">
+                  <div class="quote-hint" data-format-hint hidden>
+                    <p>
+                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-info"></use></svg>
+                      <span data-format-hint-text></span>
+                    </p>
+                    <button class="btn btn--sm btn--secondary" type="button" data-apply-format>Appliquer ce format</button>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset" data-quote-group="strips">
+                <legend class="fieldset__legend">Vos lanières</legend>
+                <div class="form-grid form-grid--2">
+                  <div class="field">
+                    <label class="field__label" for="strip_length">Longueur de chaque lanière</label>
+                    <div class="input-unit">
+                      <input class="input" id="strip_length" name="strip_length" type="number" inputmode="numeric" min="100" max="8000" step="1" placeholder="ex. 2100" data-unit="mm" aria-describedby="strip_length-hint" required />
+                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                    </div>
+                    <p class="field__hint" id="strip_length-hint">Du crochet du rail au sol, moins 1 cm environ.</p>
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="strip_count">Nombre de lanières</label>
+                    <input class="input" id="strip_count" name="strip_count" type="number" inputmode="numeric" min="1" max="500" step="1" placeholder="ex. 4" required />
+                  </div>
+                </div>
+                <fieldset class="fieldset">
+                  <legend class="fieldset__legend">Plaques de suspension inox</legend>
+                  <div class="choices choices--inline">
+                    <label class="choice choice--pill">
+                      <input type="radio" name="hanging_plates" value="oui" checked />
+                      <span class="choice__box"><span class="choice__text"><strong>Avec plaques</strong></span></span>
+                    </label>
+                    <label class="choice choice--pill">
+                      <input type="radio" name="hanging_plates" value="non" />
+                      <span class="choice__box"><span class="choice__text"><strong>Lanières seules</strong></span></span>
+                    </label>
+                  </div>
+                </fieldset>
+              </fieldset>
+
+              <fieldset class="fieldset" data-quote-group="roll">
+                <legend class="fieldset__legend">Vos rouleaux</legend>
+                <div class="form-grid form-grid--2">
+                  <fieldset class="fieldset">
+                    <legend class="field__label">Longueur du rouleau</legend>
+                    <div class="choices choices--inline">
+                      <label class="choice choice--pill">
+                        <input type="radio" name="roll_length" value="25" />
+                        <span class="choice__box"><span class="choice__text"><strong>25 m</strong></span></span>
+                      </label>
+                      <label class="choice choice--pill">
+                        <input type="radio" name="roll_length" value="50" checked />
+                        <span class="choice__box"><span class="choice__text"><strong>50 m</strong></span></span>
+                      </label>
+                    </div>
+                  </fieldset>
+                  <div class="field">
+                    <label class="field__label" for="roll_count">Nombre de rouleaux</label>
+                    <input class="input" id="roll_count" name="roll_count" type="number" inputmode="numeric" min="1" max="200" step="1" value="1" required />
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset" data-quote-group="rail">
+                <legend class="fieldset__legend">Votre rail</legend>
+                <div class="form-grid form-grid--2">
+                  <div class="field">
+                    <label class="field__label" for="rail_length">Longueur totale à équiper</label>
+                    <div class="input-unit">
+                      <input class="input" id="rail_length" name="rail_length" type="number" inputmode="numeric" min="100" max="50000" step="1" placeholder="ex. 3000" data-unit="mm" aria-describedby="rail_length-hint" required />
+                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                    </div>
+                    <p class="field__hint" id="rail_length-hint">Le rail inox est livré en sections de 984 mm.</p>
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="plate_count">Plaques de suspension <span class="optional">(facultatif)</span></label>
+                    <input class="input" id="plate_count" name="plate_count" type="number" inputmode="numeric" min="0" max="2000" step="1" placeholder="ex. 12" />
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset" data-quote-group="format">
+                <legend class="fieldset__legend">Format des lanières <span class="optional">(largeur × épaisseur)</span></legend>
+                <div class="choices choices--inline">
+                  <label class="choice choice--pill">
+                    <input type="radio" name="pvc_format" value="200x2" checked />
+                    <span class="choice__box"><span class="choice__text"><strong>200 × 2 mm</strong></span></span>
+                    <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
+                  </label>
+                  <label class="choice choice--pill">
+                    <input type="radio" name="pvc_format" value="300x2" />
+                    <span class="choice__box"><span class="choice__text"><strong>300 × 2 mm</strong></span></span>
+                    <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
+                  </label>
+                  <label class="choice choice--pill">
+                    <input type="radio" name="pvc_format" value="300x3" />
+                    <span class="choice__box"><span class="choice__text"><strong>300 × 3 mm</strong></span></span>
+                    <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
+                  </label>
+                  <label class="choice choice--pill">
+                    <input type="radio" name="pvc_format" value="400x4" />
+                    <span class="choice__box"><span class="choice__text"><strong>400 × 4 mm</strong></span></span>
+                    <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset" data-quote-group="type">
+                <legend class="fieldset__legend">Matière</legend>
+                <div class="choices choices--3">
+                  <label class="choice choice--swatch">
+                    <input type="radio" name="pvc_type" value="standard" checked />
+                    <span class="choice__box">
+                      <img src="/assets/pvc/standard.webp" width="600" height="369" alt="" loading="lazy" />
+                      <span class="choice__text">
+                        <span><strong>Standard transparent</strong><small>Usage général</small></span>
+                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                      </span>
+                    </span>
+                  </label>
+                  <label class="choice choice--swatch">
+                    <input type="radio" name="pvc_type" value="congelateur" />
+                    <span class="choice__box">
+                      <img src="/assets/pvc/congelateur.webp" width="600" height="369" alt="" loading="lazy" />
+                      <span class="choice__text">
+                        <span><strong>Congélateur (polaire)</strong><small>Souple au grand froid</small></span>
+                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                      </span>
+                    </span>
+                  </label>
+                  <label class="choice choice--swatch">
+                    <input type="radio" name="pvc_type" value="nervure" />
+                    <span class="choice__box">
+                      <img src="/assets/pvc/nervure.webp" width="600" height="369" alt="" loading="lazy" />
+                      <span class="choice__text">
+                        <span><strong>Nervuré</strong><small>Passages de chariots</small></span>
+                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                      </span>
+                    </span>
+                  </label>
+                  <label class="choice choice--swatch">
+                    <input type="radio" name="pvc_type" value="nervure-congelateur" />
+                    <span class="choice__box">
+                      <img src="/assets/pvc/nervure-congelateur.webp" width="600" height="369" alt="" loading="lazy" />
+                      <span class="choice__text">
+                        <span><strong>Nervuré congélateur</strong><small>Froid + trafic intense</small></span>
+                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                      </span>
+                    </span>
+                  </label>
+                  <label class="choice choice--swatch">
+                    <input type="radio" name="pvc_type" value="antistatique" />
+                    <span class="choice__box">
+                      <img src="/assets/pvc/antistatique.webp" width="600" height="369" alt="" loading="lazy" />
+                      <span class="choice__text">
+                        <span><strong>Antistatique</strong><small>Électronique, salles techniques</small></span>
+                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                      </span>
+                    </span>
+                  </label>
+                  <label class="choice choice--swatch">
+                    <input type="radio" name="pvc_type" value="translucide" />
+                    <span class="choice__box">
+                      <img src="/assets/pvc/translucide.webp" width="600" height="369" alt="" loading="lazy" />
+                      <span class="choice__text">
+                        <span><strong>Translucide</strong><small>Lumière sans vis-à-vis</small></span>
+                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                      </span>
+                    </span>
+                  </label>
+                  <label class="choice choice--swatch">
+                    <input type="radio" name="pvc_type" value="occultant" />
+                    <span class="choice__box">
+                      <img src="/assets/pvc/occultant.webp" width="600" height="369" alt="" loading="lazy" />
+                      <span class="choice__text">
+                        <span><strong>Occultant noir</strong><small>Bloque la lumière</small></span>
+                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                      </span>
+                    </span>
+                  </label>
+                  <label class="choice choice--swatch">
+                    <input type="radio" name="pvc_type" value="soudure" />
+                    <span class="choice__box">
+                      <img src="/assets/pvc/soudure.webp" width="600" height="369" alt="" loading="lazy" />
+                      <span class="choice__text">
+                        <span><strong>Soudure</strong><small>EN ISO 25980</small></span>
+                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                      </span>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset" data-quote-group="options">
+                <legend class="visually-hidden">Options</legend>
+                <div class="form-grid form-grid--2">
+                  <fieldset class="fieldset">
+                    <legend class="fieldset__legend">Chevauchement</legend>
+                    <div class="choices">
+                      <label class="choice">
+                        <input type="radio" name="overlap" value="maximum" checked />
+                        <span class="choice__box">
+                          <span class="choice__text"><strong>Maximum</strong><small>Isolation renforcée : froid, extérieur</small></span>
+                          <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                        </span>
+                      </label>
+                      <label class="choice">
+                        <input type="radio" name="overlap" value="minimum" />
+                        <span class="choice__box">
+                          <span class="choice__text"><strong>Minimum</strong><small>Séparation intérieure, plus économique</small></span>
+                          <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                        </span>
+                      </label>
+                    </div>
+                  </fieldset>
+                  <fieldset class="fieldset">
+                    <legend class="fieldset__legend">Bandes de bordure rouges</legend>
+                    <div class="choices">
+                      <label class="choice">
+                        <input type="radio" name="red_borders" value="non" checked />
+                        <span class="choice__box">
+                          <span class="choice__text"><strong>Non</strong><small>Toutes les lanières identiques</small></span>
+                          <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                        </span>
+                      </label>
+                      <label class="choice">
+                        <input type="radio" name="red_borders" value="oui" />
+                        <span class="choice__box">
+                          <span class="choice__text"><strong>Oui</strong><small>Bords du passage signalés</small></span>
+                          <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                        </span>
+                      </label>
+                    </div>
+                  </fieldset>
+                </div>
+              </fieldset>
+            </section>
+
+            <!-- Récapitulatif (colonne de droite sur ordinateur) -->
+            <aside class="quote-recap" data-recap aria-labelledby="recap-titre">
+              <h2 id="recap-titre">Votre demande</h2>
+              <dl class="recap-highlight">
+                <div data-recap-kpi="1"><dt>Surface à couvrir</dt><dd>—</dd></div>
+                <div data-recap-kpi="2"><dt>Rail (984 mm)</dt><dd>—</dd></div>
+              </dl>
+              <dl class="recap-list">
+                <div><dt>Profil</dt><dd data-recap-field="profile">—</dd></div>
+                <div><dt>Produit</dt><dd data-recap-field="product">—</dd></div>
+                <div><dt>Dimensions</dt><dd data-recap-field="dimensions">—</dd></div>
+                <div hidden><dt>Quantité</dt><dd data-recap-field="quantity">—</dd></div>
+                <div><dt>Format</dt><dd data-recap-field="format">—</dd></div>
+                <div><dt>Matière</dt><dd data-recap-field="type">—</dd></div>
+                <div><dt>Options</dt><dd data-recap-field="options">—</dd></div>
+              </dl>
+              <ul class="recap-assurance" role="list">
+                <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-check"></use></svg>Devis gratuit et sans engagement</li>
+                <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-check"></use></svg>Réponse sous {{ site.responseTime }}, jours ouvrés</li>
+                <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-check"></use></svg>Livraison gratuite partout en France</li>
+                <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-check"></use></svg>Garantie 2 ans sur les pièces</li>
+              </ul>
+            </aside>
+
+            <!-- Étape 4 : coordonnées -->
+            <section class="quote-step" aria-labelledby="etape-contact">
+              <div class="quote-step__head">
+                <span class="quote-step__num" aria-hidden="true">4</span>
+                <h2 id="etape-contact">Vos coordonnées</h2>
+              </div>
+              <div class="form-grid form-grid--2">
+                <div class="field">
+                  <label class="field__label" for="name">Nom et prénom</label>
+                  <input class="input" id="name" name="name" type="text" autocomplete="name" minlength="2" maxlength="100" required />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="company">Société <span class="optional" data-company-optional>(facultatif)</span></label>
+                  <input class="input" id="company" name="company" type="text" autocomplete="organization" maxlength="120" />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="email">E-mail</label>
+                  <input class="input" id="email" name="email" type="email" autocomplete="email" maxlength="160" required />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="phone">Téléphone <span class="optional">(facultatif)</span></label>
+                  <input class="input" id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30" />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="postal_code">Code postal de livraison</label>
+                  <input class="input" id="postal_code" name="postal_code" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}" maxlength="5" data-pattern-message="Indiquez un code postal à 5 chiffres." required />
+                </div>
+                <div class="field field--full">
+                  <label class="field__label" for="message">Précisions <span class="optional">(facultatif)</span></label>
+                  <textarea class="textarea" id="message" name="message" maxlength="3000" placeholder="Environnement (froid, extérieur…), type de support, délais souhaités…"></textarea>
+                </div>
+              </div>
+
+              <div class="form quote-submit">
+                <label class="checkbox">
+                  <input type="checkbox" name="consent" value="oui" required />
+                  <span>
+                    J’accepte que mes données soient utilisées pour traiter ma demande de devis.
+                    <a href="/mentions-legales/#donnees-personnelles">En savoir plus</a>
+                  </span>
+                </label>
+
+                <div
+                  class="form-alert form-alert--error"
+                  data-form-alert
+                  data-default-message="L’envoi n’a pas abouti. Réessayez dans un instant ou appelez-nous au {{ site.phone }}."
+                  role="alert"
+                  tabindex="-1"
+                  hidden
+                >
+                  <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-info"></use></svg>
+                  <p data-form-alert-text></p>
+                </div>
+
+                <button class="btn btn--primary btn--lg btn--block" type="submit">
+                  <span class="btn__spinner" aria-hidden="true"></span>
+                  Envoyer ma demande de devis
+                  <svg class="icon icon-arrow btn__label-icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+                </button>
+              </div>
+            </section>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- @include footer.html -->
+  </body>
+</html>

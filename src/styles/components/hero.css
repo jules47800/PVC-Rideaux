@@ -1,0 +1,531 @@
+/* ==========================================================================
+   Heroes : accueil (aiguillage Pro / Particuliers) et pages intérieures
+   ========================================================================== */
+
+/* — Rideau de lanières décoratif (rappel du logo) —
+   <div class="curtain" aria-hidden="true"><span></span>×6</div>          */
+.curtain {
+  --strip-color: rgb(255 255 255 / 0.13);
+  --strip-edge: rgb(255 255 255 / 0.22);
+
+  position: absolute;
+  inset: 0 0 0 auto;
+  display: flex;
+  width: 48%;
+  pointer-events: none;
+}
+
+.curtain span {
+  flex: 1;
+  margin-left: -9%;
+  background: linear-gradient(
+    90deg,
+    var(--strip-edge) 0 1px,
+    var(--strip-color) 1px,
+    transparent 70%,
+    var(--strip-color)
+  );
+  border-radius: 0 0 1rem 1rem;
+  transform-origin: 50% 0;
+  transition: transform 320ms var(--ease-out);
+}
+
+.curtain span:nth-child(odd) {
+  transform: translateY(-2%);
+}
+
+/* — Accueil — */
+.home-hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(2.5rem, 1.5rem + 3vw, 4rem) clamp(3rem, 2rem + 3vw, 4.5rem);
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, var(--blue-100), transparent 70%),
+    linear-gradient(180deg, var(--blue-50), var(--white) 85%);
+}
+
+.home-hero__top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-7);
+  align-items: center;
+}
+
+.home-hero__intro {
+  max-width: 50rem;
+}
+
+/* Photo d'ambiance : uniquement sur grand écran, pour garder l'aiguillage
+   visible sans défilement sur mobile. */
+.home-hero__media {
+  display: none;
+}
+
+@media (min-width: 60rem) {
+  .home-hero__top {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+
+  .home-hero__media {
+    display: block;
+    aspect-ratio: 16 / 11;
+  }
+}
+
+.home-hero__intro > * + * {
+  margin-top: var(--space-5);
+}
+
+.home-hero__intro .lead {
+  max-width: 40rem;
+}
+
+.space-picker {
+  margin-top: clamp(2rem, 1.5rem + 1.5vw, 2.75rem);
+}
+
+.space-picker__label {
+  margin-bottom: var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.space-picker__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+@media (min-width: 52rem) {
+  .space-picker__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-5);
+  }
+}
+
+/* Carte « porte d'entrée » vers un espace */
+.space-card {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-height: 21rem;
+  padding: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  overflow: hidden;
+  color: var(--white);
+  text-decoration: none;
+  background: linear-gradient(150deg, var(--blue-700) 0%, var(--blue-900) 62%, var(--blue-950));
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--duration-press) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
+}
+
+.space-card:active {
+  transform: scale(0.985);
+}
+
+.space-card > :not(.curtain) {
+  position: relative;
+  max-width: 27rem;
+}
+
+.space-card .curtain {
+  z-index: -1;
+  width: 40%;
+}
+
+@media (max-width: 39.99rem) {
+  .space-card .curtain {
+    width: 32%;
+  }
+}
+
+.space-card__chip {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.8rem 0.4rem 0.6rem;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgb(255 255 255 / 0.1);
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: var(--radius-full);
+}
+
+.space-card__chip .icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.space-card__title {
+  color: inherit;
+  font-size: var(--text-2xl);
+}
+
+.space-card__text {
+  color: rgb(255 255 255 / 0.78);
+}
+
+.space-card__list {
+  display: grid;
+  gap: 0.5rem;
+  font-size: var(--text-sm);
+}
+
+.space-card__list li {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.space-card__list .icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.1rem;
+  color: var(--blue-300);
+}
+
+.space-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: var(--space-3);
+  font-weight: 650;
+}
+
+.space-card__cta .icon {
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.space-card--particulier {
+  color: var(--ink-900);
+  background: linear-gradient(150deg, var(--amber-100) 0%, var(--amber-50) 55%, var(--white));
+  box-shadow:
+    inset 0 0 0 1px var(--amber-200),
+    var(--shadow-md);
+}
+
+.space-card--particulier .curtain {
+  --strip-color: rgb(224 138 44 / 0.12);
+  --strip-edge: rgb(224 138 44 / 0.3);
+}
+
+.space-card--particulier .space-card__chip {
+  color: var(--amber-700);
+  background: var(--white);
+  border-color: var(--amber-200);
+}
+
+.space-card--particulier .space-card__text {
+  color: var(--ink-700);
+}
+
+.space-card--particulier .space-card__list .icon,
+.space-card--particulier .space-card__cta {
+  color: var(--amber-700);
+}
+
+/* Survol : les lanières s'écartent, comme au passage d'une personne */
+@media (hover: hover) and (pointer: fine) {
+  .space-card:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .space-card--particulier:hover {
+    box-shadow:
+      inset 0 0 0 1px var(--amber-200),
+      var(--shadow-lg);
+  }
+
+  .space-card:hover .space-card__cta .icon {
+    transform: translateX(4px);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .space-card:hover .curtain span {
+    transition-duration: 520ms;
+  }
+
+  .space-card:hover .curtain span:nth-child(1) {
+    transform: translateX(-30%) rotate(3deg);
+    transition-delay: 60ms;
+  }
+
+  .space-card:hover .curtain span:nth-child(2) {
+    transform: translateX(-36%) rotate(4.5deg);
+    transition-delay: 30ms;
+  }
+
+  .space-card:hover .curtain span:nth-child(3) {
+    transform: translateX(-42%) rotate(6deg);
+  }
+
+  .space-card:hover .curtain span:nth-child(4) {
+    transform: translateX(42%) rotate(-6deg);
+  }
+
+  .space-card:hover .curtain span:nth-child(5) {
+    transform: translateX(36%) rotate(-4.5deg);
+    transition-delay: 30ms;
+  }
+
+  .space-card:hover .curtain span:nth-child(6) {
+    transform: translateX(30%) rotate(-3deg);
+    transition-delay: 60ms;
+  }
+}
+
+/* Preuves rapides sous l'aiguillage */
+.hero-proof {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-3) var(--space-5);
+  margin-top: var(--space-6);
+  font-size: var(--text-sm);
+  font-weight: 550;
+  color: var(--ink-900);
+}
+
+.hero-proof li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.hero-proof .icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--blue-600);
+}
+
+/* — Pages intérieures — */
+.page-hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(2.25rem, 1.5rem + 3vw, 4rem) clamp(3rem, 2rem + 4vw, 5.5rem);
+  background: linear-gradient(180deg, var(--surface-alt), var(--white));
+}
+
+/* Lanières décoratives en fond, derrière le contenu */
+.page-hero > .curtain {
+  width: 26%;
+  opacity: 0.7;
+}
+
+.page-hero--particulier > .curtain {
+  --strip-color: rgb(224 138 44 / 0.08);
+  --strip-edge: rgb(224 138 44 / 0.22);
+}
+
+.page-hero__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 1rem + 4vw, 4.5rem);
+  align-items: center;
+}
+
+@media (min-width: 60rem) {
+  .page-hero__inner--media {
+    grid-template-columns: 1.05fr 0.95fr;
+  }
+}
+
+.page-hero__content > * + * {
+  margin-top: var(--space-5);
+}
+
+.page-hero__content .breadcrumb + * {
+  margin-top: var(--space-6);
+}
+
+.page-hero__content .eyebrow + h1 {
+  margin-top: var(--space-4);
+}
+
+.page-hero__content .lead {
+  max-width: 38rem;
+}
+
+.page-hero h1 {
+  font-size: clamp(2.125rem, 1.5rem + 2.4vw, 3.125rem);
+}
+
+.page-hero--pro {
+  color: rgb(227 238 250 / 0.82);
+  background:
+    radial-gradient(50rem 26rem at 90% 0%, rgb(42 120 200 / 0.35), transparent 70%),
+    linear-gradient(160deg, var(--blue-900), var(--blue-950));
+}
+
+.page-hero--pro h1,
+.page-hero--pro .eyebrow {
+  color: var(--white);
+}
+
+.page-hero--pro .eyebrow::before {
+  color: var(--blue-300);
+}
+
+.page-hero--pro .lead {
+  color: rgb(227 238 250 / 0.82);
+}
+
+.page-hero--particulier {
+  background:
+    radial-gradient(46rem 24rem at 92% 0%, var(--amber-100), transparent 70%),
+    linear-gradient(180deg, var(--amber-50), var(--white));
+}
+
+/* Chiffres clés dans un hero */
+.hero-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
+  gap: var(--space-4);
+  max-width: 40rem;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.page-hero--pro .hero-facts {
+  border-top-color: rgb(255 255 255 / 0.14);
+}
+
+.hero-facts dt {
+  font-size: var(--text-xs);
+}
+
+.hero-facts dd {
+  order: -1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--color-heading);
+}
+
+.hero-facts div {
+  display: flex;
+  flex-direction: column;
+}
+
+.page-hero--pro .hero-facts dd {
+  color: var(--white);
+}
+
+/* Visuel encadré (photo produit) */
+.media-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--surface-sunken);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.media-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-frame--portrait {
+  aspect-ratio: 4 / 5;
+}
+
+.media-frame--contain {
+  background: var(--white);
+  border: 1px solid var(--line);
+}
+
+.media-frame--contain img {
+  object-fit: contain;
+  padding: var(--space-5);
+}
+
+.media-frame .curtain {
+  width: 34%;
+  --strip-color: rgb(255 255 255 / 0.1);
+  --strip-edge: rgb(255 255 255 / 0.35);
+}
+
+.media-frame__badge {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  font-size: var(--text-sm);
+  font-weight: 650;
+  color: var(--ink-900);
+  background: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-md);
+}
+
+.media-frame__badge .icon {
+  color: var(--blue-600);
+}
+
+/* — Fil d'Ariane — */
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.breadcrumb li + li::before {
+  content: '/';
+  margin-inline: 0.55rem;
+  color: var(--ink-300);
+}
+
+.breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.breadcrumb [aria-current='page'] {
+  color: var(--ink-900);
+  font-weight: 550;
+}
+
+.page-hero--pro .breadcrumb ol {
+  color: rgb(227 238 250 / 0.66);
+}
+
+.page-hero--pro .breadcrumb li + li::before {
+  color: rgb(255 255 255 / 0.3);
+}
+
+.page-hero--pro .breadcrumb [aria-current='page'] {
+  color: var(--white);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .breadcrumb a:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+
+  .page-hero--pro .breadcrumb a:hover {
+    color: var(--white);
+  }
+}

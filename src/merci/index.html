@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <!-- @include head.html -->
+    <title>Demande envoyée — merci ! | IsoRideaux</title>
+    <meta name="description" content="Votre demande a bien été envoyée à l’équipe IsoRideaux." />
+    <meta name="robots" content="noindex" />
+  </head>
+  <body>
+    <!-- @include header.html -->
+
+    <main id="contenu">
+      <section class="status-page" aria-labelledby="titre-principal">
+        <div class="container status-page__inner">
+          <span class="status-page__icon"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-check"></use></svg></span>
+          <h1 id="titre-principal">Merci, votre demande est bien partie !</h1>
+          <p class="lead">
+            Notre équipe l’étudie et vous répond sous {{ site.responseTime }} (du lundi au vendredi). Pensez à vérifier
+            vos courriers indésirables si vous ne voyez rien arriver.
+          </p>
+          <p>Une urgence ? Appelez-nous au <a href="tel:{{ site.phoneHref }}"><strong>{{ site.phone }}</strong></a>.</p>
+          <div class="cluster">
+            <a class="btn btn--primary" href="/">Retour à l’accueil</a>
+            <a class="btn btn--secondary" href="/guide-installation/">Lire le guide de pose</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- @include footer.html -->
+  </body>
+</html>

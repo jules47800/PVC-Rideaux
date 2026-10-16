@@ -1,0 +1,125 @@
+/* ==========================================================================
+   Mise en page : conteneurs, sections, grilles
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: calc(var(--container) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.container--narrow {
+  max-width: calc(var(--container-narrow) + var(--gutter) * 2);
+}
+
+.section {
+  padding-block: var(--section-space);
+}
+
+.section--alt {
+  background: var(--surface-alt);
+}
+
+.section--tight {
+  padding-block: calc(var(--section-space) * 0.6);
+}
+
+.section.section--flush-top {
+  padding-top: 0;
+}
+
+/* En-tête de section : sur-titre, titre, chapô */
+.section-head {
+  max-width: 46rem;
+  margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+}
+
+.section-head > * + * {
+  margin-top: var(--space-4);
+}
+
+.section-head--center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.section-head--split {
+  max-width: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.section-head--split > * + * {
+  margin-top: 0;
+}
+
+.section-head--split > div {
+  max-width: 46rem;
+}
+
+.section-head--split > div > * + * {
+  margin-top: var(--space-4);
+}
+
+/* Grilles responsives à colonnes automatiques */
+.grid {
+  display: grid;
+  gap: var(--grid-gap, var(--space-5));
+}
+
+.grid--roomy {
+  --grid-gap: var(--space-6) var(--space-5);
+}
+
+.grid--2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+}
+
+.grid--3 {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+}
+
+.grid--4 {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+}
+
+/* Bloc texte + visuel côte à côte */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 1rem + 4vw, 5rem);
+  align-items: center;
+}
+
+@media (min-width: 60rem) {
+  .split {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .split--reverse > :first-child {
+    order: 2;
+  }
+
+  .split--wide-text {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+}
+
+.stack > * + * {
+  margin-top: var(--stack-space, var(--space-4));
+}
+
+.stack--lg {
+  --stack-space: var(--space-5);
+}
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cluster-gap, var(--space-3));
+}

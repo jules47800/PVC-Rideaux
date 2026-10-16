@@ -1,0 +1,66 @@
+    <footer class="site-footer">
+      <div class="container site-footer__main">
+        <div class="site-footer__brand">
+          <img src="/assets/brand/logo-isorideaux-blanc.webp" width="600" height="204" alt="IsoRideaux — Rideaux PVC" loading="lazy" />
+          <p>Fabricant de rideaux à lanières PVC sur mesure pour les professionnels et les particuliers.</p>
+          <ul class="site-footer__badges">
+            <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-truck"></use></svg>Livraison offerte</li>
+            <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-shield"></use></svg>Garantie 2 ans</li>
+            <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-factory"></use></svg>Fabrication européenne</li>
+          </ul>
+        </div>
+
+        <nav aria-labelledby="footer-pro">
+          <p class="site-footer__title" id="footer-pro">Espace professionnels</p>
+          <ul class="site-footer__links" role="list">
+            <li><a href="/professionnels/kit-rideau-lanieres/">Kits rideaux à lanières</a></li>
+            <li><a href="/professionnels/chambre-froide/">Chambre froide &amp; stores réfrigérés</a></li>
+            <li><a href="/professionnels/rideaux-soudure/">Rideaux de soudure</a></li>
+            <li><a href="/professionnels/lanieres-pvc/">Lanières de remplacement</a></li>
+            <li><a href="/professionnels/rouleaux-rails-accessoires/">Rouleaux, rails &amp; accessoires</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-labelledby="footer-infos">
+          <p class="site-footer__title" id="footer-infos">Informations</p>
+          <ul class="site-footer__links" role="list">
+            <li><a href="/particuliers/">Espace particuliers</a></li>
+            <li><a href="/devis/">Demander un devis</a></li>
+            <li><a href="/guide-installation/">Guide de pose</a></li>
+            <li><a href="/a-propos/">À propos</a></li>
+            <li><a href="/contact/">Contact</a></li>
+          </ul>
+        </nav>
+
+        <div>
+          <p class="site-footer__title">Nous joindre</p>
+          <ul class="site-footer__contact" role="list">
+            <li>
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
+              <a href="tel:{{ site.phoneHref }}">{{ site.phone }}</a>
+            </li>
+            <li>
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-mail"></use></svg>
+              <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+            </li>
+            <li>
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-clock"></use></svg>
+              <span>{{ site.hoursLong }}</span>
+            </li>
+            <li>
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-map-pin"></use></svg>
+              <address>{{ site.address.street }}<br />{{ site.address.postalCode }} {{ site.address.city }}</address>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="container site-footer__bottom">
+        <p>© {{ site.year }} {{ site.name }} — Tous droits réservés.</p>
+        <ul class="site-footer__legal" role="list">
+          <li><a href="/mentions-legales/">Mentions légales</a></li>
+          <li><a href="/mentions-legales/#donnees-personnelles">Données personnelles</a></li>
+          <li><a href="{{ site.legal.cgvUrl }}" rel="noopener" target="_blank">CGV</a></li>
+        </ul>
+      </div>
+    </footer>

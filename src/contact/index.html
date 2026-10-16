@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <!-- @include head.html -->
+    <title>Contact — IsoRideaux, rideaux à lanières PVC</title>
+    <meta
+      name="description"
+      content="Contactez IsoRideaux : 05 54 54 52 21, du lundi au vendredi de 9h à 17h, ou via notre formulaire. Réponse sous 24 h. 1128 Route Gallo-Romaine, 47800 Moustier."
+    />
+  </head>
+  <body>
+    <!-- @include header.html -->
+
+    <main id="contenu">
+      <section class="page-hero" aria-labelledby="titre-principal">
+        <div class="container page-hero__inner">
+          <div class="page-hero__content">
+            <nav class="breadcrumb" aria-label="Fil d’Ariane">
+              <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                  <a itemprop="item" href="/"><span itemprop="name">Accueil</span></a>
+                  <meta itemprop="position" content="1" />
+                </li>
+                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                  <span itemprop="name" aria-current="page">Contact</span>
+                  <meta itemprop="position" content="2" />
+                </li>
+              </ol>
+            </nav>
+            <p class="eyebrow">Contact</p>
+            <h1 id="titre-principal">Parlons de votre projet</h1>
+            <p class="lead">
+              Une question, un conseil, un suivi de commande ? Notre équipe vous répond avec plaisir en moins de
+              {{ site.responseTime }}, hors week-end.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tight section--flush-top" aria-label="Formulaire et coordonnées">
+        <div class="container quote-layout contact-layout">
+          <div class="quote-step">
+            <div class="quote-step__head">
+              <span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-message"></use></svg></span>
+              <h2>Écrivez-nous</h2>
+            </div>
+            <form class="form" action="/api/send.php" method="post" data-async-form data-success-url="/merci/?demande=contact">
+              <input type="hidden" name="form_type" value="contact" />
+              <input type="hidden" name="started_at" value="" />
+              <div class="field--trap" aria-hidden="true">
+                <label>Ne pas remplir ce champ <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+              </div>
+
+              <fieldset class="fieldset">
+                <legend class="fieldset__legend">Vous êtes</legend>
+                <div class="choices choices--2">
+                  <label class="choice">
+                    <input type="radio" name="profile" value="pro" required />
+                    <span class="choice__box">
+                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-building"></use></svg>
+                      <span class="choice__text"><strong>Un professionnel</strong></span>
+                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                    </span>
+                  </label>
+                  <label class="choice">
+                    <input type="radio" name="profile" value="particulier" required />
+                    <span class="choice__box">
+                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-home"></use></svg>
+                      <span class="choice__text"><strong>Un particulier</strong></span>
+                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <div class="form-grid form-grid--2">
+                <div class="field">
+                  <label class="field__label" for="name">Nom et prénom</label>
+                  <input class="input" id="name" name="name" type="text" autocomplete="name" minlength="2" maxlength="100" required />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="company">Société <span class="optional">(facultatif)</span></label>
+                  <input class="input" id="company" name="company" type="text" autocomplete="organization" maxlength="120" />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="email">E-mail</label>
+                  <input class="input" id="email" name="email" type="email" autocomplete="email" maxlength="160" required />
+                </div>
+                <div class="field">
+                  <label class="field__label" for="phone">Téléphone <span class="optional">(facultatif)</span></label>
+                  <input class="input" id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30" />
+                </div>
+                <div class="field field--full">
+                  <label class="field__label" for="subject">Objet</label>
+                  <select class="select" id="subject" name="subject" required>
+                    <option value="">Choisissez un objet…</option>
+                    <option value="information">Demande d’information / conseil</option>
+                    <option value="commande">Suivi de commande</option>
+                    <option value="sav">Pièce de rechange / SAV</option>
+                    <option value="autre">Autre demande</option>
+                  </select>
+                </div>
+                <div class="field field--full">
+                  <label class="field__label" for="message">Votre message</label>
+                  <textarea class="textarea" id="message" name="message" minlength="10" maxlength="3000" required></textarea>
+                </div>
+              </div>
+
+              <label class="checkbox">
+                <input type="checkbox" name="consent" value="oui" required />
+                <span>
+                  J’accepte que mes données soient utilisées pour répondre à ma demande.
+                  <a href="/mentions-legales/#donnees-personnelles">En savoir plus</a>
+                </span>
+              </label>
+
+              <div
+                class="form-alert form-alert--error"
+                data-form-alert
+                data-default-message="L’envoi n’a pas abouti. Réessayez dans un instant ou appelez-nous au {{ site.phone }}."
+                role="alert"
+                tabindex="-1"
+                hidden
+              >
+                <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-info"></use></svg>
+                <p data-form-alert-text></p>
+              </div>
+
+              <button class="btn btn--primary btn--lg" type="submit">
+                <span class="btn__spinner" aria-hidden="true"></span>
+                Envoyer ma demande
+                <svg class="icon icon-arrow btn__label-icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+              </button>
+              <p class="form-legal">Vous préférez un devis chiffré ? <a href="/devis/">Utilisez notre configurateur</a>.</p>
+            </form>
+          </div>
+
+          <aside class="info-card">
+            <h2>Nos coordonnées</h2>
+            <ul class="contact-lines" role="list">
+              <li>
+                <span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg></span>
+                <span><small>Téléphone</small><a href="tel:{{ site.phoneHref }}">{{ site.phone }}</a></span>
+              </li>
+              <li>
+                <span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-mail"></use></svg></span>
+                <span><small>E-mail</small><a href="mailto:{{ site.email }}">{{ site.email }}</a></span>
+              </li>
+              <li>
+                <span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-map-pin"></use></svg></span>
+                <span>
+                  <small>Adresse</small>
+                  <a href="{{ site.mapsUrl }}" target="_blank" rel="noopener">{{ site.address.street }}<br />{{ site.address.postalCode }} {{ site.address.city }}</a>
+                </span>
+              </li>
+            </ul>
+            <hr />
+            <div>
+              <h3>Horaires du service client</h3>
+              <dl class="hours">
+                <div><dt>Lundi</dt><dd>9h – 17h</dd></div>
+                <div><dt>Mardi</dt><dd>9h – 17h</dd></div>
+                <div><dt>Mercredi</dt><dd>9h – 17h</dd></div>
+                <div><dt>Jeudi</dt><dd>9h – 17h</dd></div>
+                <div><dt>Vendredi</dt><dd>9h – 17h</dd></div>
+                <div class="is-closed"><dt>Samedi</dt><dd>Fermé</dd></div>
+                <div class="is-closed"><dt>Dimanche</dt><dd>Fermé</dd></div>
+              </dl>
+            </div>
+            <a class="btn btn--secondary btn--block" href="{{ site.reviewUrl }}" target="_blank" rel="noopener">
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-star"></use></svg>
+              Laisser un avis Google
+            </a>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <!-- @include footer.html -->
+  </body>
+</html>

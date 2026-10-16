@@ -1,0 +1,64 @@
+/* ==========================================================================
+   Apparitions au défilement & préférences de mouvement
+   ========================================================================== */
+
+/*
+ * Les éléments [data-reveal] apparaissent en fondu + léger glissement quand ils
+ * entrent dans l'écran (une seule fois). La classe .js est posée sur <html>
+ * par le script : sans JavaScript, tout reste visible.
+ * Le décalage en cascade (--reveal-index) est calculé par le JS (≤ 6 × 60 ms).
+ */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 560ms var(--ease-out),
+    transform 560ms var(--ease-out);
+  transition-delay: calc(var(--reveal-index, 0) * 60ms);
+}
+
+.js [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/*
+ * Mouvement réduit : on garde les fondus (utiles à la compréhension) mais on
+ * supprime déplacements, défilements continus et animations décoratives.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    transform: none;
+    transition: opacity 200ms ease;
+    transition-delay: 0ms;
+  }
+
+  .logos__track {
+    animation: none;
+  }
+
+  .logos__viewport {
+    mask-image: none;
+  }
+
+  .logos__track,
+  .logos__list {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: auto;
+    padding-right: 0;
+  }
+
+  .logos__list[aria-hidden='true'] {
+    display: none;
+  }
+
+  .space-card,
+  .product-card,
+  .product-card__media img,
+  .mobile-menu,
+  .mobile-menu::backdrop,
+  .dropdown {
+    transition-property: opacity, background-color, border-color, box-shadow, color;
+  }
+}

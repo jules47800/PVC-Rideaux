@@ -1,0 +1,22 @@
+      <!-- Appel à l'action : devis (espace pro / pages générales) -->
+      <section class="section section--tight" aria-labelledby="cta-titre">
+        <div class="container">
+          <div class="cta-band">
+            <div class="curtain" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div>
+              <h2 id="cta-titre">Un projet ? Recevez votre devis sous {{ site.responseTime }}.</h2>
+              <p>Indiquez vos dimensions et le type de PVC souhaité : nous revenons vers vous avec une proposition détaillée et sans engagement.</p>
+            </div>
+            <div class="cluster">
+              <a class="btn btn--white btn--lg" href="/devis/">
+                Configurer mon devis
+                <svg class="icon icon-arrow" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+              </a>
+              <a class="btn btn--ghost-light btn--lg" href="tel:{{ site.phoneHref }}">
+                <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
+                {{ site.phone }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>

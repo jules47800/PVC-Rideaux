@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <!-- @include head.html -->
+    <title>Page introuvable | IsoRideaux</title>
+    <meta name="description" content="Cette page n’existe pas ou a été déplacée." />
+    <meta name="robots" content="noindex" />
+  </head>
+  <body>
+    <!-- @include header.html -->
+
+    <main id="contenu">
+      <section class="status-page" aria-labelledby="titre-principal">
+        <div class="container status-page__inner">
+          <p class="eyebrow">Erreur 404</p>
+          <h1 id="titre-principal">Cette page a passé le rideau…</h1>
+          <p class="lead">
+            Elle n’existe pas ou a été déplacée lors de la refonte du site. Choisissez votre espace pour retrouver votre
+            chemin.
+          </p>
+          <div class="cluster">
+            <a class="btn btn--primary" href="/professionnels/">Espace professionnels</a>
+            <a class="btn btn--secondary" href="/particuliers/">Espace particuliers</a>
+          </div>
+          <p><a class="link-arrow" href="/">Retour à l’accueil <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg></a></p>
+        </div>
+      </section>
+    </main>
+
+    <!-- @include footer.html -->
+  </body>
+</html>

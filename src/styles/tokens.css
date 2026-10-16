@@ -1,0 +1,125 @@
+/*
+ * Design tokens IsoRideaux.
+ * Couleurs de marque relevées sur le logo : marine #003C8A (« Iso ») et bleu #035AAE.
+ */
+:root {
+  /* — Bleus de marque — */
+  --blue-950: #021b3d;
+  --blue-900: #012a5c;
+  --blue-800: #003c8a; /* marine du logo */
+  --blue-700: #024a9e;
+  --blue-600: #035aae; /* bleu du logo */
+  --blue-500: #2a78c8;
+  --blue-300: #8fb8e6;
+  --blue-200: #c4dbf3;
+  --blue-100: #e3eefa;
+  --blue-50: #f2f7fd;
+
+  /* — Accent chaleureux (espace particuliers) — */
+  --amber-700: #9a4d0a;
+  --amber-600: #c2650f;
+  --amber-500: #e08a2c;
+  --amber-200: #f8d6aa;
+  --amber-100: #fcebd5;
+  --amber-50: #fff8ef;
+
+  /* — Neutres (gris bleutés) — */
+  --ink-900: #0d1b2e;
+  --ink-700: #34445a;
+  --ink-500: #5a687d;
+  --ink-300: #a9b4c3;
+  --line: #dde4ee;
+  --line-strong: #c7d1de;
+  --white: #ffffff;
+  --surface: #ffffff;
+  --surface-alt: #f5f8fc;
+  --surface-sunken: #edf2f8;
+
+  /* — Sémantique — */
+  --color-text: var(--ink-700);
+  --color-heading: var(--ink-900);
+  --color-muted: var(--ink-500);
+  --color-primary: var(--blue-600);
+  --color-primary-hover: var(--blue-700);
+  --color-success: #1d7a4f;
+  --color-success-soft: #e7f5ee;
+  --color-error: #b42318;
+  --color-error-soft: #fdecea;
+  --color-star: #f5a524;
+
+  /* Accent de l'espace courant (surchargé par [data-space]) */
+  --space-accent: var(--blue-600);
+  --space-accent-text: var(--blue-600);
+  --space-accent-soft: var(--blue-50);
+
+  /* — Typographie — */
+  --font-sans:
+    'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-display: 'Montserrat Variable', 'Inter Variable', system-ui, sans-serif;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.1875rem;
+  --text-xl: clamp(1.25rem, 1.12rem + 0.55vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --text-3xl: clamp(1.875rem, 1.4rem + 2vw, 2.75rem);
+  --text-4xl: clamp(2.25rem, 1.55rem + 3vw, 3.625rem);
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.35;
+  --leading-normal: 1.65;
+
+  /* — Espacements — */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --section-space: clamp(4rem, 2.75rem + 5vw, 7rem);
+
+  /* — Mise en page — */
+  --container: 75rem;
+  --container-narrow: 48rem;
+  --gutter: clamp(1rem, 0.4rem + 2.6vw, 2rem);
+  --header-height: 4.5rem;
+
+  /* — Formes — */
+  --radius-sm: 0.5rem;
+  --radius: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-full: 999px;
+
+  --shadow-sm: 0 1px 2px rgb(13 27 46 / 0.06), 0 1px 1px rgb(13 27 46 / 0.04);
+  --shadow-md: 0 6px 16px -4px rgb(13 27 46 / 0.1), 0 2px 4px -2px rgb(13 27 46 / 0.06);
+  --shadow-lg: 0 22px 44px -16px rgb(13 27 46 / 0.22), 0 8px 16px -8px rgb(13 27 46 / 0.08);
+  --ring: 0 0 0 3px rgb(3 90 174 / 0.22);
+
+  /* — Mouvement — courbes « fortes », jamais d'ease-in sur l'UI — */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --duration-press: 160ms;
+  --duration-fast: 180ms;
+  --duration-base: 240ms;
+  --duration-drawer: 420ms;
+}
+
+[data-space='particulier'] {
+  --space-accent: var(--amber-600);
+  --space-accent-text: var(--amber-700);
+  --space-accent-soft: var(--amber-50);
+}
+
+@media (max-width: 47.99rem) {
+  :root {
+    --header-height: 4rem;
+  }
+}

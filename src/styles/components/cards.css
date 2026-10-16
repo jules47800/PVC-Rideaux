@@ -1,0 +1,376 @@
+/* ==========================================================================
+   Cartes : avantages, produits, usages, types de PVC
+   ========================================================================== */
+
+/* Pastille d'icône */
+.icon-tile {
+  display: grid;
+  place-items: center;
+  width: 2.875rem;
+  height: 2.875rem;
+  flex-shrink: 0;
+  color: var(--space-accent);
+  background: var(--space-accent-soft);
+  border-radius: var(--radius);
+}
+
+.icon-tile .icon {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.icon-tile--amber {
+  color: var(--amber-600);
+  background: var(--amber-50);
+}
+
+/* — Carte avantage — */
+.feature {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.feature h3 {
+  margin-top: var(--space-2);
+  font-size: var(--text-lg);
+}
+
+.feature p {
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+}
+
+.feature .feature__title {
+  font-size: var(--text-xl);
+}
+
+.feature--plain {
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+/* Liste d'avantages compacte (icône + texte) */
+.check-list {
+  display: grid;
+  gap: var(--space-3);
+  padding: 0;
+  list-style: none;
+}
+
+.check-list li {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.check-list .icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.15rem;
+  color: var(--color-success);
+}
+
+/* — Carte produit — */
+.product-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) ease;
+}
+
+.product-card__media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--surface-sunken);
+}
+
+.product-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 500ms var(--ease-out);
+}
+
+.product-card__media--contain {
+  background: linear-gradient(180deg, var(--white), var(--surface-alt));
+}
+
+.product-card__media--contain img {
+  object-fit: contain;
+  padding: var(--space-4);
+}
+
+.product-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+.product-card__tag {
+  align-self: flex-start;
+  padding: 0.2rem 0.6rem;
+  font-size: var(--text-xs);
+  font-weight: 650;
+  color: var(--blue-700);
+  background: var(--blue-50);
+  border-radius: var(--radius-full);
+}
+
+.product-card__tag--amber {
+  color: var(--amber-700);
+  background: var(--amber-50);
+}
+
+.product-card h3 {
+  font-size: var(--text-lg);
+}
+
+/* Toute la carte est cliquable via le lien du titre */
+.product-card h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-card h3 a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.product-card h3 a:focus-visible {
+  outline: none;
+}
+
+.product-card:has(h3 a:focus-visible) {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.product-card p {
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+}
+
+.product-card .link-arrow {
+  margin-top: auto;
+  padding-top: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.product-card:active {
+  transform: scale(0.99);
+  transition-duration: var(--duration-press);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--blue-200);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .product-card:hover .product-card__media img {
+    transform: scale(1.04);
+  }
+
+  .product-card:hover .link-arrow .icon {
+    transform: translateX(3px);
+  }
+}
+
+/* — Carte usage / secteur (icône + texte, lien optionnel) — */
+.use-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  transition:
+    border-color var(--duration-base) ease,
+    box-shadow var(--duration-base) var(--ease-out);
+}
+
+.use-card h3 {
+  font-size: var(--text-md);
+  letter-spacing: -0.005em;
+}
+
+.use-card p {
+  margin-top: 0.35rem;
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+}
+
+.use-card a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.use-card a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.use-card__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--space-accent-text);
+}
+
+.use-card__more .icon {
+  width: 1rem;
+  height: 1rem;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .use-card:has(a):hover {
+    border-color: var(--blue-200);
+    box-shadow: var(--shadow-md);
+  }
+
+  .use-card:hover .use-card__more .icon {
+    transform: translateX(3px);
+  }
+}
+
+/* — Carte photo (usage particulier illustré) — */
+.photo-card {
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.photo-card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.photo-card img.photo-card__img--contain {
+  object-fit: contain;
+  padding: var(--space-3);
+  background: var(--white);
+}
+
+.photo-card__body {
+  padding: var(--space-5);
+}
+
+.photo-card__body > * + * {
+  margin-top: var(--space-2);
+}
+
+/* — Carte type de PVC — */
+.pvc-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.pvc-card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--white);
+}
+
+.pvc-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.pvc-card h3 {
+  font-size: var(--text-md);
+}
+
+.pvc-card p {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding: var(--space-2) 0 0;
+  list-style: none;
+}
+
+.chip {
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-700);
+  background: var(--surface-sunken);
+  border-radius: var(--radius-full);
+}
+
+/* — Encadré d'information / conseil — */
+.callout {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--blue-50);
+  border: 1px solid var(--blue-100);
+  border-radius: var(--radius-lg);
+}
+
+.callout .icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  color: var(--blue-600);
+}
+
+.callout > div > * + * {
+  margin-top: var(--space-2);
+}
+
+.callout h3 {
+  font-size: var(--text-md);
+}
+
+.callout--amber {
+  background: var(--amber-50);
+  border-color: var(--amber-100);
+}
+
+.callout--amber .icon {
+  color: var(--amber-600);
+}

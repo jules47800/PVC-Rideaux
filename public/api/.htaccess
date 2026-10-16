@@ -1,0 +1,4 @@
+# Le fichier de configuration ne doit jamais être servi directement.
+<Files "config.php">
+  Require all denied
+</Files>
