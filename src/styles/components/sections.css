@@ -91,7 +91,7 @@
   }
 }
 
-.step h3 {
+.step :is(h2, h3) {
   font-size: var(--text-md);
 }
 
@@ -109,7 +109,7 @@
   margin-bottom: 0;
 }
 
-.steps--vertical .step h3 {
+.steps--vertical .step :is(h2, h3) {
   align-self: end;
   margin-top: 0.35rem;
 }
@@ -544,6 +544,17 @@
 
 .status-page .cluster {
   justify-content: center;
+}
+
+.status-page__next {
+  padding: var(--space-5);
+  text-align: left;
+  background: var(--surface-alt);
+  border-radius: var(--radius-lg);
+}
+
+.status-page__next h2 {
+  font-size: var(--text-md);
 }
 
 /* — Schéma « comment mesurer » (SVG en ligne) — */

@@ -1,0 +1,24 @@
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+    <!-- En-tête « mode focus » du configurateur : pas de menu, pour ne pas
+         détourner le visiteur de sa demande de devis. -->
+    <header class="funnel-header">
+      <div class="container funnel-header__inner">
+        <a class="funnel-header__logo" href="/">
+          <img src="/assets/brand/logo-isorideaux.webp" width="600" height="204" alt="IsoRideaux — retour à l’accueil" />
+        </a>
+        <div class="funnel-header__actions">
+          <a class="funnel-header__help" href="tel:{{ site.phoneHref }}">
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
+            <span><small>Une question ?</small> {{ site.phone }}</span>
+          </a>
+          <a class="icon-btn" href="/">
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-close"></use></svg>
+            <span class="visually-hidden">Quitter le configurateur</span>
+          </a>
+        </div>
+      </div>
+      <div class="funnel-progress" data-funnel-progress role="progressbar" aria-label="Progression de votre demande" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+        <span class="funnel-progress__bar"></span>
+      </div>
+    </header>

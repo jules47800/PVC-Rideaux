@@ -7,15 +7,31 @@
               <h2 id="cta-particulier-titre">Prêt à équiper votre garage ou votre atelier ?</h2>
               <p>Donnez-nous les dimensions de votre ouverture : nous vous conseillons le bon rideau et vous envoyons un devis gratuit sous {{ site.responseTime }}.</p>
             </div>
-            <div class="cluster">
-              <a class="btn btn--primary btn--lg" href="/devis/?profil=particulier">
-                Estimer mon rideau
-                <svg class="icon icon-arrow" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
-              </a>
-              <a class="btn btn--secondary btn--lg" href="tel:{{ site.phoneHref }}">
-                <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
-                {{ site.phone }}
-              </a>
+            <div>
+              <form class="cta-quote" action="/devis/" method="get" aria-label="Estimer mon rideau">
+                <input type="hidden" name="profil" value="particulier" />
+                <div class="cta-quote__fields">
+                  <label>
+                    <span class="visually-hidden">Largeur en millimètres</span>
+                    <span class="input-unit">
+                      <input class="input" name="largeur" type="number" inputmode="numeric" min="300" max="20000" placeholder="Largeur" />
+                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                    </span>
+                  </label>
+                  <label>
+                    <span class="visually-hidden">Hauteur en millimètres</span>
+                    <span class="input-unit">
+                      <input class="input" name="hauteur" type="number" inputmode="numeric" min="300" max="8000" placeholder="Hauteur" />
+                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                    </span>
+                  </label>
+                </div>
+                <button class="btn btn--primary btn--lg" type="submit">
+                  Mon devis
+                  <svg class="icon icon-arrow" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+                </button>
+              </form>
+              <p class="cta-band__call">Plutôt par téléphone ? <a href="tel:{{ site.phoneHref }}">{{ site.phone }}</a> ({{ site.hours }})</p>
             </div>
           </div>
         </div>

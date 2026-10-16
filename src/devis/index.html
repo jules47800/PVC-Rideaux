@@ -2,508 +2,599 @@
 <html lang="fr">
   <head>
     <!-- @include head.html -->
-    <title>Devis gratuit rideau à lanières PVC sur mesure | IsoRideaux</title>
+    <title>Devis gratuit en 2 minutes — rideau à lanières PVC sur mesure | IsoRideaux</title>
     <meta
       name="description"
-      content="Configurez votre rideau à lanières PVC (dimensions, matière, options) et recevez un devis détaillé et gratuit sous 24 h. Professionnels et particuliers."
+      content="Configurez votre rideau à lanières PVC en quelques questions et recevez un devis détaillé et gratuit sous 24 h. Professionnels et particuliers, livraison offerte."
     />
     <script type="module" src="/scripts/pages/devis.js"></script>
   </head>
-  <body>
-    <!-- @include header.html -->
+  <body class="funnel-page">
+    <!-- @include header-focus.html -->
 
-    <main id="contenu">
-      <section class="page-hero" aria-labelledby="titre-principal">
-        <div class="container page-hero__inner">
-          <div class="page-hero__content">
-            <nav class="breadcrumb" aria-label="Fil d’Ariane">
-              <ol itemscope itemtype="https://schema.org/BreadcrumbList">
-                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                  <a itemprop="item" href="/"><span itemprop="name">Accueil</span></a>
-                  <meta itemprop="position" content="1" />
-                </li>
-                <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-                  <span itemprop="name" aria-current="page">Demande de devis</span>
-                  <meta itemprop="position" content="2" />
-                </li>
-              </ol>
-            </nav>
-            <p class="eyebrow">Devis gratuit &amp; sans engagement</p>
-            <h1 id="titre-principal">Configurez votre rideau</h1>
-            <p class="lead">
-              Quelques informations suffisent : nous vous envoyons un devis détaillé sous {{ site.responseTime }}
-              (jours ouvrés). Une question ? Appelez le <a href="tel:{{ site.phoneHref }}">{{ site.phone }}</a>.
-            </p>
+    <main id="contenu" class="funnel">
+      <h1 class="visually-hidden">Demande de devis pour un rideau à lanières PVC</h1>
+
+      <div class="container funnel__layout">
+        <!--
+          Sans JavaScript, toutes les étapes s'affichent les unes sous les autres
+          et le formulaire reste utilisable. Avec JavaScript (scripts/pages/devis.js),
+          une seule question est affichée à la fois.
+          Les champs propres à un produit portent data-required : le script ne les
+          rend obligatoires que lorsque leur étape fait partie du parcours.
+        -->
+        <form
+          class="funnel__form"
+          id="devis"
+          action="/api/send.php"
+          method="post"
+          data-async-form
+          data-funnel
+          data-success-url="/merci/?demande=devis"
+        >
+          <input type="hidden" name="form_type" value="devis" />
+          <input type="hidden" name="started_at" value="" />
+          <div class="field--trap" aria-hidden="true">
+            <label>Ne pas remplir ce champ <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
           </div>
-        </div>
-      </section>
 
-      <section class="section section--tight section--flush-top" aria-label="Configurateur de devis">
-        <div class="container">
-          <form
-            class="quote-layout"
-            id="quote-form"
-            action="/api/send.php"
-            method="post"
-            data-async-form
-            data-quote-form
-            data-success-url="/merci/?demande=devis"
-          >
-            <input type="hidden" name="form_type" value="devis" />
-            <input type="hidden" name="started_at" value="" />
-            <div class="field--trap" aria-hidden="true">
-              <label>Ne pas remplir ce champ <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+          <!-- Accueil -->
+          <section class="funnel-step funnel-step--welcome" data-step="welcome" aria-labelledby="q-welcome">
+            <p class="funnel-badge">
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-clock"></use></svg>
+              2 minutes chrono
+            </p>
+            <h2 class="funnel-step__title" id="q-welcome" tabindex="-1">Votre rideau sur mesure, chiffré en 2 minutes</h2>
+            <p class="funnel-step__help">
+              Répondez à quelques questions rapides : un conseiller vous envoie votre devis détaillé sous
+              {{ site.responseTime }}.
+            </p>
+            <ul class="funnel-perks" role="list">
+              <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-check"></use></svg>Gratuit et sans engagement</li>
+              <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-truck"></use></svg>Livraison offerte partout en France</li>
+              <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-shield"></use></svg>Garantie 2 ans sur les pièces</li>
+            </ul>
+            <div class="funnel-step__nav">
+              <button class="btn btn--primary btn--lg" type="button" data-funnel-resume hidden>
+                Reprendre ma demande
+                <svg class="icon icon-arrow" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+              </button>
+              <button class="btn btn--primary btn--lg" type="button" data-funnel-start>
+                <span data-start-label>Commencer</span>
+                <svg class="icon icon-arrow" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+              </button>
+              <span class="funnel-hint" aria-hidden="true">ou appuyez sur <kbd>Entrée ↵</kbd></span>
             </div>
+          </section>
 
-            <!-- Étape 1 : profil -->
-            <section class="quote-step" aria-labelledby="etape-profil">
-              <div class="quote-step__head">
-                <span class="quote-step__num" aria-hidden="true">1</span>
-                <h2 id="etape-profil">Vous êtes…</h2>
-              </div>
-              <fieldset class="fieldset">
-                <legend class="visually-hidden">Votre profil</legend>
-                <div class="choices choices--2">
-                  <label class="choice">
-                    <input type="radio" name="profile" value="pro" required />
-                    <span class="choice__box">
-                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-building"></use></svg>
-                      <span class="choice__text"><strong>Un professionnel</strong><small>Entreprise, commerce, collectivité</small></span>
-                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                    </span>
-                  </label>
-                  <label class="choice">
-                    <input type="radio" name="profile" value="particulier" required />
-                    <span class="choice__box">
-                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-home"></use></svg>
-                      <span class="choice__text"><strong>Un particulier</strong><small>Garage, atelier, dépendance</small></span>
-                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                    </span>
-                  </label>
-                </div>
-              </fieldset>
-            </section>
+          <!-- Profil -->
+          <fieldset class="funnel-step" data-step="profile" data-auto-advance>
+            <legend class="funnel-step__legend">
+              <span class="funnel-step__kicker" data-step-kicker></span>
+              <h2 class="funnel-step__title" tabindex="-1">Vous êtes…</h2>
+            </legend>
+            <p class="funnel-step__help">Nous adaptons nos conseils et votre devis à votre situation.</p>
+            <div class="funnel-choices funnel-choices--2">
+              <label class="choice choice--funnel">
+                <input type="radio" name="profile" value="pro" required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-building"></use></svg>
+                  <span class="choice__text"><strong>Un professionnel</strong><small>Entreprise, commerce, collectivité</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel">
+                <input type="radio" name="profile" value="particulier" required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-home"></use></svg>
+                  <span class="choice__text"><strong>Un particulier</strong><small>Garage, atelier, dépendance</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+              </label>
+            </div>
+            <!-- @include funnel-nav.html -->
+          </fieldset>
 
-            <!-- Étape 2 : produit -->
-            <section class="quote-step" aria-labelledby="etape-produit">
-              <div class="quote-step__head">
-                <span class="quote-step__num" aria-hidden="true">2</span>
-                <h2 id="etape-produit">Votre besoin</h2>
-              </div>
-              <fieldset class="fieldset">
-                <legend class="visually-hidden">Produit souhaité</legend>
-                <div class="choices choices--3">
-                  <label class="choice">
-                    <input type="radio" name="product" value="kit" required checked />
-                    <span class="choice__box">
-                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-package"></use></svg>
-                      <span class="choice__text"><strong>Kit rideau à lanières</strong><small>Complet, sur mesure</small></span>
-                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                    </span>
-                  </label>
-                  <label class="choice">
-                    <input type="radio" name="product" value="chambre-froide" required />
-                    <span class="choice__box">
-                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-snowflake"></use></svg>
-                      <span class="choice__text"><strong>Chambre froide / meuble réfrigéré</strong><small>PVC polaire</small></span>
-                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                    </span>
-                  </label>
-                  <label class="choice">
-                    <input type="radio" name="product" value="soudure" required />
-                    <span class="choice__box">
-                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-flame"></use></svg>
-                      <span class="choice__text"><strong>Rideau de soudure</strong><small>EN ISO 25980</small></span>
-                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                    </span>
-                  </label>
-                  <label class="choice">
-                    <input type="radio" name="product" value="lanieres" required />
-                    <span class="choice__box">
-                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-scissors"></use></svg>
-                      <span class="choice__text"><strong>Lanières de remplacement</strong><small>À l’unité, à la longueur</small></span>
-                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                    </span>
-                  </label>
-                  <label class="choice">
-                    <input type="radio" name="product" value="rouleaux" required />
-                    <span class="choice__box">
-                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-layers"></use></svg>
-                      <span class="choice__text"><strong>Rouleaux PVC</strong><small>25 m ou 50 m</small></span>
-                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                    </span>
-                  </label>
-                  <label class="choice">
-                    <input type="radio" name="product" value="rail" required />
-                    <span class="choice__box">
-                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-rail"></use></svg>
-                      <span class="choice__text"><strong>Rail &amp; accessoires</strong><small>Sections de 984 mm</small></span>
-                      <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                    </span>
-                  </label>
-                </div>
-              </fieldset>
-            </section>
+          <!-- Produit -->
+          <fieldset class="funnel-step" data-step="product" data-auto-advance>
+            <legend class="funnel-step__legend">
+              <span class="funnel-step__kicker" data-step-kicker></span>
+              <h2 class="funnel-step__title" tabindex="-1">Que souhaitez-vous équiper ?</h2>
+            </legend>
+            <div class="funnel-choices funnel-choices--2">
+              <label class="choice choice--funnel">
+                <input type="radio" name="product" value="kit" required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-package"></use></svg>
+                  <span class="choice__text"><strong>Une porte ou une ouverture</strong><small>Kit rideau complet, sur mesure</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel">
+                <input type="radio" name="product" value="chambre-froide" required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-snowflake"></use></svg>
+                  <span class="choice__text"><strong>Une chambre froide</strong><small>Ou un meuble réfrigéré</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel">
+                <input type="radio" name="product" value="soudure" required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-flame"></use></svg>
+                  <span class="choice__text"><strong>Un poste de soudure</strong><small>Rideau EN ISO 25980</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel">
+                <input type="radio" name="product" value="lanieres" required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-scissors"></use></svg>
+                  <span class="choice__text"><strong>Remplacer des lanières</strong><small>À l’unité, à la longueur</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel">
+                <input type="radio" name="product" value="rouleaux" required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-layers"></use></svg>
+                  <span class="choice__text"><strong>Des rouleaux de PVC</strong><small>25 m ou 50 m</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel">
+                <input type="radio" name="product" value="rail" required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-rail"></use></svg>
+                  <span class="choice__text"><strong>Du rail &amp; des accessoires</strong><small>Sections inox de 984 mm</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+              </label>
+            </div>
+            <!-- @include funnel-nav.html -->
+          </fieldset>
 
-            <!-- Étape 3 : configuration (blocs affichés selon le produit) -->
-            <section class="quote-step" aria-labelledby="etape-config">
-              <div class="quote-step__head">
-                <span class="quote-step__num" aria-hidden="true">3</span>
-                <h2 id="etape-config">Votre configuration</h2>
-              </div>
-
-              <fieldset class="fieldset" data-quote-group="dimensions">
-                <legend class="fieldset__legend">Dimensions de l’ouverture</legend>
-                <div class="form-grid form-grid--3">
-                  <div class="field">
-                    <label class="field__label" for="width">Largeur</label>
-                    <div class="input-unit">
-                      <input class="input" id="width" name="width" type="number" inputmode="numeric" min="300" max="20000" step="1" placeholder="ex. 1200" data-unit="mm" required />
-                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
-                    </div>
-                  </div>
-                  <div class="field">
-                    <label class="field__label" for="height">Hauteur</label>
-                    <div class="input-unit">
-                      <input class="input" id="height" name="height" type="number" inputmode="numeric" min="300" max="8000" step="1" placeholder="ex. 2400" data-unit="mm" required />
-                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
-                    </div>
-                  </div>
-                  <div class="field">
-                    <label class="field__label" for="quantity">Nombre de rideaux</label>
-                    <input class="input" id="quantity" name="quantity" type="number" inputmode="numeric" min="1" max="99" step="1" value="1" required />
-                  </div>
-                </div>
-                <div aria-live="polite">
-                  <div class="quote-hint" data-format-hint hidden>
-                    <p>
-                      <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-info"></use></svg>
-                      <span data-format-hint-text></span>
-                    </p>
-                    <button class="btn btn--sm btn--secondary" type="button" data-apply-format>Appliquer ce format</button>
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset class="fieldset" data-quote-group="strips">
-                <legend class="fieldset__legend">Vos lanières</legend>
-                <div class="form-grid form-grid--2">
-                  <div class="field">
-                    <label class="field__label" for="strip_length">Longueur de chaque lanière</label>
-                    <div class="input-unit">
-                      <input class="input" id="strip_length" name="strip_length" type="number" inputmode="numeric" min="100" max="8000" step="1" placeholder="ex. 2100" data-unit="mm" aria-describedby="strip_length-hint" required />
-                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
-                    </div>
-                    <p class="field__hint" id="strip_length-hint">Du crochet du rail au sol, moins 1 cm environ.</p>
-                  </div>
-                  <div class="field">
-                    <label class="field__label" for="strip_count">Nombre de lanières</label>
-                    <input class="input" id="strip_count" name="strip_count" type="number" inputmode="numeric" min="1" max="500" step="1" placeholder="ex. 4" required />
-                  </div>
-                </div>
-                <fieldset class="fieldset">
-                  <legend class="fieldset__legend">Plaques de suspension inox</legend>
-                  <div class="choices choices--inline">
-                    <label class="choice choice--pill">
-                      <input type="radio" name="hanging_plates" value="oui" checked />
-                      <span class="choice__box"><span class="choice__text"><strong>Avec plaques</strong></span></span>
-                    </label>
-                    <label class="choice choice--pill">
-                      <input type="radio" name="hanging_plates" value="non" />
-                      <span class="choice__box"><span class="choice__text"><strong>Lanières seules</strong></span></span>
-                    </label>
-                  </div>
-                </fieldset>
-              </fieldset>
-
-              <fieldset class="fieldset" data-quote-group="roll">
-                <legend class="fieldset__legend">Vos rouleaux</legend>
-                <div class="form-grid form-grid--2">
-                  <fieldset class="fieldset">
-                    <legend class="field__label">Longueur du rouleau</legend>
-                    <div class="choices choices--inline">
-                      <label class="choice choice--pill">
-                        <input type="radio" name="roll_length" value="25" />
-                        <span class="choice__box"><span class="choice__text"><strong>25 m</strong></span></span>
-                      </label>
-                      <label class="choice choice--pill">
-                        <input type="radio" name="roll_length" value="50" checked />
-                        <span class="choice__box"><span class="choice__text"><strong>50 m</strong></span></span>
-                      </label>
-                    </div>
-                  </fieldset>
-                  <div class="field">
-                    <label class="field__label" for="roll_count">Nombre de rouleaux</label>
-                    <input class="input" id="roll_count" name="roll_count" type="number" inputmode="numeric" min="1" max="200" step="1" value="1" required />
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset class="fieldset" data-quote-group="rail">
-                <legend class="fieldset__legend">Votre rail</legend>
-                <div class="form-grid form-grid--2">
-                  <div class="field">
-                    <label class="field__label" for="rail_length">Longueur totale à équiper</label>
-                    <div class="input-unit">
-                      <input class="input" id="rail_length" name="rail_length" type="number" inputmode="numeric" min="100" max="50000" step="1" placeholder="ex. 3000" data-unit="mm" aria-describedby="rail_length-hint" required />
-                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
-                    </div>
-                    <p class="field__hint" id="rail_length-hint">Le rail inox est livré en sections de 984 mm.</p>
-                  </div>
-                  <div class="field">
-                    <label class="field__label" for="plate_count">Plaques de suspension <span class="optional">(facultatif)</span></label>
-                    <input class="input" id="plate_count" name="plate_count" type="number" inputmode="numeric" min="0" max="2000" step="1" placeholder="ex. 12" />
-                  </div>
-                </div>
-              </fieldset>
-
-              <fieldset class="fieldset" data-quote-group="format">
-                <legend class="fieldset__legend">Format des lanières <span class="optional">(largeur × épaisseur)</span></legend>
-                <div class="choices choices--inline">
-                  <label class="choice choice--pill">
-                    <input type="radio" name="pvc_format" value="200x2" checked />
-                    <span class="choice__box"><span class="choice__text"><strong>200 × 2 mm</strong></span></span>
-                    <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
-                  </label>
-                  <label class="choice choice--pill">
-                    <input type="radio" name="pvc_format" value="300x2" />
-                    <span class="choice__box"><span class="choice__text"><strong>300 × 2 mm</strong></span></span>
-                    <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
-                  </label>
-                  <label class="choice choice--pill">
-                    <input type="radio" name="pvc_format" value="300x3" />
-                    <span class="choice__box"><span class="choice__text"><strong>300 × 3 mm</strong></span></span>
-                    <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
-                  </label>
-                  <label class="choice choice--pill">
-                    <input type="radio" name="pvc_format" value="400x4" />
-                    <span class="choice__box"><span class="choice__text"><strong>400 × 4 mm</strong></span></span>
-                    <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
-                  </label>
-                </div>
-              </fieldset>
-
-              <fieldset class="fieldset" data-quote-group="type">
-                <legend class="fieldset__legend">Matière</legend>
-                <div class="choices choices--3">
-                  <label class="choice choice--swatch">
-                    <input type="radio" name="pvc_type" value="standard" checked />
-                    <span class="choice__box">
-                      <img src="/assets/pvc/standard.webp" width="600" height="369" alt="" loading="lazy" />
-                      <span class="choice__text">
-                        <span><strong>Standard transparent</strong><small>Usage général</small></span>
-                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                      </span>
-                    </span>
-                  </label>
-                  <label class="choice choice--swatch">
-                    <input type="radio" name="pvc_type" value="congelateur" />
-                    <span class="choice__box">
-                      <img src="/assets/pvc/congelateur.webp" width="600" height="369" alt="" loading="lazy" />
-                      <span class="choice__text">
-                        <span><strong>Congélateur (polaire)</strong><small>Souple au grand froid</small></span>
-                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                      </span>
-                    </span>
-                  </label>
-                  <label class="choice choice--swatch">
-                    <input type="radio" name="pvc_type" value="nervure" />
-                    <span class="choice__box">
-                      <img src="/assets/pvc/nervure.webp" width="600" height="369" alt="" loading="lazy" />
-                      <span class="choice__text">
-                        <span><strong>Nervuré</strong><small>Passages de chariots</small></span>
-                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                      </span>
-                    </span>
-                  </label>
-                  <label class="choice choice--swatch">
-                    <input type="radio" name="pvc_type" value="nervure-congelateur" />
-                    <span class="choice__box">
-                      <img src="/assets/pvc/nervure-congelateur.webp" width="600" height="369" alt="" loading="lazy" />
-                      <span class="choice__text">
-                        <span><strong>Nervuré congélateur</strong><small>Froid + trafic intense</small></span>
-                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                      </span>
-                    </span>
-                  </label>
-                  <label class="choice choice--swatch">
-                    <input type="radio" name="pvc_type" value="antistatique" />
-                    <span class="choice__box">
-                      <img src="/assets/pvc/antistatique.webp" width="600" height="369" alt="" loading="lazy" />
-                      <span class="choice__text">
-                        <span><strong>Antistatique</strong><small>Électronique, salles techniques</small></span>
-                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                      </span>
-                    </span>
-                  </label>
-                  <label class="choice choice--swatch">
-                    <input type="radio" name="pvc_type" value="translucide" />
-                    <span class="choice__box">
-                      <img src="/assets/pvc/translucide.webp" width="600" height="369" alt="" loading="lazy" />
-                      <span class="choice__text">
-                        <span><strong>Translucide</strong><small>Lumière sans vis-à-vis</small></span>
-                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                      </span>
-                    </span>
-                  </label>
-                  <label class="choice choice--swatch">
-                    <input type="radio" name="pvc_type" value="occultant" />
-                    <span class="choice__box">
-                      <img src="/assets/pvc/occultant.webp" width="600" height="369" alt="" loading="lazy" />
-                      <span class="choice__text">
-                        <span><strong>Occultant noir</strong><small>Bloque la lumière</small></span>
-                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                      </span>
-                    </span>
-                  </label>
-                  <label class="choice choice--swatch">
-                    <input type="radio" name="pvc_type" value="soudure" />
-                    <span class="choice__box">
-                      <img src="/assets/pvc/soudure.webp" width="600" height="369" alt="" loading="lazy" />
-                      <span class="choice__text">
-                        <span><strong>Soudure</strong><small>EN ISO 25980</small></span>
-                        <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                      </span>
-                    </span>
-                  </label>
-                </div>
-              </fieldset>
-
-              <fieldset class="fieldset" data-quote-group="options">
-                <legend class="visually-hidden">Options</legend>
-                <div class="form-grid form-grid--2">
-                  <fieldset class="fieldset">
-                    <legend class="fieldset__legend">Chevauchement</legend>
-                    <div class="choices">
-                      <label class="choice">
-                        <input type="radio" name="overlap" value="maximum" checked />
-                        <span class="choice__box">
-                          <span class="choice__text"><strong>Maximum</strong><small>Isolation renforcée : froid, extérieur</small></span>
-                          <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                        </span>
-                      </label>
-                      <label class="choice">
-                        <input type="radio" name="overlap" value="minimum" />
-                        <span class="choice__box">
-                          <span class="choice__text"><strong>Minimum</strong><small>Séparation intérieure, plus économique</small></span>
-                          <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                        </span>
-                      </label>
-                    </div>
-                  </fieldset>
-                  <fieldset class="fieldset">
-                    <legend class="fieldset__legend">Bandes de bordure rouges</legend>
-                    <div class="choices">
-                      <label class="choice">
-                        <input type="radio" name="red_borders" value="non" checked />
-                        <span class="choice__box">
-                          <span class="choice__text"><strong>Non</strong><small>Toutes les lanières identiques</small></span>
-                          <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                        </span>
-                      </label>
-                      <label class="choice">
-                        <input type="radio" name="red_borders" value="oui" />
-                        <span class="choice__box">
-                          <span class="choice__text"><strong>Oui</strong><small>Bords du passage signalés</small></span>
-                          <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
-                        </span>
-                      </label>
-                    </div>
-                  </fieldset>
-                </div>
-              </fieldset>
-            </section>
-
-            <!-- Récapitulatif (colonne de droite sur ordinateur) -->
-            <aside class="quote-recap" data-recap aria-labelledby="recap-titre">
-              <h2 id="recap-titre">Votre demande</h2>
-              <dl class="recap-highlight">
-                <div data-recap-kpi="1"><dt>Surface à couvrir</dt><dd>—</dd></div>
-                <div data-recap-kpi="2"><dt>Rail (984 mm)</dt><dd>—</dd></div>
-              </dl>
-              <dl class="recap-list">
-                <div><dt>Profil</dt><dd data-recap-field="profile">—</dd></div>
-                <div><dt>Produit</dt><dd data-recap-field="product">—</dd></div>
-                <div><dt>Dimensions</dt><dd data-recap-field="dimensions">—</dd></div>
-                <div hidden><dt>Quantité</dt><dd data-recap-field="quantity">—</dd></div>
-                <div><dt>Format</dt><dd data-recap-field="format">—</dd></div>
-                <div><dt>Matière</dt><dd data-recap-field="type">—</dd></div>
-                <div><dt>Options</dt><dd data-recap-field="options">—</dd></div>
-              </dl>
-              <ul class="recap-assurance" role="list">
-                <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-check"></use></svg>Devis gratuit et sans engagement</li>
-                <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-check"></use></svg>Réponse sous {{ site.responseTime }}, jours ouvrés</li>
-                <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-check"></use></svg>Livraison gratuite partout en France</li>
-                <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-check"></use></svg>Garantie 2 ans sur les pièces</li>
-              </ul>
-            </aside>
-
-            <!-- Étape 4 : coordonnées -->
-            <section class="quote-step" aria-labelledby="etape-contact">
-              <div class="quote-step__head">
-                <span class="quote-step__num" aria-hidden="true">4</span>
-                <h2 id="etape-contact">Vos coordonnées</h2>
-              </div>
-              <div class="form-grid form-grid--2">
-                <div class="field">
-                  <label class="field__label" for="name">Nom et prénom</label>
-                  <input class="input" id="name" name="name" type="text" autocomplete="name" minlength="2" maxlength="100" required />
-                </div>
-                <div class="field">
-                  <label class="field__label" for="company">Société <span class="optional" data-company-optional>(facultatif)</span></label>
-                  <input class="input" id="company" name="company" type="text" autocomplete="organization" maxlength="120" />
-                </div>
-                <div class="field">
-                  <label class="field__label" for="email">E-mail</label>
-                  <input class="input" id="email" name="email" type="email" autocomplete="email" maxlength="160" required />
-                </div>
-                <div class="field">
-                  <label class="field__label" for="phone">Téléphone <span class="optional">(facultatif)</span></label>
-                  <input class="input" id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30" />
-                </div>
-                <div class="field">
-                  <label class="field__label" for="postal_code">Code postal de livraison</label>
-                  <input class="input" id="postal_code" name="postal_code" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}" maxlength="5" data-pattern-message="Indiquez un code postal à 5 chiffres." required />
-                </div>
-                <div class="field field--full">
-                  <label class="field__label" for="message">Précisions <span class="optional">(facultatif)</span></label>
-                  <textarea class="textarea" id="message" name="message" maxlength="3000" placeholder="Environnement (froid, extérieur…), type de support, délais souhaités…"></textarea>
+          <!-- Dimensions (kit, chambre froide, soudure) -->
+          <fieldset class="funnel-step" data-step="dimensions" data-group="dimensions">
+            <legend class="funnel-step__legend">
+              <span class="funnel-step__kicker" data-step-kicker></span>
+              <h2 class="funnel-step__title" tabindex="-1">Quelle est la taille de l’ouverture ?</h2>
+            </legend>
+            <p class="funnel-step__help">En millimètres. Une estimation suffit : nous vérifions tout avec vous avant fabrication.</p>
+            <div class="funnel-fields funnel-fields--2">
+              <div class="field">
+                <label class="field__label" for="width">Largeur</label>
+                <div class="input-unit">
+                  <input class="input input--xl" id="width" name="width" type="number" inputmode="numeric" min="300" max="20000" step="1" placeholder="1200" data-unit="mm" data-required />
+                  <span class="input-unit__suffix" aria-hidden="true">mm</span>
                 </div>
               </div>
-
-              <div class="form quote-submit">
-                <label class="checkbox">
-                  <input type="checkbox" name="consent" value="oui" required />
-                  <span>
-                    J’accepte que mes données soient utilisées pour traiter ma demande de devis.
-                    <a href="/mentions-legales/#donnees-personnelles">En savoir plus</a>
-                  </span>
-                </label>
-
-                <div
-                  class="form-alert form-alert--error"
-                  data-form-alert
-                  data-default-message="L’envoi n’a pas abouti. Réessayez dans un instant ou appelez-nous au {{ site.phone }}."
-                  role="alert"
-                  tabindex="-1"
-                  hidden
-                >
-                  <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-info"></use></svg>
-                  <p data-form-alert-text></p>
+              <div class="field">
+                <label class="field__label" for="height">Hauteur</label>
+                <div class="input-unit">
+                  <input class="input input--xl" id="height" name="height" type="number" inputmode="numeric" min="300" max="8000" step="1" placeholder="2400" data-unit="mm" data-required />
+                  <span class="input-unit__suffix" aria-hidden="true">mm</span>
                 </div>
-
-                <button class="btn btn--primary btn--lg btn--block" type="submit">
-                  <span class="btn__spinner" aria-hidden="true"></span>
-                  Envoyer ma demande de devis
-                  <svg class="icon icon-arrow btn__label-icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+              </div>
+            </div>
+            <div class="funnel-presets" data-presets hidden>
+              <span>Exemples :</span>
+              <button class="chip-btn" type="button" data-preset-width="900" data-preset-height="2100">Porte 900 × 2100</button>
+              <button class="chip-btn" type="button" data-preset-width="2400" data-preset-height="2000">Garage 2400 × 2000</button>
+              <button class="chip-btn" type="button" data-preset-width="3000" data-preset-height="3000">Quai 3000 × 3000</button>
+            </div>
+            <div class="field funnel-quantity">
+              <label class="field__label" for="quantity">Nombre de rideaux identiques</label>
+              <div class="stepper">
+                <button class="stepper__btn" type="button" data-stepper="-1" aria-controls="quantity" hidden>
+                  <span aria-hidden="true">−</span><span class="visually-hidden">Un de moins</span>
+                </button>
+                <input class="input stepper__input" id="quantity" name="quantity" type="number" inputmode="numeric" min="1" max="99" step="1" value="1" data-required />
+                <button class="stepper__btn" type="button" data-stepper="1" aria-controls="quantity" hidden>
+                  <span aria-hidden="true">+</span><span class="visually-hidden">Un de plus</span>
                 </button>
               </div>
-            </section>
-          </form>
-        </div>
-      </section>
+            </div>
+            <!-- @include funnel-nav.html -->
+          </fieldset>
+
+          <!-- Lanières de remplacement -->
+          <fieldset class="funnel-step" data-step="strips" data-group="strips">
+            <legend class="funnel-step__legend">
+              <span class="funnel-step__kicker" data-step-kicker></span>
+              <h2 class="funnel-step__title" tabindex="-1">Combien de lanières, et de quelle longueur ?</h2>
+            </legend>
+            <p class="funnel-step__help">Longueur : du crochet du rail jusqu’au sol, moins 1 cm environ.</p>
+            <div class="funnel-fields funnel-fields--2">
+              <div class="field">
+                <label class="field__label" for="strip_length">Longueur de chaque lanière</label>
+                <div class="input-unit">
+                  <input class="input input--xl" id="strip_length" name="strip_length" type="number" inputmode="numeric" min="100" max="8000" step="1" placeholder="2100" data-unit="mm" data-required />
+                  <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="field__label" for="strip_count">Nombre de lanières</label>
+                <div class="stepper">
+                  <button class="stepper__btn" type="button" data-stepper="-1" aria-controls="strip_count" hidden>
+                    <span aria-hidden="true">−</span><span class="visually-hidden">Une de moins</span>
+                  </button>
+                  <input class="input stepper__input" id="strip_count" name="strip_count" type="number" inputmode="numeric" min="1" max="500" step="1" value="1" data-required />
+                  <button class="stepper__btn" type="button" data-stepper="1" aria-controls="strip_count" hidden>
+                    <span aria-hidden="true">+</span><span class="visually-hidden">Une de plus</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <fieldset class="fieldset funnel-subquestion">
+              <legend class="fieldset__legend">Plaques de suspension inox</legend>
+              <div class="funnel-choices funnel-choices--2">
+                <label class="choice choice--funnel choice--compact">
+                  <input type="radio" name="hanging_plates" value="oui" checked />
+                  <span class="choice__box">
+                    <span class="choice__text"><strong>Avec plaques</strong><small>Prêtes à accrocher</small></span>
+                    <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                  </span>
+                </label>
+                <label class="choice choice--funnel choice--compact">
+                  <input type="radio" name="hanging_plates" value="non" />
+                  <span class="choice__box">
+                    <span class="choice__text"><strong>Lanières seules</strong><small>Je réutilise mes plaques</small></span>
+                    <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+            <!-- @include funnel-nav.html -->
+          </fieldset>
+
+          <!-- Rail -->
+          <fieldset class="funnel-step" data-step="rail" data-group="rail">
+            <legend class="funnel-step__legend">
+              <span class="funnel-step__kicker" data-step-kicker></span>
+              <h2 class="funnel-step__title" tabindex="-1">Quelle longueur de rail ?</h2>
+            </legend>
+            <p class="funnel-step__help">Indiquez la longueur totale à équiper : le rail inox est livré en sections de 984 mm.</p>
+            <div class="funnel-fields funnel-fields--2">
+              <div class="field">
+                <label class="field__label" for="rail_length">Longueur totale</label>
+                <div class="input-unit">
+                  <input class="input input--xl" id="rail_length" name="rail_length" type="number" inputmode="numeric" min="100" max="50000" step="1" placeholder="3000" data-unit="mm" data-required />
+                  <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="field__label" for="plate_count">Plaques de suspension <span class="optional">(facultatif)</span></label>
+                <input class="input input--xl" id="plate_count" name="plate_count" type="number" inputmode="numeric" min="0" max="2000" step="1" placeholder="0" />
+              </div>
+            </div>
+            <!-- @include funnel-nav.html -->
+          </fieldset>
+
+          <!-- Matière -->
+          <fieldset class="funnel-step" data-step="type" data-group="type" data-auto-advance>
+            <legend class="funnel-step__legend">
+              <span class="funnel-step__kicker" data-step-kicker></span>
+              <h2 class="funnel-step__title" tabindex="-1">Quelle matière ?</h2>
+            </legend>
+            <p class="funnel-step__help">Pas sûr ? Le standard transparent convient à la plupart des usages.</p>
+            <div class="funnel-choices funnel-choices--swatches">
+              <label class="choice choice--funnel choice--swatch">
+                <input type="radio" name="pvc_type" value="standard" data-required />
+                <span class="choice__box">
+                  <img src="/assets/pvc/standard.webp" width="600" height="369" alt="" loading="lazy" />
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><span><strong>Standard transparent</strong><small>Usage général</small></span><span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel choice--swatch">
+                <input type="radio" name="pvc_type" value="congelateur" data-required />
+                <span class="choice__box">
+                  <img src="/assets/pvc/congelateur.webp" width="600" height="369" alt="" loading="lazy" />
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><span><strong>Congélateur (polaire)</strong><small>Souple au grand froid</small></span><span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel choice--swatch">
+                <input type="radio" name="pvc_type" value="nervure" data-required />
+                <span class="choice__box">
+                  <img src="/assets/pvc/nervure.webp" width="600" height="369" alt="" loading="lazy" />
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><span><strong>Nervuré</strong><small>Passages fréquents, chariots</small></span><span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel choice--swatch">
+                <input type="radio" name="pvc_type" value="nervure-congelateur" data-required />
+                <span class="choice__box">
+                  <img src="/assets/pvc/nervure-congelateur.webp" width="600" height="369" alt="" loading="lazy" />
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><span><strong>Nervuré congélateur</strong><small>Froid + trafic intense</small></span><span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel choice--swatch">
+                <input type="radio" name="pvc_type" value="antistatique" data-required />
+                <span class="choice__box">
+                  <img src="/assets/pvc/antistatique.webp" width="600" height="369" alt="" loading="lazy" />
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><span><strong>Antistatique</strong><small>Électronique, salles techniques</small></span><span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel choice--swatch">
+                <input type="radio" name="pvc_type" value="translucide" data-required />
+                <span class="choice__box">
+                  <img src="/assets/pvc/translucide.webp" width="600" height="369" alt="" loading="lazy" />
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><span><strong>Translucide</strong><small>Lumière sans vis-à-vis</small></span><span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel choice--swatch">
+                <input type="radio" name="pvc_type" value="occultant" data-required />
+                <span class="choice__box">
+                  <img src="/assets/pvc/occultant.webp" width="600" height="369" alt="" loading="lazy" />
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><span><strong>Occultant noir</strong><small>Bloque la lumière</small></span><span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel choice--swatch">
+                <input type="radio" name="pvc_type" value="soudure" data-required />
+                <span class="choice__box">
+                  <img src="/assets/pvc/soudure.webp" width="600" height="369" alt="" loading="lazy" />
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><span><strong>Soudure</strong><small>EN ISO 25980</small></span><span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span></span>
+                </span>
+              </label>
+            </div>
+            <!-- @include funnel-nav.html -->
+          </fieldset>
+
+          <!-- Format -->
+          <fieldset class="funnel-step" data-step="format" data-group="format" data-auto-advance>
+            <legend class="funnel-step__legend">
+              <span class="funnel-step__kicker" data-step-kicker></span>
+              <h2 class="funnel-step__title" tabindex="-1">Quel format de lanières ?</h2>
+            </legend>
+            <p class="funnel-step__help" data-format-help>Largeur × épaisseur de chaque lanière.</p>
+            <div class="funnel-choices funnel-choices--2">
+              <label class="choice choice--funnel">
+                <input type="radio" name="pvc_format" value="200x2" data-required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><strong>200 × 2 mm</strong><small>Portes jusqu’à 2,50 m environ</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+                <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
+              </label>
+              <label class="choice choice--funnel">
+                <input type="radio" name="pvc_format" value="300x2" data-required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><strong>300 × 2 mm</strong><small>Large et souple</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+                <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
+              </label>
+              <label class="choice choice--funnel">
+                <input type="radio" name="pvc_format" value="300x3" data-required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><strong>300 × 3 mm</strong><small>Ouvertures jusqu’à 4 m environ</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+                <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
+              </label>
+              <label class="choice choice--funnel">
+                <input type="radio" name="pvc_format" value="400x4" data-required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><strong>400 × 4 mm</strong><small>Grandes ouvertures, quais exposés</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+                <span class="badge-reco" data-reco-badge hidden>Conseillé</span>
+              </label>
+            </div>
+            <!-- @include funnel-nav.html -->
+          </fieldset>
+
+          <!-- Rouleaux -->
+          <fieldset class="funnel-step" data-step="roll" data-group="roll">
+            <legend class="funnel-step__legend">
+              <span class="funnel-step__kicker" data-step-kicker></span>
+              <h2 class="funnel-step__title" tabindex="-1">Quels rouleaux vous faut-il ?</h2>
+            </legend>
+            <div class="funnel-choices funnel-choices--2">
+              <label class="choice choice--funnel">
+                <input type="radio" name="roll_length" value="25" data-required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><strong>Rouleau de 25 m</strong><small>Pour quelques ouvertures</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+              </label>
+              <label class="choice choice--funnel">
+                <input type="radio" name="roll_length" value="50" data-required />
+                <span class="choice__box">
+                  <span class="choice__key" aria-hidden="true"></span>
+                  <span class="choice__text"><strong>Rouleau de 50 m</strong><small>Le plus économique au mètre</small></span>
+                  <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                </span>
+              </label>
+            </div>
+            <div class="field funnel-quantity">
+              <label class="field__label" for="roll_count">Nombre de rouleaux</label>
+              <div class="stepper">
+                <button class="stepper__btn" type="button" data-stepper="-1" aria-controls="roll_count" hidden>
+                  <span aria-hidden="true">−</span><span class="visually-hidden">Un de moins</span>
+                </button>
+                <input class="input stepper__input" id="roll_count" name="roll_count" type="number" inputmode="numeric" min="1" max="200" step="1" value="1" data-required />
+                <button class="stepper__btn" type="button" data-stepper="1" aria-controls="roll_count" hidden>
+                  <span aria-hidden="true">+</span><span class="visually-hidden">Un de plus</span>
+                </button>
+              </div>
+            </div>
+            <!-- @include funnel-nav.html -->
+          </fieldset>
+
+          <!-- Options -->
+          <fieldset class="funnel-step" data-step="options" data-group="options">
+            <legend class="funnel-step__legend">
+              <span class="funnel-step__kicker" data-step-kicker></span>
+              <h2 class="funnel-step__title" tabindex="-1">Dernière touche : vos options</h2>
+            </legend>
+            <fieldset class="fieldset funnel-subquestion">
+              <legend class="fieldset__legend">Chevauchement des lanières</legend>
+              <div class="funnel-choices funnel-choices--2">
+                <label class="choice choice--funnel choice--compact">
+                  <input type="radio" name="overlap" value="maximum" checked />
+                  <span class="choice__box">
+                    <span class="choice__text"><strong>Maximum</strong><small>Isolation renforcée : froid, extérieur</small></span>
+                    <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                  </span>
+                </label>
+                <label class="choice choice--funnel choice--compact">
+                  <input type="radio" name="overlap" value="minimum" />
+                  <span class="choice__box">
+                    <span class="choice__text"><strong>Minimum</strong><small>Séparation intérieure, plus économique</small></span>
+                    <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+            <fieldset class="fieldset funnel-subquestion" data-pro-only>
+              <legend class="fieldset__legend">Bandes de bordure rouges <span class="optional">(signalent les bords du passage)</span></legend>
+              <div class="funnel-choices funnel-choices--2">
+                <label class="choice choice--funnel choice--compact">
+                  <input type="radio" name="red_borders" value="non" checked />
+                  <span class="choice__box">
+                    <span class="choice__text"><strong>Non</strong><small>Toutes les lanières identiques</small></span>
+                    <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                  </span>
+                </label>
+                <label class="choice choice--funnel choice--compact">
+                  <input type="radio" name="red_borders" value="oui" />
+                  <span class="choice__box">
+                    <span class="choice__text"><strong>Oui</strong><small>Idéal avec des chariots</small></span>
+                    <span class="choice__check" aria-hidden="true"><svg class="icon"><use href="/icons.svg#i-check"></use></svg></span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+            <!-- @include funnel-nav.html -->
+          </fieldset>
+
+          <!-- Coordonnées -->
+          <fieldset class="funnel-step" data-step="contact">
+            <legend class="funnel-step__legend">
+              <span class="funnel-step__kicker" data-step-kicker></span>
+              <h2 class="funnel-step__title" tabindex="-1">Où vous envoyer votre devis ?</h2>
+            </legend>
+            <p class="funnel-step__help">C’est la dernière étape. Votre devis détaillé arrive sous {{ site.responseTime }}, jours ouvrés.</p>
+
+            <div class="funnel-recap" data-funnel-recap hidden>
+              <p class="funnel-recap__title">Votre demande</p>
+              <dl class="funnel-recap__list">
+                <div data-recap="product"><dt>Produit</dt><dd></dd><button class="funnel-recap__edit" type="button" data-edit-step="product">Modifier</button></div>
+                <div data-recap="size"><dt>Mesures</dt><dd></dd><button class="funnel-recap__edit" type="button" data-edit-step="size">Modifier</button></div>
+                <div data-recap="type"><dt>Matière</dt><dd></dd><button class="funnel-recap__edit" type="button" data-edit-step="type">Modifier</button></div>
+                <div data-recap="format"><dt>Format</dt><dd></dd><button class="funnel-recap__edit" type="button" data-edit-step="format">Modifier</button></div>
+                <div data-recap="options"><dt>Options</dt><dd></dd><button class="funnel-recap__edit" type="button" data-edit-step="options">Modifier</button></div>
+              </dl>
+            </div>
+
+            <div class="form-grid form-grid--2">
+              <div class="field">
+                <label class="field__label" for="name">Nom et prénom</label>
+                <input class="input" id="name" name="name" type="text" autocomplete="name" minlength="2" maxlength="100" required />
+              </div>
+              <div class="field">
+                <label class="field__label" for="email">E-mail</label>
+                <input class="input" id="email" name="email" type="email" autocomplete="email" maxlength="160" required />
+              </div>
+              <div class="field" data-pro-only>
+                <label class="field__label" for="company">Société</label>
+                <input class="input" id="company" name="company" type="text" autocomplete="organization" maxlength="120" data-required />
+              </div>
+              <div class="field">
+                <label class="field__label" for="phone">Téléphone <span class="optional">(pour vous rappeler si besoin)</span></label>
+                <input class="input" id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30" />
+              </div>
+              <div class="field">
+                <label class="field__label" for="postal_code">Code postal de livraison</label>
+                <input class="input" id="postal_code" name="postal_code" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}" maxlength="5" data-pattern-message="Indiquez un code postal à 5 chiffres." required />
+              </div>
+              <div class="field field--full">
+                <label class="field__label" for="message">Une précision ? <span class="optional">(facultatif)</span></label>
+                <textarea class="textarea" id="message" name="message" maxlength="3000" rows="3" placeholder="Environnement, type de support, délai souhaité…"></textarea>
+              </div>
+            </div>
+
+            <label class="checkbox funnel-consent">
+              <input type="checkbox" name="consent" value="oui" required />
+              <span>
+                J’accepte que mes données soient utilisées pour traiter ma demande de devis.
+                <a href="/mentions-legales/#donnees-personnelles">En savoir plus</a>
+              </span>
+            </label>
+
+            <div
+              class="form-alert form-alert--error"
+              data-form-alert
+              data-default-message="L’envoi n’a pas abouti. Réessayez dans un instant ou appelez-nous au {{ site.phone }}."
+              role="alert"
+              tabindex="-1"
+              hidden
+            >
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-info"></use></svg>
+              <p data-form-alert-text></p>
+            </div>
+
+            <div class="funnel-step__nav funnel-step__nav--submit" data-errors-before>
+              <button class="btn btn--ghost" type="button" data-funnel-back>
+                <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-arrow-left"></use></svg>
+                <span class="funnel-nav__label">Retour</span>
+              </button>
+              <button class="btn btn--primary btn--lg funnel-submit" type="submit">
+                <span class="btn__spinner" aria-hidden="true"></span>
+                Recevoir mon devis gratuit
+                <svg class="icon icon-arrow btn__label-icon" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+              </button>
+            </div>
+            <p class="funnel-secure">
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-shield"></use></svg>
+              Sans engagement. Vos données restent confidentielles et ne sont jamais revendues.
+            </p>
+          </fieldset>
+        </form>
+
+        <!-- Aperçu en direct (affiché par le script, sur grand écran) -->
+        <aside class="funnel-preview" data-funnel-preview hidden aria-label="Aperçu de votre demande">
+          <div class="funnel-preview__stage">
+            <svg class="curtain-preview" viewBox="0 0 400 300" data-curtain-preview aria-hidden="true"></svg>
+            <span class="funnel-preview__caption">Aperçu indicatif</span>
+          </div>
+          <dl class="funnel-preview__kpis">
+            <div data-kpi="1"><dt>Surface</dt><dd>—</dd></div>
+            <div data-kpi="2"><dt>Rail inox</dt><dd>—</dd></div>
+          </dl>
+          <ul class="funnel-preview__chips" role="list" data-preview-chips></ul>
+          <figure class="funnel-preview__quote">
+            <div class="review__stars" role="img" aria-label="5 étoiles sur 5">
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-star"></use></svg><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-star"></use></svg><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-star"></use></svg><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-star"></use></svg><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-star"></use></svg>
+            </div>
+            <blockquote><p>« Les rideaux sont arrivés en 4 jours. Le rapport qualité-prix est imbattable. »</p></blockquote>
+            <figcaption>Maurine, cliente IsoRideaux</figcaption>
+          </figure>
+        </aside>
+      </div>
     </main>
 
-    <!-- @include footer.html -->
+    <!-- @include footer-minimal.html -->
   </body>
 </html>

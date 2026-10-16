@@ -44,6 +44,11 @@ main {
   flex: 1;
 }
 
+/* L'attribut hidden doit toujours masquer, même si un composant fixe display */
+[hidden] {
+  display: none !important;
+}
+
 img,
 picture,
 svg,

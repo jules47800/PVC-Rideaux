@@ -79,6 +79,11 @@
   --btn-border: rgb(255 255 255 / 0.28);
 }
 
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-color: var(--ink-700);
+}
+
 .btn--lg {
   min-height: 3.25rem;
   padding: 0.85rem 1.6rem;
@@ -150,6 +155,11 @@
 
   .btn--white:hover {
     --btn-bg: var(--blue-50);
+  }
+
+  .btn--ghost:hover {
+    --btn-bg: var(--surface-sunken);
+    --btn-color: var(--ink-900);
   }
 
   .btn--ghost-light:hover {

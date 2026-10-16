@@ -1,0 +1,32 @@
+          <!-- Mini-formulaire d'estimation : envoie vers le configurateur (GET),
+               qui reprend les dimensions et démarre directement à la bonne question.
+               Fonctionne sans JavaScript. -->
+          <form class="quick-quote home-hero__quote" action="/devis/" method="get" aria-labelledby="estimation-titre">
+            <p class="funnel-badge">
+              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-clock"></use></svg>
+              Devis gratuit en 2 minutes
+            </p>
+            <h2 class="quick-quote__title" id="estimation-titre">Estimez votre rideau</h2>
+            <p class="quick-quote__text">Indiquez la taille de l’ouverture, nous nous occupons du reste.</p>
+            <div class="quick-quote__fields">
+              <label class="field">
+                <span class="field__label">Largeur</span>
+                <span class="input-unit">
+                  <input class="input input--xl" name="largeur" type="number" inputmode="numeric" min="300" max="20000" placeholder="1200" />
+                  <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                </span>
+              </label>
+              <label class="field">
+                <span class="field__label">Hauteur</span>
+                <span class="input-unit">
+                  <input class="input input--xl" name="hauteur" type="number" inputmode="numeric" min="300" max="8000" placeholder="2400" />
+                  <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                </span>
+              </label>
+            </div>
+            <button class="btn btn--primary btn--lg btn--block" type="submit">
+              Commencer mon devis
+              <svg class="icon icon-arrow" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+            </button>
+            <!-- @include cta-note.html -->
+          </form>

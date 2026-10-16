@@ -15,16 +15,19 @@ classique déployé par FTP** (Apache / LiteSpeed + PHP pour les formulaires).
 ## Sommaire
 
 1. [Démarrage rapide](#démarrage-rapide)
-2. [Plan du site](#plan-du-site)
-3. [Structure du projet](#structure-du-projet)
-4. [Gabarits HTML : partials et variables](#gabarits-html--partials-et-variables)
-5. [Modifier le contenu courant](#modifier-le-contenu-courant)
-6. [Formulaires (contact & devis)](#formulaires-contact--devis)
-7. [Déploiement par FTP](#déploiement-par-ftp)
-8. [Redirections depuis l'ancien site](#redirections-depuis-lancien-site)
-9. [SEO, performance, accessibilité](#seo-performance-accessibilité)
-10. [Design system & animations](#design-system--animations)
-11. [Points à valider avec la cliente](#points-à-valider-avec-la-cliente)
+2. [Choix techniques](#choix-techniques)
+3. [Plan du site](#plan-du-site)
+4. [Structure du projet](#structure-du-projet)
+5. [Gabarits HTML : partials et variables](#gabarits-html--partials-et-variables)
+6. [Modifier le contenu courant](#modifier-le-contenu-courant)
+7. [Configurateur de devis](#configurateur-de-devis)
+8. [Conversion](#conversion)
+9. [Formulaires (contact & devis)](#formulaires-contact--devis)
+10. [Déploiement par FTP](#déploiement-par-ftp)
+11. [Redirections depuis l'ancien site](#redirections-depuis-lancien-site)
+12. [SEO, performance, accessibilité](#seo-performance-accessibilité)
+13. [Design system & animations](#design-system--animations)
+14. [Points à valider avec la cliente](#points-à-valider-avec-la-cliente)
 
 ---
 
@@ -45,6 +48,29 @@ envoyées s'affichent dans la console du navigateur et l'on est redirigé vers l
 
 ---
 
+## Choix techniques
+
+**Le site n'est pas une application JavaScript.** Chaque page est un vrai fichier HTML, généré au build et
+lisible tel quel par Google comme par un navigateur sans JavaScript. Vite n'est qu'un **outil de construction** :
+il assemble les fragments communs (en-tête, pied de page…), optimise les images et les styles, puis produit un
+dossier `dist/` de fichiers statiques à envoyer par FTP. Rien ne tourne côté serveur, hormis le petit script
+PHP des formulaires.
+
+| Décision                                         | Pourquoi                                                                                                                                                                                                              |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Site statique multi-pages (plutôt que WordPress) | Hébergement FTP simple et bon marché, pages très rapides, aucune base de données ni extension à mettre à jour, surface d'attaque minimale.                                                                            |
+| Pas de framework (React, Vue…)                   | Un site vitrine a peu d'interactions : un framework ajouterait 40 à 100 Ko de JS et imposerait un rendu serveur pour le référencement. Ici, le HTML porte le contenu, et le JS ne fait qu'**améliorer** l'expérience. |
+| JavaScript « vanilla », en petits modules        | ~3,5 Ko compressés sur les pages courantes (menus, apparitions, carrousel, validation des formulaires). Le configurateur (~6 Ko) n'est chargé que sur `/devis/`.                                                      |
+| Amélioration progressive                         | Sans JS, tout reste lisible et les formulaires fonctionnent (envoi classique, redirection PHP). Avec JS, on ajoute le confort : envoi sans rechargement, parcours pas à pas, aperçu en direct.                        |
+| Vite                                             | Serveur de développement avec rechargement instantané, gabarits (partials), minification, noms de fichiers versionnés pour le cache, sitemap automatique.                                                             |
+| PHP pour les formulaires                         | Disponible sur tous les hébergements mutualisés ; pas besoin de serveur Node ni de service tiers payant.                                                                                                              |
+
+**Contrepartie** : il n'y a pas d'interface d'administration ; modifier un texte se fait dans le HTML puis
+`npm run build`. Si la cliente doit un jour éditer elle-même ses contenus (actualités, par exemple), on pourra
+brancher un CMS « headless » sur ce même socle, sans tout refaire.
+
+---
+
 ## Plan du site
 
 | URL                                             | Page                                                      | Espace       |
@@ -57,7 +83,7 @@ envoyées s'affichent dans la console du navigateur et l'on est redirigé vers l
 | `/professionnels/lanieres-pvc/`                 | Lanières de remplacement                                  | Pro          |
 | `/professionnels/rouleaux-rails-accessoires/`   | Rouleaux 25 / 50 m, rail inox, plaques                    | Pro          |
 | `/particuliers/`                                | Usages, guide de mesure illustré, choix du PVC, pose, FAQ | Particuliers |
-| `/devis/`                                       | Configurateur de devis (4 étapes + récapitulatif)         | —            |
+| `/devis/`                                       | Configurateur pas à pas, une question par écran           | —            |
 | `/guide-installation/`                          | Guide de pose avec les 12 schémas d'accrochage            | —            |
 | `/a-propos/`, `/contact/`, `/mentions-legales/` | Pages institutionnelles                                   | —            |
 | `/merci/`, `/404.html`                          | Pages techniques (non indexées)                           | —            |
@@ -67,8 +93,9 @@ les pages (le modèle familier des sites bancaires). L'espace courant y est soul
 l'accueil propose deux grandes cartes d'entrée. Chaque espace a sa couleur d'accent : bleu marine pour les
 professionnels, ambre chaleureux pour les particuliers.
 
-Le configurateur se pré-remplit depuis l'URL : `/devis/?profil=pro&produit=soudure&format=300x2&type=soudure`.
-Sur les pages d'un espace, les liens « Devis » ajoutent automatiquement le bon `profil`.
+Sur les pages d'un espace (`<body data-space="…">`) ou d'un produit (`<body data-product="…">`), les liens et
+mini-formulaires « Devis » transmettent automatiquement le profil et le produit au configurateur, qui saute
+alors les questions déjà connues.
 
 ---
 
@@ -104,11 +131,13 @@ Sur les pages d'un espace, les liens « Devis » ajoutent automatiquement le bon
     │   ├── main.css          # Point d'entrée (ordre des imports)
     │   ├── tokens.css        # ★ Couleurs, typographie, espacements, courbes d'animation
     │   ├── base.css, layout.css, motion.css, fonts.css
-    │   └── components/       # buttons, header, footer, hero, cards, sections, faq, forms
+    │   └── components/       # buttons, header, footer, hero, cards, sections, faq, forms,
+    │                         # funnel (configurateur), conversion (estimation, barre mobile)
     └── scripts/
         ├── main.js           # Chargé sur toutes les pages
-        ├── modules/          # header, dropdown, mobile-menu, reveal, carousel, forms, quote-links
-        ├── pages/devis.js    # Configurateur (chargé uniquement sur /devis/)
+        ├── modules/          # header, dropdown, mobile-menu, mobile-cta, reveal, carousel,
+        │                     # forms, quote-links, curtain-preview (aperçu SVG du rideau)
+        ├── pages/devis.js    # Configurateur pas à pas (chargé uniquement sur /devis/)
         └── data/catalogue.js # ★ Formats, matières et produits
 ```
 
@@ -136,7 +165,8 @@ Il se charge aussi, sans intervention :
 Une variable inconnue fait **échouer le build** : impossible de publier un `{{ … }}` oublié.
 
 **Partials disponibles** : `head`, `header`, `footer`, `reassurance`, `steps`, `reviews`, `logos`,
-`cta-devis`, `cta-particulier`.
+`cta-devis`, `cta-particulier`, `cta-note`, `quick-quote`, `mobile-cta`, et pour le configurateur
+`header-focus`, `footer-minimal`, `funnel-nav`.
 
 ### Ajouter une page
 
@@ -164,7 +194,7 @@ C'est tout : la page est détectée automatiquement par Vite, ajoutée au `sitem
 
 ### Gamme de produits
 
-La disponibilité des matières par format est définie à trois endroits, à garder alignés :
+La disponibilité des formats par matière est définie à trois endroits, à garder alignés :
 
 1. `src/scripts/data/catalogue.js` — utilisé par le configurateur ;
 2. le tableau de `src/professionnels/kit-rideau-lanieres/index.html` (et les pastilles des cartes PVC) ;
@@ -176,6 +206,56 @@ Les photos sont en **WebP** dans `src/assets/` (Vite ajoute une empreinte au nom
 Pour en ajouter une : l'exporter en WebP (qualité ~78, 1600 px de large pour une photo pleine largeur + une
 version 800 px), puis l'utiliser avec `srcset` comme dans les pages existantes. Toujours renseigner `width`,
 `height` (évite les sauts de mise en page) et un `alt` descriptif (vide si purement décorative).
+
+---
+
+## Configurateur de devis
+
+`/devis/` est un parcours **façon Typeform** : une question par écran, pensé pour donner envie d'aller au bout.
+
+| Étape       | Affichée pour          | Détails                                                                     |
+| ----------- | ---------------------- | --------------------------------------------------------------------------- |
+| Accueil     | arrivée directe        | promesse (2 minutes, gratuit…), reprise d'une demande en cours              |
+| Profil      | tous                   | professionnel / particulier                                                 |
+| Besoin      | tous                   | porte, chambre froide, soudure, lanières, rouleaux, rail                    |
+| Mesures     | selon le produit       | dimensions + exemples en un clic, lanières, rail…                           |
+| Matière     | si plusieurs possibles | vignettes ; seules les matières compatibles avec le produit sont proposées  |
+| Format      | si plusieurs possibles | format **conseillé selon la hauteur**, présélectionné                       |
+| Rouleaux    | rouleaux               | 25 / 50 m (soudure : 25 m uniquement)                                       |
+| Options     | portes, froid, soudure | chevauchement ; bordures rouges (professionnels uniquement)                 |
+| Coordonnées | tous                   | récapitulatif avec liens « Modifier » ; société demandée aux pros seulement |
+
+**Mécaniques « gamifiées »** : barre de progression, « Question 3 sur 6 », passage automatique à la question
+suivante après un clic, raccourcis clavier (lettres A, B, C… et Entrée), compteurs − / +, aperçu SVG du rideau
+qui se dessine en direct (proportions, couleur de la matière, bordures rouges) avec surface et nombre de
+sections de rail, léger balancement des lanières quand on change de matière.
+
+**Ce qui réduit l'abandon** :
+
+- en-tête « mode focus » sans menu (seulement le logo, le téléphone et « Quitter ») ;
+- les questions déjà connues sont sautées (arrivée depuis une page produit, une estimation, une reprise) ;
+- les étapes à réponse unique sont résolues automatiquement (ex. soudure : matière et format) ;
+- la configuration (jamais les coordonnées) est mémorisée 30 jours dans le navigateur pour « Reprendre ma
+  demande » ;
+- après « Modifier » depuis le récapitulatif, « Continuer » ramène directement à la dernière étape ;
+- sur mobile, les boutons restent collés en bas de l'écran, à portée de pouce.
+
+**Paramètres d'URL** : `?profil=pro&produit=kit&type=standard&format=200x2&largeur=1200&hauteur=2400`.
+
+Sans JavaScript, toutes les étapes s'affichent l'une sous l'autre et la demande s'envoie normalement.
+
+---
+
+## Conversion
+
+- **Estimation rapide** dans le hero de l'accueil (largeur + hauteur → configurateur pré-rempli), reprise de
+  l'ancien calculateur de pvcrideaux.fr ; même principe dans les bandeaux « Un projet ? » de chaque page.
+- **Barre d'action collante sur mobile** (« Appeler » / « Devis gratuit en 2 min »), qui apparaît dès que le
+  haut de page est dépassé.
+- **Réassurance au plus près des boutons** : « Gratuit · Sans engagement · Réponse sous 24 h ».
+- **Page « Merci »** qui annonce la suite (étude, devis sous 24 h, fabrication et livraison offerte).
+- **Mesure** : chaque demande aboutit sur `/merci/?demande=devis` ou `/merci/?demande=contact`, une URL à
+  déclarer comme objectif de conversion si un outil de statistiques est ajouté (penser alors à la CSP).
 
 ---
 
@@ -266,7 +346,8 @@ jour `url` dans `site.config.js`.
 - **SEO** : une balise `<title>` et une meta description par page, URL canonique automatique, `sitemap.xml`
   et `robots.txt` générés au build, fil d'Ariane balisé schema.org, données structurées `LocalBusiness` sur
   l'accueil, balises Open Graph pour les partages.
-- **Performance** : HTML statique, ~3 Ko de JS compressé sur les pages courantes, images WebP avec `srcset`
+- **Performance** : HTML statique, ~3,5 Ko de JS compressé sur les pages courantes (~6 Ko de plus sur le
+  configurateur), images WebP avec `srcset`
   et chargement différé, polices auto-hébergées limitées au sous-ensemble latin, cache long sur les fichiers
   versionnés, compression gzip.
 - **RGPD** : aucun cookie, aucun service tiers chargé (pas de Google Fonts ni de carte intégrée) : aucun
@@ -320,8 +401,10 @@ Contenus repris du site actuel ou à confirmer avant la mise en ligne :
 - [ ] **Articles d'actualité** : les 6 articles de l'ancien site sont redirigés ; les migrer si souhaité.
 - [ ] **CGV** : lien vers le document Google existant, à remplacer idéalement par une page dédiée.
 - [ ] **Devis instantané / paiement en ligne** : l'ancien site calculait un prix et encaissait via PayPal.
-      Le nouveau configurateur envoie une demande de devis ; un chiffrage automatique pourra être ajouté dès
-      qu'une grille tarifaire sera fournie.
+      Le nouveau configurateur envoie une demande de devis ; un prix indicatif pourra s'afficher dans l'aperçu
+      dès qu'une grille tarifaire sera fournie.
+- [ ] **Exemples de dimensions** du configurateur (porte 900 × 2100, garage 2400 × 2000, quai 3000 × 3000) :
+      à ajuster selon les demandes les plus fréquentes.
 
 ---
 

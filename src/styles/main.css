@@ -16,5 +16,7 @@
 @import './components/sections.css';
 @import './components/faq.css';
 @import './components/forms.css';
+@import './components/funnel.css';
+@import './components/conversion.css';
 
 @import './motion.css';

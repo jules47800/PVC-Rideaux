@@ -7,15 +7,30 @@
               <h2 id="cta-titre">Un projet ? Recevez votre devis sous {{ site.responseTime }}.</h2>
               <p>Indiquez vos dimensions et le type de PVC souhaité : nous revenons vers vous avec une proposition détaillée et sans engagement.</p>
             </div>
-            <div class="cluster">
-              <a class="btn btn--white btn--lg" href="/devis/">
-                Configurer mon devis
-                <svg class="icon icon-arrow" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
-              </a>
-              <a class="btn btn--ghost-light btn--lg" href="tel:{{ site.phoneHref }}">
-                <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
-                {{ site.phone }}
-              </a>
+            <div>
+              <form class="cta-quote" action="/devis/" method="get" aria-label="Estimer mon rideau">
+                <div class="cta-quote__fields">
+                  <label>
+                    <span class="visually-hidden">Largeur en millimètres</span>
+                    <span class="input-unit">
+                      <input class="input" name="largeur" type="number" inputmode="numeric" min="300" max="20000" placeholder="Largeur" />
+                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                    </span>
+                  </label>
+                  <label>
+                    <span class="visually-hidden">Hauteur en millimètres</span>
+                    <span class="input-unit">
+                      <input class="input" name="hauteur" type="number" inputmode="numeric" min="300" max="8000" placeholder="Hauteur" />
+                      <span class="input-unit__suffix" aria-hidden="true">mm</span>
+                    </span>
+                  </label>
+                </div>
+                <button class="btn btn--white btn--lg" type="submit">
+                  Mon devis
+                  <svg class="icon icon-arrow" aria-hidden="true"><use href="/icons.svg#i-arrow-right"></use></svg>
+                </button>
+              </form>
+              <p class="cta-band__call">Plutôt par téléphone ? <a href="tel:{{ site.phoneHref }}">{{ site.phone }}</a> ({{ site.hours }})</p>
             </div>
           </div>
         </div>

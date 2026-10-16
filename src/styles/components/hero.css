@@ -44,31 +44,47 @@
     linear-gradient(180deg, var(--blue-50), var(--white) 85%);
 }
 
-.home-hero__top {
+/*
+ * Grille de l'accueil. Mobile : accroche, choix de l'espace, estimation.
+ * Bureau : accroche + estimation côte à côte, puis les deux espaces.
+ */
+.home-hero__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'intro'
+    'picker'
+    'quote'
+    'proof';
   gap: var(--space-7);
-  align-items: center;
 }
 
 .home-hero__intro {
+  grid-area: intro;
   max-width: 50rem;
 }
 
-/* Photo d'ambiance : uniquement sur grand écran, pour garder l'aiguillage
-   visible sans défilement sur mobile. */
-.home-hero__media {
-  display: none;
+.home-hero__quote {
+  grid-area: quote;
+}
+
+.home-hero__grid > .space-picker {
+  grid-area: picker;
+}
+
+.home-hero__grid > .hero-proof {
+  grid-area: proof;
 }
 
 @media (min-width: 60rem) {
-  .home-hero__top {
-    grid-template-columns: 1.15fr 0.85fr;
-  }
-
-  .home-hero__media {
-    display: block;
-    aspect-ratio: 16 / 11;
+  .home-hero__grid {
+    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-areas:
+      'intro quote'
+      'picker picker'
+      'proof proof';
+    align-items: center;
+    column-gap: clamp(2rem, 1rem + 4vw, 5rem);
   }
 }
 
@@ -81,7 +97,7 @@
 }
 
 .space-picker {
-  margin-top: clamp(2rem, 1.5rem + 1.5vw, 2.75rem);
+  min-width: 0;
 }
 
 .space-picker__label {
@@ -290,7 +306,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
   gap: var(--space-3) var(--space-5);
-  margin-top: var(--space-6);
   font-size: var(--text-sm);
   font-weight: 550;
   color: var(--ink-900);

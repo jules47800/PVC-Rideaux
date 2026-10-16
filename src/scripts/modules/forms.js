@@ -13,6 +13,11 @@
  *   form[data-success-url]          page de redirection après succès
  *   [data-form-alert]               zone de message global (erreur serveur…)
  *   [data-default-message]          message d'erreur par défaut (sur l'alerte)
+ *
+ * Événements émis sur le formulaire (utilisés par le configurateur pas à pas) :
+ *   form:invalid  { detail.field }  premier champ en erreur ; preventDefault()
+ *                                   empêche la mise au focus automatique.
+ *   form:success                    juste avant la redirection.
  */
 const ERROR_ICON =
   '<svg class="icon" aria-hidden="true"><use href="/icons.svg#i-info"></use></svg>';
@@ -44,9 +49,9 @@ function setupForm(form) {
     event.preventDefault();
     hideAlert(form);
 
-    const invalid = validateForm(form);
+    const invalid = validateFields(form);
     if (invalid.length) {
-      invalid[0].focus();
+      reportInvalid(form, invalid[0]);
       return;
     }
 
@@ -67,12 +72,19 @@ function isValidatable(element) {
   );
 }
 
-/** Valide tous les champs actifs ; renvoie les champs invalides. */
-function validateForm(form) {
+/**
+ * Valide les champs actifs d'un formulaire ou d'une partie de formulaire
+ * (fieldset, étape…) et affiche les messages ; renvoie les champs invalides.
+ *
+ * @param {HTMLFormElement | HTMLFieldSetElement | HTMLElement} container
+ * @returns {HTMLElement[]}
+ */
+export function validateFields(container) {
   const seenGroups = new Set();
   const invalid = [];
+  const fields = container.elements ?? container.querySelectorAll('input, select, textarea');
 
-  for (const field of form.elements) {
+  for (const field of fields) {
     if (!isValidatable(field)) continue;
     if (field.type === 'radio') {
       if (seenGroups.has(field.name)) continue;
@@ -137,7 +149,11 @@ function showError(field, message) {
     error = document.createElement('p');
     error.className = 'field__error';
     error.id = id;
-    host.append(error);
+    // Le message se place avant un éventuel bloc marqué [data-errors-before]
+    // (boutons de navigation du configurateur), sinon en fin de bloc.
+    const anchor = host.querySelector(':scope > [data-errors-before]');
+    if (anchor) anchor.before(error);
+    else host.append(error);
   }
 
   error.innerHTML = ERROR_ICON;
@@ -171,6 +187,12 @@ const removeId = (list, id) =>
     .filter((item) => item && item !== id)
     .join(' ');
 
+/** Signale le premier champ en erreur ; le met au focus sauf si un écouteur s'en charge. */
+function reportInvalid(form, field) {
+  const event = new CustomEvent('form:invalid', { detail: { field }, cancelable: true });
+  if (form.dispatchEvent(event)) field.focus();
+}
+
 /* ---------------------------------------------------------------------------
    Envoi
    ------------------------------------------------------------------------- */
@@ -200,6 +222,7 @@ async function submitForm(form) {
       }
     }
 
+    form.dispatchEvent(new CustomEvent('form:success'));
     window.location.assign(form.dataset.successUrl || '/merci/');
   } catch (error) {
     showAlert(form, error.message);
@@ -216,11 +239,17 @@ function setBusy(button, busy) {
 /** Affiche les erreurs renvoyées par le serveur ({ nomDuChamp: message }). */
 function showServerErrors(form, errors) {
   if (!errors || typeof errors !== 'object') return;
-  Object.entries(errors).forEach(([name, message]) => {
-    const field = form.elements.namedItem(name);
-    const target = field instanceof RadioNodeList ? field[0] : field;
-    if (target) showError(target, message);
-  });
+
+  const targets = Object.entries(errors)
+    .map(([name, message]) => {
+      const field = form.elements.namedItem(name);
+      const target = field instanceof RadioNodeList ? field[0] : field;
+      if (target) showError(target, message);
+      return target;
+    })
+    .filter(Boolean);
+
+  if (targets.length) reportInvalid(form, targets[0]);
 }
 
 function showAlert(form, message) {
