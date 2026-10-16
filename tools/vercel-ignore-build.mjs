@@ -8,6 +8,9 @@
  *     (brouillons, articles programmés) ;
  *   - des images envoyées (public/uploads/) ou la corbeille (content/corbeille/).
  * Dans tous les autres cas, ou au moindre doute, le site est reconstruit.
+ * En particulier, un déploiement sans aucun fichier modifié (bouton « Redeploy »
+ * après un changement de variables d'environnement, Deploy Hook de la tâche
+ * planifiée des articles programmés) est toujours construit : il est volontaire.
  *
  * Convention Vercel : code de sortie 0 = ne pas construire, 1 = construire.
  */
@@ -46,6 +49,8 @@ try {
 } catch {
   build('historique Git insuffisant pour comparer avec le dernier déploiement.');
 }
+
+if (changed.length === 0) build('redéploiement demandé (aucun fichier modifié).');
 
 for (const path of changed) {
   if (IGNORED_PREFIXES.some((prefix) => path.startsWith(prefix))) continue;

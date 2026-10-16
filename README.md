@@ -360,7 +360,8 @@ Adresse : **`/admin/`**. Pensé pour une utilisation sans connaissance technique
   en 1200 × 630, illustrations 1600 px max.), puis enregistrées dans `public/uploads/blog/AAAA/MM/`.
 - **Publication** : chaque enregistrement est un commit sur GitHub ; l'éditeur suit le redéploiement et
   indique « C'est en ligne » (via `/build-info.json`). Les brouillons et les images seules ne déclenchent
-  aucun déploiement (`tools/vercel-ignore-build.mjs`).
+  aucun déploiement (`tools/vercel-ignore-build.mjs`) ; un « Redeploy » manuel, lui, reconstruit toujours le
+  site.
 - **Suppression** : l'article part dans `content/corbeille/` ; pour le restaurer, le replacer dans
   `content/articles/` (ou annuler le commit sur GitHub).
 - **Conflits** : si l'article a été modifié entre-temps (autre onglet, autre personne), l'enregistrement est
