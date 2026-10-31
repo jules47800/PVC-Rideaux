@@ -12,12 +12,12 @@ export default {
   url: 'https://www.isorideaux.fr',
   locale: 'fr_FR',
 
-  phone: '05 54 54 52 21',
-  phoneHref: '+33554545221',
-  email: 'contact@pvcrideaux.fr',
+  phone: '05 53 93 95 53',
+  phoneHref: '+33553939553',
+  email: 'info@isorideaux.fr',
   hours: 'Lun – Ven · 9h – 17h',
   hoursLong: 'Du lundi au vendredi, de 9h à 17h',
-  responseTime: '24 h',
+  responseTime: '24 h', // espace insécable : « 24 » et « h » restent sur la même ligne
 
   address: {
     street: '1128 Route Gallo-Romaine',
@@ -26,8 +26,6 @@ export default {
     region: 'Nouvelle-Aquitaine',
     country: 'FR',
   },
-  mapsUrl:
-    'https://www.google.com/maps/search/?api=1&query=1128+Route+Gallo-Romaine+47800+Moustier',
   reviewUrl: 'https://g.page/r/CVnukwLrue-VEBM/review',
 
   legal: {

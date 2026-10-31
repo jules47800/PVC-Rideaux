@@ -36,7 +36,7 @@
         <div>
           <p class="site-footer__title">Nous joindre</p>
           <ul class="site-footer__contact" role="list">
-            <li>
+            <li class="site-footer__phone">
               <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
               <a href="tel:{{ site.phoneHref }}">{{ site.phone }}</a>
             </li>
@@ -47,10 +47,6 @@
             <li>
               <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-clock"></use></svg>
               <span>{{ site.hoursLong }}</span>
-            </li>
-            <li>
-              <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-map-pin"></use></svg>
-              <address>{{ site.address.street }}<br />{{ site.address.postalCode }} {{ site.address.city }}</address>
             </li>
           </ul>
         </div>

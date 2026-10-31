@@ -503,7 +503,8 @@ Les animations suivent des règles strictes (philosophie « design engineering �
 Contenus repris du site actuel ou à confirmer avant la mise en ligne :
 
 - [ ] **Nom de domaine définitif** (`isorideaux.fr` ?) → `site.config.js` (`url`) et variable `MAIL_FROM`.
-- [ ] **Adresse e-mail** de contact (actuellement `contact@pvcrideaux.fr`).
+- [x] **Coordonnées** : 05 53 93 95 53 et `info@isorideaux.fr` ; adresse postale retirée du site (sauf mentions
+      légales, où elle est obligatoire).
 - [ ] **Mentions légales** : forme juridique, immatriculation (RCS / RM), n° de TVA intracommunautaire,
       directrice de la publication (commentaire `TODO` dans la page). Hébergeur : Vercel Inc., adresse à
       confirmer sur [vercel.com/legal](https://vercel.com/legal) (`site.config.js` → `legal`).

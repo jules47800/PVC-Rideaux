@@ -88,7 +88,7 @@
   --container: 75rem;
   --container-narrow: 48rem;
   --gutter: clamp(1rem, 0.4rem + 2.6vw, 2rem);
-  --header-height: 4.5rem;
+  --header-height: 5.25rem;
 
   /* — Formes — */
   --radius-sm: 0.5rem;
@@ -120,6 +120,6 @@
 
 @media (max-width: 47.99rem) {
   :root {
-    --header-height: 4rem;
+    --header-height: 4.5rem;
   }
 }
