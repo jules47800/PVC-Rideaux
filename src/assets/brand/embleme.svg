@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <mask id="lanieres">
+    <circle cx="24" cy="24" r="24" fill="#fff" />
+    <path d="M13.5-1v26c0 9-3 15-10 23M24-1v27c0 9-3 15-10 23M34.5-1v28c0 9-3 15-10 23" fill="none" stroke="#000" stroke-width="3.2" />
+  </mask>
+  <circle cx="24" cy="24" r="24" fill="#035aae" mask="url(#lanieres)" />
+</svg>

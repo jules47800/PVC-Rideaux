@@ -230,14 +230,14 @@ html:has(dialog[open]) {
   color: var(--space-accent-text);
 }
 
+/* Emblème de la marque (les 4 lanières du logo en cercle), teinté par la couleur du texte */
 .eyebrow::before {
   content: '';
-  width: 0.875rem;
-  height: 0.875rem;
+  width: 1.5rem;
+  height: 1.5rem;
   flex-shrink: 0;
-  background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 4.5px);
-  border-radius: 1px 1px 3px 3px;
-  opacity: 0.9;
+  background: currentColor;
+  mask: url('../assets/brand/embleme.svg') center / contain no-repeat;
 }
 
 .prose {

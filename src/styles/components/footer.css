@@ -95,8 +95,22 @@
   gap: 0.6rem;
 }
 
-.site-footer address {
-  font-style: normal;
+.site-footer__phone {
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+.site-footer__phone a {
+  color: var(--white);
+  white-space: nowrap;
+}
+
+.site-footer__phone .icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  margin-top: 0;
 }
 
 .site-footer__contact .icon {

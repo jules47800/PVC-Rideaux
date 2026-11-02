@@ -107,6 +107,10 @@
             <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
             <span class="visually-hidden">Appeler le {{ site.phone }}</span>
           </a>
+          <a class="site-header__tel" href="tel:{{ site.phoneHref }}">
+            <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg>
+            {{ site.phone }}
+          </a>
           <a class="btn btn--primary site-header__cta" href="/devis/">Devis gratuit</a>
           <button class="icon-btn site-header__burger" type="button" aria-haspopup="dialog" aria-controls="menu-mobile" data-menu-open>
             <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-menu"></use></svg>

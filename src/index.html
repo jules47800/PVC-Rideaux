@@ -22,7 +22,6 @@
         "email": "{{ site.email }}",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "{{ site.address.street }}",
           "postalCode": "{{ site.address.postalCode }}",
           "addressLocality": "{{ site.address.city }}",
           "addressRegion": "{{ site.address.region }}",
@@ -62,9 +61,19 @@
             <p class="eyebrow">Fabricant depuis plus de 15 ans</p>
             <h1 id="titre-principal">Rideaux à lanières PVC <span class="text-accent">sur mesure</span></h1>
             <p class="lead">
-              Isolez vos ouvertures sans freiner le passage. Fabrication européenne, fixations inox, livraison gratuite
-              partout en France.
+              Isolez vos ouvertures sans freiner le passage : rideaux fabriqués à vos dimensions, fixations inox, livrés
+              prêts à poser.
             </p>
+            <ul class="hero-proof" role="list">
+              <li><span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-truck"></use></svg></span>Livraison gratuite en France</li>
+              <li><span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-shield"></use></svg></span>Garantie 2 ans</li>
+              <li><span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-factory"></use></svg></span>Fabrication européenne</li>
+              <li><span class="icon-tile"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-clock"></use></svg></span>Réponse sous {{ site.responseTime }}</li>
+            </ul>
+            <a class="hero-call" href="tel:{{ site.phoneHref }}">
+              <span class="hero-call__icon"><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-phone"></use></svg></span>
+              <span><small>Un conseil, un devis ? Appelez-nous</small>{{ site.phone }}</span>
+            </a>
           </div>
 
           <!-- @include quick-quote.html -->
@@ -115,13 +124,6 @@
               </a>
             </div>
           </div>
-
-          <ul class="hero-proof" role="list">
-            <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-truck"></use></svg>Livraison gratuite en France</li>
-            <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-shield"></use></svg>Garantie 2 ans sur les pièces</li>
-            <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-factory"></use></svg>Fabrication européenne</li>
-            <li><svg class="icon" aria-hidden="true"><use href="/icons.svg#i-clock"></use></svg>Réponse sous {{ site.responseTime }}</li>
-          </ul>
         </div>
       </section>
 
@@ -265,11 +267,46 @@
         </div>
       </section>
 
+      <!-- Où installer des rideaux PVC (infographie fournie par la cliente) -->
+      <section class="section" aria-labelledby="usages-titre">
+        <div class="container">
+          <div class="section-head section-head--center">
+            <p class="eyebrow">Applications</p>
+            <h2 id="usages-titre">Où installer des rideaux PVC&nbsp;?</h2>
+            <p class="lead">De l’isolation extérieure au quai de chargement, un même principe pour chaque zone de votre bâtiment.</p>
+          </div>
+          <img
+            class="illustration"
+            src="/assets/photos/usages-rideaux-pvc.webp"
+            srcset="/assets/photos/usages-rideaux-pvc-800.webp 800w, /assets/photos/usages-rideaux-pvc.webp 1600w"
+            sizes="(min-width: 79rem) 75rem, 100vw"
+            width="1600"
+            height="815"
+            alt="Schéma d’un espace commercial équipé de rideaux PVC : isolation extérieure, cloisonnement, cabines de soudure, chambres froides, quai de chargement et camion frigorifique"
+            loading="lazy"
+          />
+        </div>
+      </section>
+
       <!-- @include steps.html -->
 
       <!-- @include reviews.html -->
 
       <!-- @include blog/latest-posts.html -->
+
+      <!-- Visuel « métiers » fourni par la cliente, volontairement discret -->
+      <section class="section section--tight" aria-label="Ils travaillent avec nos rideaux PVC">
+        <div class="container">
+          <img
+            class="illustration illustration--small"
+            src="/assets/photos/metiers-isorideaux.webp"
+            width="640"
+            height="320"
+            alt="Infirmière, chef de chantier, soudeur, chauffeur et laborantine : « Nous travaillons plus efficacement, confortablement et en toute sécurité grâce aux rideaux PVC fournis par IsoRideaux »"
+            loading="lazy"
+          />
+        </div>
+      </section>
 
       <!-- @include cta-devis.html -->
     </main>
