@@ -9,7 +9,7 @@
     <!-- @include admin/header.html -->
 
     <!--
-      Éditeur d'article : contenu en Markdown (barre d'outils), réglages de
+      Éditeur d'article : contenu en blocs visuels (enregistré en Markdown), réglages de
       publication, image de couverture, référencement et vérification SEO en direct.
       Les champs sont remplis par src/admin/scripts/editor.js :
         /admin/article/              nouvel article
@@ -34,11 +34,19 @@
             <span>Voir sur le site</span>
           </a>
           <button class="btn btn--primary" type="submit" data-save-button>
-            Enregistrer <kbd class="kbd" aria-hidden="true">Ctrl S</kbd>
+            <span data-save-label>Enregistrer</span> <kbd class="kbd" aria-hidden="true">Ctrl S</kbd>
           </button>
         </div>
 
         <div class="notice notice--error" role="alert" data-form-error hidden></div>
+
+        <div class="notice notice--backup" role="status" data-backup hidden>
+          <p>Une version non enregistrée de cet article a été retrouvée sur cet ordinateur (<span data-backup-date></span>).</p>
+          <div class="cluster">
+            <button class="btn btn--small btn--primary" type="button" data-backup-restore>Reprendre cette version</button>
+            <button class="btn btn--small btn--ghost" type="button" data-backup-dismiss>Ignorer</button>
+          </div>
+        </div>
 
         <div class="editor__layout">
           <div class="editor__main">
@@ -53,33 +61,40 @@
                   <button class="tab" type="button" role="tab" id="onglet-ecrire" aria-controls="panneau-ecrire" aria-selected="true" data-tab="write">Écrire</button>
                   <button class="tab" type="button" role="tab" id="onglet-apercu" aria-controls="panneau-apercu" aria-selected="false" tabindex="-1" data-tab="preview">Aperçu</button>
                 </div>
-                <div class="toolbar" role="toolbar" aria-label="Mise en forme" aria-controls="content" data-toolbar>
-                  <button type="button" class="toolbar__btn" data-md="h2" title="Intertitre (H2)">H2</button>
-                  <button type="button" class="toolbar__btn" data-md="h3" title="Sous-intertitre (H3)">H3</button>
-                  <span class="toolbar__sep" aria-hidden="true"></span>
-                  <button type="button" class="toolbar__btn" data-md="bold" title="Gras (Ctrl B)"><b>G</b><span class="visually-hidden"> Gras</span></button>
-                  <button type="button" class="toolbar__btn" data-md="italic" title="Italique (Ctrl I)"><i>I</i><span class="visually-hidden"> Italique</span></button>
-                  <span class="toolbar__sep" aria-hidden="true"></span>
-                  <button type="button" class="toolbar__btn" data-md="ul" title="Liste à puces">• Liste</button>
-                  <button type="button" class="toolbar__btn" data-md="ol" title="Liste numérotée">1. Liste</button>
-                  <button type="button" class="toolbar__btn" data-md="quote" title="Citation ou encadré">« »<span class="visually-hidden"> Citation</span></button>
-                  <span class="toolbar__sep" aria-hidden="true"></span>
-                  <button type="button" class="toolbar__btn" data-md="link" title="Lien (Ctrl K)">Lien</button>
-                  <button type="button" class="toolbar__btn" data-md="image" title="Insérer une image">Image</button>
-                  <button type="button" class="toolbar__btn toolbar__btn--accent" data-md="devis" title="Encart « Demander un devis »">+ Encart devis</button>
+                <div class="toolbar" role="toolbar" aria-label="Mise en forme du texte sélectionné" data-toolbar>
+                  <button type="button" class="toolbar__btn" data-format="bold" title="Mettre en gras le texte sélectionné (Ctrl B)"><b>G</b><span class="visually-hidden"> Gras</span></button>
+                  <button type="button" class="toolbar__btn" data-format="italic" title="Mettre en italique le texte sélectionné (Ctrl I)"><i>I</i><span class="visually-hidden"> Italique</span></button>
+                  <button type="button" class="toolbar__btn" data-format="link" title="Transformer le texte sélectionné en lien (Ctrl K)">
+                    <svg class="icon" aria-hidden="true"><use href="/icons.svg#i-external"></use></svg> Lien
+                  </button>
                 </div>
               </div>
 
               <div id="panneau-ecrire" role="tabpanel" aria-labelledby="onglet-ecrire" data-tab-panel="write">
-                <label class="visually-hidden" for="content">Contenu de l’article</label>
-                <textarea class="md-editor__input" id="content" name="content" rows="24" aria-describedby="aide-markdown"></textarea>
+                <input type="hidden" name="content" />
+                <div class="blocks post-content" data-blocks aria-label="Contenu de l’article" aria-describedby="aide-blocs"></div>
+
+                <div class="block-adder" role="group" aria-labelledby="ajouter-titre" data-block-adder>
+                  <p class="block-adder__title" id="ajouter-titre">Ajouter un bloc</p>
+                  <div class="block-adder__buttons">
+                    <button type="button" class="block-adder__btn" data-add="paragraph"><span class="block-adder__icon" aria-hidden="true">¶</span> Paragraphe</button>
+                    <button type="button" class="block-adder__btn" data-add="h2"><span class="block-adder__icon" aria-hidden="true">H</span> Intertitre</button>
+                    <button type="button" class="block-adder__btn" data-add="ul"><span class="block-adder__icon" aria-hidden="true">•</span> Liste</button>
+                    <button type="button" class="block-adder__btn" data-add="ol"><span class="block-adder__icon" aria-hidden="true">1.</span> Liste numérotée</button>
+                    <button type="button" class="block-adder__btn" data-add="quote"><span class="block-adder__icon" aria-hidden="true">“</span> Citation</button>
+                    <button type="button" class="block-adder__btn" data-add="image"><span class="block-adder__icon" aria-hidden="true">▣</span> Image</button>
+                    <button type="button" class="block-adder__btn block-adder__btn--accent" data-add="devis"><span class="block-adder__icon" aria-hidden="true">€</span> Encart devis</button>
+                  </div>
+                  <p class="field-hint">Le bloc s’ajoute sous celui où vous êtes en train d’écrire.</p>
+                </div>
               </div>
               <div class="md-editor__preview post-content" id="panneau-apercu" role="tabpanel" aria-labelledby="onglet-apercu" tabindex="0" data-tab-panel="preview" hidden></div>
 
-              <p class="md-editor__help" id="aide-markdown">
+              <p class="md-editor__help" id="aide-blocs">
                 <span data-word-count>0 mot</span> ·
-                <code>## Intertitre</code> · <code>**gras**</code> · <code>- liste</code> · <code>[texte](/adresse/)</code> ·
-                <code>[[devis]]</code> pour un encart devis
+                <kbd class="kbd">Entrée</kbd> nouveau paragraphe ·
+                <kbd class="kbd">Maj</kbd> + <kbd class="kbd">Entrée</kbd> retour à la ligne ·
+                sélectionnez du texte pour le mettre en gras ou en faire un lien
               </p>
             </div>
 
@@ -222,24 +237,6 @@
         </form>
       </dialog>
 
-      <dialog class="dialog" data-image-dialog aria-labelledby="image-titre">
-        <form method="dialog" class="stack">
-          <h2 id="image-titre">Insérer une image</h2>
-          <div class="field">
-            <label for="image-file">Image</label>
-            <input class="input" id="image-file" type="file" accept="image/jpeg,image/png,image/webp" required data-image-file />
-          </div>
-          <div class="field">
-            <label for="image-alt">Description de l’image</label>
-            <input class="input" id="image-alt" type="text" required placeholder="ex. Lanières PVC nervurées en rouleau" data-image-alt />
-          </div>
-          <p class="notice notice--error" role="alert" data-image-error hidden></p>
-          <div class="dialog__actions">
-            <button class="btn btn--ghost" type="submit" value="cancel" formnovalidate>Annuler</button>
-            <button class="btn btn--primary" type="submit" value="ok" data-image-submit>Envoyer et insérer</button>
-          </div>
-        </form>
-      </dialog>
     </main>
   </body>
 </html>

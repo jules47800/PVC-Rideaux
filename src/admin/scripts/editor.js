@@ -1,7 +1,8 @@
 /**
  * Éditeur d'article (/admin/article/).
  *
- * - Barre d'outils Markdown, raccourcis clavier (Ctrl B / I / K, Ctrl S pour enregistrer).
+ * - Contenu en blocs visuels (blocks.js), enregistré en Markdown ;
+ *   raccourcis clavier (Ctrl B / I / K, Ctrl S pour enregistrer).
  * - Onglets Écrire / Aperçu (même rendu que le site : lib/blog/markdown.js).
  * - Adresse (slug) générée d'après le titre tant qu'elle n'a pas été modifiée à la main.
  * - Aperçu du résultat Google et compteurs de caractères.
@@ -15,6 +16,7 @@ import { renderMarkdown } from '../../../lib/blog/markdown.js';
 import {
   CATEGORIES,
   STATE_LABELS,
+  fromDateTimeLocal,
   normalizeArticle,
   slugify,
   toDateTimeLocal,
@@ -22,8 +24,8 @@ import {
 import { SITE_PAGES, analyzeArticle } from '../../../lib/blog/seo-checker.js';
 import { fetchArticles, saveArticle, uploadImage } from './api.js';
 import { recordCommit, waitForDeployment } from './deploy.js';
+import { createBlockEditor } from './blocks.js';
 import { prepareImage } from './image.js';
-import { FORMATS, insertBlock, insertLink } from './markdown-toolbar.js';
 import { renderSeoPanel } from './seo-panel.js';
 import { requireSession } from './session.js';
 
@@ -63,7 +65,8 @@ const previewSrc = (url) => localPreviews.get(url) ?? url;
 
 function fillForm(article) {
   field('title').value = article.title;
-  field('content').value = article.content;
+  content.value = article.content;
+  editor.setMarkdown(article.content);
   field('keyword').value = article.keyword;
   field('seoTitle').value = article.seoTitle;
   field('description').value = article.description;
@@ -171,6 +174,77 @@ function refresh() {
     `${result.wordCount} mot${result.wordCount > 1 ? 's' : ''}`;
   updateSerp(article);
   updateCounters(article);
+  updateSaveLabel();
+  if (dirty) writeBackup();
+}
+
+/** Le bouton dit ce qui va se passer : brouillon, publication, programmation, mise à jour. */
+function updateSaveLabel() {
+  const published = form.querySelector('[name="status"]:checked').value === 'published';
+  const date = fromDateTimeLocal(field('publishedAt').value);
+  const label = !published
+    ? 'Enregistrer le brouillon'
+    : date && new Date(date) > new Date()
+      ? 'Programmer'
+      : saved?.state === 'published'
+        ? 'Mettre à jour'
+        : 'Publier';
+  form.querySelector('[data-save-label]').textContent = label;
+}
+
+/* — Copie de secours dans le navigateur (onglet fermé, coupure…) — */
+
+const backupKey = () => `isorideaux-admin:${saved?.slug ?? 'nouvel-article'}`;
+
+function writeBackup() {
+  try {
+    localStorage.setItem(backupKey(), JSON.stringify({ at: Date.now(), values: formValues() }));
+  } catch {
+    // Stockage indisponible (navigation privée…) : pas de copie de secours.
+  }
+}
+
+function readBackup() {
+  try {
+    return JSON.parse(localStorage.getItem(backupKey()) ?? 'null');
+  } catch {
+    return null;
+  }
+}
+
+function clearBackup(key = backupKey()) {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // idem
+  }
+}
+
+function offerBackup(article) {
+  const backup = readBackup();
+  const notice = form.querySelector('[data-backup]');
+  if (!backup?.values) return;
+  const { values } = backup;
+  if (values.content === article.content && values.title === article.title) return clearBackup();
+
+  notice.querySelector('[data-backup-date]').textContent = new Date(backup.at).toLocaleString(
+    'fr-FR',
+    {
+      dateStyle: 'long',
+      timeStyle: 'short',
+    },
+  );
+  notice.hidden = false;
+  notice.querySelector('[data-backup-restore]').onclick = () => {
+    fillForm({ ...article, ...values, publishedAt: fromDateTimeLocal(values.publishedAt) ?? '' });
+    notice.hidden = true;
+    dirty = true;
+    refresh();
+  };
+  notice.querySelector('[data-backup-dismiss]').onclick = () => {
+    clearBackup();
+    notice.hidden = true;
+  };
 }
 
 const scheduleRefresh = () => {
@@ -189,26 +263,46 @@ form.addEventListener('change', scheduleRefresh);
    -------------------------------------------------------------------------- */
 
 const linkDialog = document.querySelector('[data-link-dialog]');
-const imageDialog = document.querySelector('[data-image-dialog]');
+const blocksRoot = form.querySelector('[data-blocks]');
 
-form.querySelector('[data-toolbar]').addEventListener('click', (event) => {
-  const action = event.target.closest('[data-md]')?.dataset.md;
-  if (action === 'link') openLinkDialog();
-  else if (action === 'image') openImageDialog();
-  else if (action) FORMATS[action]?.(content);
+/** Prépare, envoie et mémorise l'aperçu local d'une image ; renvoie son adresse. */
+async function sendImage(file, options) {
+  const image = await prepareImage(file, options);
+  const { url, commit } = await uploadImage(image.blob, image.name);
+  recordCommit(commit);
+  localPreviews.set(url, URL.createObjectURL(image.blob));
+  return url;
+}
+
+const editor = createBlockEditor(blocksRoot, {
+  onChange: () => {
+    content.value = editor.getMarkdown();
+    dirty = true;
+    scheduleRefresh();
+  },
+  sendImage: (file) => sendImage(file),
+  previewSrc,
+  onError: (message) => showStatus(message, 'error'),
 });
 
-content.addEventListener('keydown', (event) => {
-  if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
-  const shortcuts = {
-    b: () => FORMATS.bold(content),
-    i: () => FORMATS.italic(content),
-    k: () => openLinkDialog(),
-  };
-  const shortcut = shortcuts[event.key.toLowerCase()];
-  if (shortcut) {
+// Les boutons de mise en forme ne doivent pas faire perdre la sélection du texte.
+const toolbar = form.querySelector('[data-toolbar]');
+toolbar.addEventListener('mousedown', (event) => event.preventDefault());
+toolbar.addEventListener('click', (event) => {
+  const action = event.target.closest('[data-format]')?.dataset.format;
+  if (action === 'link') openLinkDialog();
+  else if (action) editor.format(action);
+});
+
+form.querySelector('[data-block-adder]').addEventListener('click', (event) => {
+  const type = event.target.closest('[data-add]')?.dataset.add;
+  if (type) editor.add(type);
+});
+
+blocksRoot.addEventListener('keydown', (event) => {
+  if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k') {
     event.preventDefault();
-    shortcut();
+    openLinkDialog();
   }
 });
 
@@ -221,11 +315,8 @@ document.addEventListener('keydown', (event) => {
 
 /* — Fenêtre « Insérer un lien » — */
 
-let linkRange = { start: 0, end: 0 };
-
 function openLinkDialog({ url = '', label = '' } = {}) {
-  linkRange = { start: content.selectionStart, end: content.selectionEnd };
-  const selected = content.value.slice(linkRange.start, linkRange.end);
+  const selected = editor.rememberSelection();
   linkDialog.querySelector('[data-link-text]').value = selected || label;
   linkDialog.querySelector('[data-link-url]').value = url;
   linkDialog.returnValue = '';
@@ -247,62 +338,13 @@ linkDialog.addEventListener('close', () => {
   if (linkDialog.returnValue !== 'ok') return;
   const url = linkDialog.querySelector('[data-link-url]').value.trim();
   if (!url) return;
-  insertLink(content, {
-    text: linkDialog.querySelector('[data-link-text]').value.trim(),
-    url,
-    ...linkRange,
-  });
+  editor.insertLink({ text: linkDialog.querySelector('[data-link-text]').value.trim(), url });
 });
 
 // Liens suggérés par la vérification SEO
 seoPanel.addEventListener('click', (event) => {
   const button = event.target.closest('[data-insert-link]');
   if (button) openLinkDialog({ url: button.dataset.insertLink, label: button.dataset.linkLabel });
-});
-
-/* — Images — */
-
-/** Prépare, envoie et mémorise l'aperçu local d'une image ; renvoie son adresse. */
-async function sendImage(file, options) {
-  const image = await prepareImage(file, options);
-  const { url, commit } = await uploadImage(image.blob, image.name);
-  recordCommit(commit);
-  localPreviews.set(url, URL.createObjectURL(image.blob));
-  return url;
-}
-
-let imageRange = { start: 0, end: 0 };
-const imageForm = imageDialog.querySelector('form');
-const imageError = imageDialog.querySelector('[data-image-error]');
-
-function openImageDialog() {
-  imageRange = { start: content.selectionStart, end: content.selectionEnd };
-  imageForm.reset();
-  imageError.hidden = true;
-  imageDialog.showModal();
-}
-
-imageForm.addEventListener('submit', async (event) => {
-  if (event.submitter?.value !== 'ok') return;
-  event.preventDefault();
-  if (!imageForm.reportValidity()) return;
-
-  const submit = imageDialog.querySelector('[data-image-submit]');
-  const file = imageDialog.querySelector('[data-image-file]').files[0];
-  const alt = imageDialog.querySelector('[data-image-alt]').value.trim().replace(/[[\]]/g, '');
-  submit.disabled = true;
-  submit.textContent = 'Envoi en cours…';
-  try {
-    const url = await sendImage(file);
-    imageDialog.close();
-    insertBlock(content, `![${alt}](${url})`, imageRange);
-  } catch (error) {
-    imageError.textContent = error.message;
-    imageError.hidden = false;
-  } finally {
-    submit.disabled = false;
-    submit.textContent = 'Envoyer et insérer';
-  }
 });
 
 /* --------------------------------------------------------------------------
@@ -474,6 +516,7 @@ async function save() {
   saveButton.disabled = true;
   showStatus('Enregistrement…');
 
+  const previousBackupKey = backupKey();
   try {
     const result = await saveArticle({
       article: formValues(),
@@ -482,6 +525,8 @@ async function save() {
     });
     applySaved(result.article);
     dirty = false;
+    clearBackup(previousBackupKey);
+    clearBackup();
     otherArticles = otherArticles.filter((article) => article.slug !== result.article.slug);
     refresh();
     recordCommit(result.commit);
@@ -548,4 +593,5 @@ if (params.has('slug') && !existing) {
   autosizeTitle();
   fillLinkSuggestions();
   refresh();
+  offerBackup(article);
 }

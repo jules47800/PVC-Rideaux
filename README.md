@@ -152,7 +152,7 @@ alors les questions déjà connues.
 │   ├── icons.svg, favicons, og-image.jpg, logo-isorideaux.png, site.webmanifest
 └── src/                      # Racine Vite : 1 fichier .html = 1 page
     ├── index.html, professionnels/…, particuliers/, devis/, contact/ …
-    ├── admin/                # Espace d'édition : pages, styles et scripts
+    ├── admin/                # Espace d'édition : pages, styles et scripts (éditeur par blocs)
     ├── blog/                 # GÉNÉRÉ depuis content/ (non versionné)
     ├── partials/             # Fragments partagés (blog/ : généré, non versionné)
     ├── assets/               # Images (WebP optimisés), logos partenaires
@@ -348,10 +348,16 @@ Adresse : **`/admin/`**. Pensé pour une utilisation sans connaissance technique
 - **Tableau de bord** : articles en ligne / programmés / brouillons, note SEO de chaque article et note
   moyenne, **actions prioritaires** sur les articles en ligne, **12 idées d'articles** (expression clé et plan
   prêts à remplir), rappel des bons réflexes.
-- **Éditeur** : barre d'outils Markdown (intertitres, gras, listes, citation, lien, image, encart devis),
-  raccourcis `Ctrl B / I / K`, `Ctrl S` pour enregistrer, onglet **Aperçu** (même rendu que le site), adresse
-  générée d'après le titre, **aperçu du résultat Google** avec compteurs de caractères, catégorie, date de
-  publication (programmation), image de couverture.
+- **Éditeur par blocs** (`src/admin/scripts/blocks.js`) : paragraphes, intertitres, listes, citations,
+  images et encart devis s'affichent comme sur le site ; boutons « Ajouter un bloc », monter / descendre /
+  supprimer, changement de type, gras / italique / lien sur la sélection, collage en texte simple (une ligne =
+  un paragraphe). L'article reste enregistré en Markdown (`blocks-model.js`) : ce que l'éditeur ne sait pas
+  représenter (tableau, code…) devient un bloc « avancé » conservé tel quel. `node tools/check-blocks.mjs`
+  vérifie que la conversion ne change le rendu d'aucun article. Aussi : onglet **Aperçu**, `Ctrl S`, bouton
+  qui dit ce qu'il va faire (Publier, Programmer, Enregistrer le brouillon, Mettre à jour), **copie de
+  secours** dans le navigateur proposée à la réouverture, adresse générée d'après le titre, **aperçu du
+  résultat Google** avec compteurs de caractères, catégorie, date de publication (programmation), image de
+  couverture.
 - **Vérification SEO en direct** (`lib/blog/seo-checker.js`) : une note sur 100 et, pour chaque point, l'action
   concrète à mener (expression clé dans le titre, longueur, intertitres, liens internes avec **pages suggérées
   à lier en un clic**, encart devis, images décrites, doublons d'expression entre articles, fraîcheur…).
