@@ -6,6 +6,7 @@
  * et la clé de session sont calculées dans le navigateur, puis à copier dans
  * les variables d'environnement Vercel. Le mot de passe n'est envoyé nulle part.
  */
+import './i18n.js';
 import { request } from './api.js';
 
 const PBKDF2_ITERATIONS = 600_000;

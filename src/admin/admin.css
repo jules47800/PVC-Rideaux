@@ -218,6 +218,38 @@ code {
   text-underline-offset: 0.2em;
 }
 
+/* Langue de l'espace d'édition (i18n.js) */
+.lang-switch {
+  display: inline-flex;
+  margin-left: auto;
+  padding: 0.15rem;
+  background: var(--background);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.admin-nav:not([hidden]) + .lang-switch {
+  margin-left: 0;
+}
+
+.lang-switch button {
+  padding: 0.25rem 0.6rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: calc(var(--radius) - 0.2rem);
+  cursor: pointer;
+}
+
+.lang-switch button[aria-pressed='true'] {
+  color: var(--navy);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
 .admin-main {
   max-width: 82rem;
   margin-inline: auto;

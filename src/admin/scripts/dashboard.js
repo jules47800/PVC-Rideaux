@@ -2,6 +2,7 @@
  * Tableau de bord (/admin/) : liste des articles avec leur note SEO, compteurs,
  * actions prioritaires sur les articles en ligne, idées d'articles, mise à la corbeille.
  */
+import { t } from './i18n.js';
 import { availableIdeas } from '../../../lib/blog/ideas.js';
 import { CATEGORIES, STATE_LABELS, escapeHtml, formatDateFr } from '../../../lib/blog/model.js';
 import { analyzeArticle, prioritizedActions, scoreLevel } from '../../../lib/blog/seo-checker.js';
@@ -125,7 +126,9 @@ $('[data-articles-body]').addEventListener('click', async (event) => {
   if (!button) return;
   if (
     !window.confirm(
-      `Placer « ${button.dataset.title} » dans la corbeille ? Il ne sera plus visible sur le site.`,
+      t(
+        `Placer « ${button.dataset.title} » dans la corbeille ? Il ne sera plus visible sur le site.`,
+      ),
     )
   ) {
     return;
@@ -142,7 +145,7 @@ $('[data-articles-body]').addEventListener('click', async (event) => {
     );
     window.location.reload();
   } catch (error) {
-    window.alert(error.message);
+    window.alert(t(error.message));
     button.disabled = false;
   }
 });

@@ -11,6 +11,7 @@
  * - Enregistrement sans recharger la page, suivi de la mise en ligne,
  *   avertissement en cas de modifications non enregistrées.
  */
+import { locale } from './i18n.js';
 import { ARTICLE_IDEAS, articleFromIdea } from '../../../lib/blog/ideas.js';
 import { renderMarkdown } from '../../../lib/blog/markdown.js';
 import {
@@ -228,7 +229,7 @@ function offerBackup(article) {
   if (values.content === article.content && values.title === article.title) return clearBackup();
 
   notice.querySelector('[data-backup-date]').textContent = new Date(backup.at).toLocaleString(
-    'fr-FR',
+    locale,
     {
       dateStyle: 'long',
       timeStyle: 'short',
@@ -574,7 +575,7 @@ if (params.has('slug') && !existing) {
   document.querySelector('[data-editor-loading]').textContent =
     'Article introuvable : il a peut-être été supprimé ou renommé.';
 } else {
-  const idea = ARTICLE_IDEAS[Number(params.get('idee'))];
+  const idea = params.has('idee') ? ARTICLE_IDEAS[Number(params.get('idee'))] : undefined;
   const article =
     existing ?? (idea ? articleFromIdea(idea) : normalizeArticle({ status: 'draft' }));
 

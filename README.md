@@ -348,6 +348,11 @@ Adresse : **`/admin/`**. Pensé pour une utilisation sans connaissance technique
 - **Tableau de bord** : articles en ligne / programmés / brouillons, note SEO de chaque article et note
   moyenne, **actions prioritaires** sur les articles en ligne, **12 idées d'articles** (expression clé et plan
   prêts à remplir), rappel des bons réflexes.
+- **Anglais ou français** (`src/admin/scripts/i18n.js`) : interface en anglais par défaut, boutons FR / EN
+  dans l'en-tête (choix mémorisé par navigateur). Le code et les messages du serveur restent en français ; le
+  dictionnaire de `i18n.js` les traduit à l'affichage (« {} » = partie variable). Le contenu des articles et
+  les idées d'articles ne sont jamais traduits. **Un nouveau texte d'interface doit être ajouté au
+  dictionnaire**, sinon il reste en français dans la version anglaise.
 - **Éditeur par blocs** (`src/admin/scripts/blocks.js`) : paragraphes, intertitres, listes, citations,
   images et encart devis s'affichent comme sur le site ; boutons « Ajouter un bloc », monter / descendre /
   supprimer, changement de type, gras / italique / lien sur la sélection, collage en texte simple (une ligne =

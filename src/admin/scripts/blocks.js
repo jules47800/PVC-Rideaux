@@ -9,6 +9,7 @@
  */
 import { renderInline } from '../../../lib/blog/markdown.js';
 import { blocksToMarkdown, escapeInline, parseBlocks } from './blocks-model.js';
+import { t } from './i18n.js';
 
 export const BLOCK_TYPES = {
   paragraph: 'Paragraphe',
@@ -387,7 +388,7 @@ export function createBlockEditor(root, { onChange, sendImage, previewSrc, onErr
   function removeBlock(element) {
     const data = readBlock(element);
     const hasContent = blocksToMarkdown([data]) !== '' && data.type !== 'devis';
-    if (hasContent && !window.confirm('Supprimer ce bloc et son contenu ?')) return;
+    if (hasContent && !window.confirm(t('Supprimer ce bloc et son contenu ?'))) return;
     const neighbour = element.previousElementSibling ?? element.nextElementSibling;
     element.remove();
     changed();
