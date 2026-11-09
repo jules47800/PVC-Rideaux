@@ -23,5 +23,6 @@ export function initHeader() {
     { passive: true },
   );
 
-  update();
+  // Premier état au prochain rendu : lire scrollY tout de suite forçait un calcul de mise en page.
+  requestAnimationFrame(update);
 }
